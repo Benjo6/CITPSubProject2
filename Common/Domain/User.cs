@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataLayer.Models;
+namespace Common.Domain;
 
 /// <summary>
 /// The User class represents the "user" table in the database.

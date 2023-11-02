@@ -1,4 +1,5 @@
-﻿using DataLayer.Identity;
+﻿using Common.Domain;
+using DataLayer.Identity;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 using Microsoft.Extensions.Configuration;
@@ -83,7 +84,7 @@ public class AuthenticationService : IAuthenticationService
             throw new Exception("Username already taken.");
         }
 
-        user = new Models.User
+        user = new User
         {
             Username = username,
             Email = email,

@@ -1,5 +1,5 @@
-﻿using DataLayer.Identity;
-using DataLayer.Models.DataTransferObjects;
+﻿using Common.Models;
+using DataLayer.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

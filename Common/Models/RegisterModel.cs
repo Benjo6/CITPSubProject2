@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataLayer.Models.DataTransferObjects;
+namespace Common.Models;
 
 /// <summary>
 /// The RegisterModel class represents the data model for a registration operation.

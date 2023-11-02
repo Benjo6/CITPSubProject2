@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataLayer.Models.DataTransferObjects;
+namespace Common.Models;
 
 /// <summary>
 /// The LoginModel class represents the data model for a login operation.

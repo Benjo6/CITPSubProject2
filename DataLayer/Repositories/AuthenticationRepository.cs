@@ -1,4 +1,4 @@
-﻿using DataLayer.Models;
+﻿using Common.Domain;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 

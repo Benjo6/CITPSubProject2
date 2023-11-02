@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebService;
 
 public class Program
 {
@@ -41,11 +42,11 @@ public class Program
             p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
         });
 
-        // Add services to the container.
-        builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
-        builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        // Add services to the container
+        builder.Services.AddRepositories();
+        builder.Services.AddServices();
         builder.Services.AddControllers();
+        
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
