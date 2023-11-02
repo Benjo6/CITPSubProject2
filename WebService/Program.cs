@@ -10,31 +10,27 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebService;
 
-public class Program
-{
-    private static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(x =>
-        {
-            x.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                ValidAudience = builder.Configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
-        });
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
 
         builder.Services.AddAuthorization(options =>
         {
@@ -42,36 +38,39 @@ public class Program
             p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
         });
 
-        // Add services to the container
-        builder.Services.AddRepositories();
-        builder.Services.AddServices();
-        builder.Services.AddControllers();
-        
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."))); builder.Services.AddEndpointsApiExplorer();
 
+// Add services to the container.
 
-        builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-        var app = builder.Build();
+// Add services to the container
+builder.Services.AddRepositories();
+builder.Services.AddServices();
+builder.Services.AddControllers();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+  // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."))); builder.Services.AddEndpointsApiExplorer();
 
-        app.UseHttpsRedirection();
+var app = builder.Build();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-
-        app.MapControllers();
-
-        app.Run();
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+  
+      
+app.MapControllers();
+
+app.Run();
