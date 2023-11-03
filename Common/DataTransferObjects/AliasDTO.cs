@@ -1,11 +1,6 @@
-using SubProject2.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; using SubProject2.Models;
+using Common.Domain;
 
-namespace SubProject2.DataAccess.DTOs
+namespace Common.DataTransferObjects
 {
     public class AliasDTO
     {
@@ -19,7 +14,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? Types { get; set; }
         public string? Attributes { get; set; }
         public bool? IsOriginal { get; set; }
-        public virtual ICollection<Bookmarkmovie> Bookmarkmovies { get; set; } = new List<Bookmarkmovie>();
+        public virtual ICollection<BookmarkMovie> Bookmarkmovies { get; set; } = new List<BookmarkMovie>();
         public virtual Movie? Movie { get; set; }
     }
     
@@ -34,7 +29,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? Types { get; set; }
         public string? Attributes { get; set; }
         public bool? IsOriginal { get; set; }
-        public virtual ICollection<Bookmarkmovie> Bookmarkmovies { get; set; } = new List<Bookmarkmovie>();
+        public virtual ICollection<BookmarkMovie> Bookmarkmovies { get; set; } = new List<BookmarkMovie>();
         public virtual Movie? Movie { get; set; }
     }
     
@@ -50,7 +45,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? Types { get; set; }
         public string? Attributes { get; set; }
         public bool? IsOriginal { get; set; }
-        public virtual ICollection<Bookmarkmovie> Bookmarkmovies { get; set; } = new List<Bookmarkmovie>();
+        public virtual ICollection<BookmarkMovie> Bookmarkmovies { get; set; } = new List<BookmarkMovie>();
         public virtual Movie? Movie { get; set; }
     }
 }

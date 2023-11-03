@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Common.Domain;
+using DataLayer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SubProject2.Models;
 
-namespace SubProject2.Controllers
+namespace WebService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AliasesController : ControllerBase
     {
-        private readonly Cit02Context _context;
+        private readonly AppDbContext _context;
 
-        public AliasesController(Cit02Context context)
+        public AliasesController(AppDbContext context)
         {
             _context = context;
         }
@@ -24,10 +20,11 @@ namespace SubProject2.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alias>>> GetAliases()
         {
-          if (_context.Aliases == null)
-          {
-              return NotFound();
-          }
+            if (_context.Aliases == null)
+            {
+                return NotFound();
+            }
+
             return await _context.Aliases.ToListAsync();
         }
 
@@ -35,10 +32,11 @@ namespace SubProject2.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Alias>> GetAlias(int id)
         {
-          if (_context.Aliases == null)
-          {
-              return NotFound();
-          }
+            if (_context.Aliases == null)
+            {
+                return NotFound();
+            }
+
             var @alias = await _context.Aliases.FindAsync(id);
 
             if (@alias == null)
@@ -85,10 +83,11 @@ namespace SubProject2.Controllers
         [HttpPost]
         public async Task<ActionResult<Alias>> PostAlias(Alias @alias)
         {
-          if (_context.Aliases == null)
-          {
-              return Problem("Entity set 'Cit02Context.Aliases'  is null.");
-          }
+            if (_context.Aliases == null)
+            {
+                return Problem("Entity set 'Cit02Context.Aliases'  is null.");
+            }
+
             _context.Aliases.Add(@alias);
             await _context.SaveChangesAsync();
 
@@ -103,6 +102,7 @@ namespace SubProject2.Controllers
             {
                 return NotFound();
             }
+
             var @alias = await _context.Aliases.FindAsync(id);
             if (@alias == null)
             {

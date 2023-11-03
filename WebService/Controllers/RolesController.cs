@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Common.Domain;
+using DataLayer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SubProject2.Models;
 
-namespace SubProject2.Controllers
+namespace WebService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly Cit02Context _context;
+        private readonly AppDbContext _context;
 
-        public RolesController(Cit02Context context)
+        public RolesController(AppDbContext context)
         {
             _context = context;
         }

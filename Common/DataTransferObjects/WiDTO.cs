@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; using SubProject2.Models;
-
-namespace SubProject2.DataAccess.DTOs
+namespace Common.DataTransferObjects
 {
     public class WiDTO
     {

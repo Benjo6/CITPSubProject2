@@ -1,5 +1,4 @@
 ﻿using Common.Domain;
-using DataLayer.Identity;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Common.Identity;
 
 namespace DataLayer.Services;
 
@@ -41,13 +41,13 @@ public class AuthenticationService : IAuthenticationService
     {
         var user = await _repository.GetUserByUsername(username);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
+        if (user is null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
         {
             throw new Exception("Invalid username or password");
         }
         var claims = new List<Claim>
         {
-            new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username)
+            new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username)
         };
 
         if (user.IsAdmin)
@@ -67,14 +67,15 @@ public class AuthenticationService : IAuthenticationService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
+    
     /// <summary>
-    /// Asynchronously performs a login operation with the provided username and password.
+    /// Asynchronously registers a new user.
     /// </summary>
-    /// <param name="username">The username of the user to login.</param>
-    /// <param name="password">The password of the user to login.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains a string that represents the JWT token.</returns>
-    /// <exception cref="Exception">Thrown when the username or password is invalid.</exception>
+    /// <param name="username">The username of the new user.</param>
+    /// <param name="email">The email address of the new user.</param>
+    /// <param name="password">The password of the new user. This will be hashed using BCrypt.</param>
+    /// <exception cref="System.Exception">Thrown when the username is already taken.</exception>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task Register(string username, string email, string password)
     {
         var user = await _repository.GetUserByUsername(username);

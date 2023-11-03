@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; using SubProject2.Models;
+using Common.Domain;
 
-namespace SubProject2.DataAccess.DTOs
+namespace Common.DataTransferObjects
 {
     public class PersonDTO
     {
@@ -15,7 +11,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? DeathYear { get; set; }
         public string? Professions { get; set; }
         public string? KnownFor { get; set; }
-        public virtual ICollection<Bookmarkpersonality> Bookmarkpersonalities { get; set; } = new List<Bookmarkpersonality>();
+        public virtual ICollection<BookmarkPersonality> Bookmarkpersonalities { get; set; } = new List<BookmarkPersonality>();
     }
     
     public class CreatePersonDTO
@@ -26,7 +22,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? DeathYear { get; set; }
         public string? Professions { get; set; }
         public string? KnownFor { get; set; }
-        public virtual ICollection<Bookmarkpersonality> Bookmarkpersonalities { get; set; } = new List<Bookmarkpersonality>();
+        public virtual ICollection<BookmarkPersonality> Bookmarkpersonalities { get; set; } = new List<BookmarkPersonality>();
     }
     
     public class UpdatePersonDTO
@@ -38,7 +34,7 @@ namespace SubProject2.DataAccess.DTOs
         public string? DeathYear { get; set; }
         public string? Professions { get; set; }
         public string? KnownFor { get; set; }
-        public virtual ICollection<Bookmarkpersonality> Bookmarkpersonalities { get; set; } = new List<Bookmarkpersonality>();
+        public virtual ICollection<BookmarkPersonality> Bookmarkpersonalities { get; set; } = new List<BookmarkPersonality>();
     }
 }
 

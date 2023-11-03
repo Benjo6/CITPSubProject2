@@ -1,4 +1,4 @@
-﻿namespace DataLayer.Identity;
+﻿namespace Common.Identity;
 
 /// <summary>
 /// The IdentityData class provides constant values for identity-related data

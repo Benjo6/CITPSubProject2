@@ -7,57 +7,57 @@ namespace WebService.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class BookmarkMoviesController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public MoviesController(AppDbContext context)
+        public BookmarkMoviesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Movies
+        // GET: api/Bookmarkmovies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<BookmarkMovie>>> GetBookmarkmovies()
         {
-            if (_context.Movies == null)
+            if (_context.BookmarkMovies == null)
             {
                 return NotFound();
             }
 
-            return await _context.Movies.ToListAsync();
+            return await _context.BookmarkMovies.ToListAsync();
         }
 
-        // GET: api/Movies/5
+        // GET: api/BookmarkMovies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(string id)
+        public async Task<ActionResult<BookmarkMovie>> GetBookmarkMovie(int id)
         {
-            if (_context.Movies == null)
+            if (_context.BookmarkMovies == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
+            var bookmarkMovie = await _context.BookmarkMovies.FindAsync(id);
 
-            if (movie == null)
+            if (bookmarkMovie == null)
             {
                 return NotFound();
             }
 
-            return movie;
+            return bookmarkMovie;
         }
 
-        // PUT: api/Movies/5
+        // PUT: api/BookmarkMovies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(string id, Movie movie)
+        public async Task<IActionResult> PutBookmarkMovie(int id, BookmarkMovie bookmarkMovie)
         {
-            if (id != movie.Id)
+            if (id != bookmarkMovie.UserId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            _context.Entry(bookmarkMovie).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +65,7 @@ namespace WebService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(id))
+                if (!BookmarkMovieExists(id))
                 {
                     return NotFound();
                 }
@@ -78,24 +78,24 @@ namespace WebService.Controllers
             return NoContent();
         }
 
-        // POST: api/Movies
+        // POST: api/BookmarkMovies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<BookmarkMovie>> PostBookmarkMovie(BookmarkMovie bookmarkMovie)
         {
-            if (_context.Movies == null)
+            if (_context.BookmarkMovies == null)
             {
-                return Problem("Entity set 'Cit02Context.Movies'  is null.");
+                return Problem("Entity set 'Cit02Context.BookmarkMovies'  is null.");
             }
 
-            _context.Movies.Add(movie);
+            _context.BookmarkMovies.Add(bookmarkMovie);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (MovieExists(movie.Id))
+                if (BookmarkMovieExists(bookmarkMovie.UserId))
                 {
                     return Conflict();
                 }
@@ -105,33 +105,33 @@ namespace WebService.Controllers
                 }
             }
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
+            return CreatedAtAction("GetBookmarkMovie", new { id = bookmarkMovie.UserId }, bookmarkMovie);
         }
 
-        // DELETE: api/Movies/5
+        // DELETE: api/BookmarkMovies/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(string id)
+        public async Task<IActionResult> DeleteBookmarkMovie(int id)
         {
-            if (_context.Movies == null)
+            if (_context.BookmarkMovies == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            var bookmarkMovie = await _context.BookmarkMovies.FindAsync(id);
+            if (bookmarkMovie == null)
             {
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
+            _context.BookmarkMovies.Remove(bookmarkMovie);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool MovieExists(string id)
+        private bool BookmarkMovieExists(int id)
         {
-            return (_context.Movies?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.BookmarkMovies?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }

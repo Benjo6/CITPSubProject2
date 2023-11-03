@@ -1,11 +1,6 @@
-using SubProject2.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; using SubProject2.Models;
+using Common.Domain;
 
-namespace SubProject2.DataAccess.DTOs
+namespace Common.DataTransferObjects
 {
     public class MovieDTO
     {
@@ -23,7 +18,7 @@ namespace SubProject2.DataAccess.DTOs
         public int? Votes { get; set; }
         public virtual ICollection<Alias> Aliases { get; set; } = new List<Alias>();
         public virtual ICollection<Episode> Episodes { get; set; } = new List<Episode>();
-        public virtual ICollection<Ratinghistory> Ratinghistories { get; set; } = new List<Ratinghistory>();
+        public virtual ICollection<RatingHistory> Ratinghistories { get; set; } = new List<RatingHistory>();
     }
     
     public class CreateMovieDTO
@@ -41,7 +36,7 @@ namespace SubProject2.DataAccess.DTOs
         public int? Votes { get; set; }
         public virtual ICollection<Alias> Aliases { get; set; } = new List<Alias>();
         public virtual ICollection<Episode> Episodes { get; set; } = new List<Episode>();
-        public virtual ICollection<Ratinghistory> Ratinghistories { get; set; } = new List<Ratinghistory>();
+        public virtual ICollection<RatingHistory> Ratinghistories { get; set; } = new List<RatingHistory>();
     }
     
     public class UpdateMovieDTO
@@ -60,7 +55,7 @@ namespace SubProject2.DataAccess.DTOs
         public int? Votes { get; set; }
         public virtual ICollection<Alias> Aliases { get; set; } = new List<Alias>();
         public virtual ICollection<Episode> Episodes { get; set; } = new List<Episode>();
-        public virtual ICollection<Ratinghistory> Ratinghistories { get; set; } = new List<Ratinghistory>();
+        public virtual ICollection<RatingHistory> Ratinghistories { get; set; } = new List<RatingHistory>();
     }
 }
 

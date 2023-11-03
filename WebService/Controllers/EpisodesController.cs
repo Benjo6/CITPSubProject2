@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Common.Domain;
+using DataLayer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SubProject2.Models;
 
-namespace SubProject2.Controllers
+namespace WebService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class EpisodesController : ControllerBase
     {
-        private readonly Cit02Context _context;
+        private readonly AppDbContext _context;
 
-        public EpisodesController(Cit02Context context)
+        public EpisodesController(AppDbContext context)
         {
             _context = context;
         }
@@ -24,10 +20,11 @@ namespace SubProject2.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Episode>>> GetEpisodes()
         {
-          if (_context.Episodes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Episodes == null)
+            {
+                return NotFound();
+            }
+
             return await _context.Episodes.ToListAsync();
         }
 
@@ -35,10 +32,11 @@ namespace SubProject2.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Episode>> GetEpisode(string id)
         {
-          if (_context.Episodes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Episodes == null)
+            {
+                return NotFound();
+            }
+
             var episode = await _context.Episodes.FindAsync(id);
 
             if (episode == null)
@@ -85,10 +83,11 @@ namespace SubProject2.Controllers
         [HttpPost]
         public async Task<ActionResult<Episode>> PostEpisode(Episode episode)
         {
-          if (_context.Episodes == null)
-          {
-              return Problem("Entity set 'Cit02Context.Episodes'  is null.");
-          }
+            if (_context.Episodes == null)
+            {
+                return Problem("Entity set 'Cit02Context.Episodes'  is null.");
+            }
+
             _context.Episodes.Add(episode);
             try
             {
@@ -117,6 +116,7 @@ namespace SubProject2.Controllers
             {
                 return NotFound();
             }
+
             var episode = await _context.Episodes.FindAsync(id);
             if (episode == null)
             {

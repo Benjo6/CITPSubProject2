@@ -1,5 +1,5 @@
-﻿using Common.Models;
-using DataLayer.Identity;
+﻿using Common.Identity;
+using Common.Models;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,8 @@ namespace WebService.Controllers;
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService; // _authenticationService represents the authentication service.
+    private readonly IAuthenticationService
+        _authenticationService; // _authenticationService represents the authentication service.
 
     /// <summary>
     /// Initializes a new instance of the AuthenticationController class.
