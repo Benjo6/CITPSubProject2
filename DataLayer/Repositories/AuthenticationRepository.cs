@@ -2,6 +2,7 @@
 using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace DataLayer.Repositories
 {
@@ -30,10 +31,16 @@ namespace DataLayer.Repositories
         /// <returns>A Task that represents the asynchronous operation.</returns>
         public async Task CreateUser(User user)
         {
-            // Add the user to the Users set in the context and save changes asynchronously.
-            _ = _context.Users.Add(user);
-            _ = await _context.SaveChangesAsync();
+            // Create parameters for the add_user function.
+            var usernameParam = new NpgsqlParameter("@username", user.Username);
+            var passwordParam = new NpgsqlParameter("@password", user.Password);
+            var emailParam = new NpgsqlParameter("@email", user.Email);
+            var isAdminParam = new NpgsqlParameter("@isAdmin", user.IsAdmin);
+
+            // Call the add_user function.
+            await _context.Database.ExecuteSqlRawAsync("SELECT add_user(@username, @password, @email,@isAdmin)", usernameParam, passwordParam, emailParam, isAdminParam);
         }
+
 
         /// <summary>
         /// Asynchronously retrieves a User object that matches the provided username.

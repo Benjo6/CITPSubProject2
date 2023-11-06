@@ -6,7 +6,7 @@ using Common.Identity;
 using DataLayer.Infrastructure;
 using WebService;
 
-public  class Program
+public class Program
 {
     public static void Main(string[] args)
     {
@@ -54,7 +54,9 @@ public  class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-                              ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."))); builder.Services.AddEndpointsApiExplorer();
+                              ?? throw new InvalidOperationException(
+                                  "Connection string 'DefaultConnection' not found.")));
+        builder.Services.AddEndpointsApiExplorer();
 
         var app = builder.Build();
 
@@ -69,8 +71,8 @@ public  class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-  
-      
+
+
         app.MapControllers();
 
         app.Run();

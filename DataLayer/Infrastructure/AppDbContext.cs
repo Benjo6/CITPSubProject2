@@ -35,4 +35,19 @@ public class AppDbContext : DbContext
     public virtual DbSet<Wi> Wis { get; set; } = null!;
 
     public virtual DbSet<WiWeighted> WiWeighteds { get; set; } = null!;
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<BookmarkMovie>()
+            .HasKey(b => new { b.UserId, b.AliasId });
+        modelBuilder.Entity<BookmarkPersonality>()
+            .HasKey(b => new { b.UserId, b.PersonId });
+        modelBuilder.Entity<RatingHistory>()
+            .HasKey(r => new { r.UserId, r.MovieId });
+        modelBuilder.Entity<Role>()
+            .HasKey(r => new { r.MovieId, r.PersonId });
+        modelBuilder.Entity<WiWeighted>()
+            .HasNoKey();
+    }
+
 }
