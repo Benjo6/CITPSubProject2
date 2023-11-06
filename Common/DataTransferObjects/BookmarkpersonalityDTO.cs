@@ -2,7 +2,7 @@ using Common.Domain;
 
 namespace Common.DataTransferObjects
 {
-    public class BookmarkpersonalityDTO
+    public class BookmarkPersonalityDTO
     {
         public int Id { get; set; }
         
@@ -13,7 +13,7 @@ namespace Common.DataTransferObjects
         public virtual User User { get; set; } = null!;
     }
     
-    public class CreateBookmarkpersonalityDTO
+    public class CreateBookmarkPersonalityDTO
     {
         
         public int UserId { get; set; }
@@ -23,7 +23,7 @@ namespace Common.DataTransferObjects
         public virtual User User { get; set; } = null!;
     }
     
-    public class UpdateBookmarkpersonalityDTO
+    public class UpdateBookmarkPersonalityDTO
     {
         public int Id { get; set; }
         

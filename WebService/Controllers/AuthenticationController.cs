@@ -1,5 +1,5 @@
-﻿using Common.Identity;
-using Common.Models;
+﻿using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +35,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var token = await _authenticationService.Login(model.Username, model.Password);
+            var token = await _authenticationService.Login(model);
             return Ok(new { token });
         }
         catch (Exception ex)
@@ -54,7 +54,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            await _authenticationService.Register(model.Username, model.Email, model.Password);
+            await _authenticationService.Register(model);
             return Ok();
         }
         catch (Exception ex)
