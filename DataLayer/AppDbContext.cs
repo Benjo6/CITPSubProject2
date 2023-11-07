@@ -13,6 +13,8 @@ namespace DataLayer
         // Remove this in the future, it's just for testing
         public DbSet<WeatherForecast> WeatherForecasts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Person> Personalities  { get; set; }
 
     }
 }
