@@ -1,4 +1,5 @@
 ﻿using DataLayer;
+using DataLayer.Infrastructure;
 using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

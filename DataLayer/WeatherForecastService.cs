@@ -1,4 +1,6 @@
-﻿namespace DataLayer;
+﻿using DataLayer.Infrastructure;
+
+namespace DataLayer;
 
 public class WeatherForecastService : IWeatherForecastService
 {

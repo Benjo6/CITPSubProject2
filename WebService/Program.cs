@@ -1,17 +1,14 @@
-using DataLayer;
-using DataLayer.Identity;
-using DataLayer.Repositories;
-using DataLayer.Repositories.Contracts;
-using DataLayer.Services;
-using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Common.Identity;
+using DataLayer.Infrastructure;
+using WebService;
 
 public class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -38,25 +35,32 @@ public class Program
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy(IdentityData.AdminUserPolicyName, p =>
-            p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
+                p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
         });
 
-        // Add services to the container.
-        builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
-        builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+// Add services to the container.
+
         builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+// Add services to the container
+        builder.Services.AddRepositories();
+        builder.Services.AddServices();
+        builder.Services.AddControllers();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."))); builder.Services.AddEndpointsApiExplorer();
-
-
-        builder.Services.AddSwaggerGen();
+                              ?? throw new InvalidOperationException(
+                                  "Connection string 'DefaultConnection' not found.")));
+        builder.Services.AddEndpointsApiExplorer();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

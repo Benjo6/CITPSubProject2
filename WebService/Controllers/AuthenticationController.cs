@@ -1,5 +1,5 @@
-﻿using DataLayer.Identity;
-using DataLayer.Models.DataTransferObjects;
+﻿using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,8 @@ namespace WebService.Controllers;
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService; // _authenticationService represents the authentication service.
+    private readonly IAuthenticationService
+        _authenticationService; // _authenticationService represents the authentication service.
 
     /// <summary>
     /// Initializes a new instance of the AuthenticationController class.
@@ -34,7 +35,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var token = await _authenticationService.Login(model.Username, model.Password);
+            var token = await _authenticationService.Login(model);
             return Ok(new { token });
         }
         catch (Exception ex)
@@ -53,7 +54,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            await _authenticationService.Register(model.Username, model.Email, model.Password);
+            await _authenticationService.Register(model);
             return Ok();
         }
         catch (Exception ex)

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataLayer.Models;
+namespace Common.Domain;
 
 /// <summary>
 /// The User class represents the "user" table in the database.
@@ -20,30 +20,35 @@ public class User
     /// <summary>
     /// Username property represents the username of the user in the User table.
     /// </summary>
+    [MaxLength(255)]
     [Column("username")]
     public string Username { get; set; }
 
     /// <summary>
     /// Email property represents the email of the user in the User table.
     /// </summary>
+    [MaxLength(255)]
     [Column("email")]
     public string Email { get; set; }
 
     /// <summary>
     /// Password property represents the password of the user in the User table.
     /// </summary>
+    [MaxLength(255)]
     [Column("password")]
     public string Password { get; set; }
 
     /// <summary>
     /// RegistrationDate property represents the date of registration of the user in the User table.
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     [Column("registration_date")]
     public DateTime RegistrationDate { get; set; }
 
     /// <summary>
     /// IsAdmin property indicates whether the user is an admin or not in the User table.
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     [Column("isadmin")]
     public bool IsAdmin { get; set; }
 }

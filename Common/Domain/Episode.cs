@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Common.Domain;
+
+public class Episode
+{
+    [Key, StringLength(10), Column("id", TypeName = "char(10)")]
+    public string Id { get; set; } = null!;
+
+    [StringLength(10), Column("series_id", TypeName = "char(10)")]
+    public string? SeriesId { get; set; }
+
+    [Column("season")]
+    public int? Season { get; set; }
+
+    [Column("episode")]
+    public int? Episode1 { get; set; }
+
+    [ForeignKey("SeriesId")]
+    public virtual Movie? Series { get; set; }
+}

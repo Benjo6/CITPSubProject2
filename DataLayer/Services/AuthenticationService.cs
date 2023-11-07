@@ -1,4 +1,4 @@
-﻿using DataLayer.Identity;
+﻿using Common.Domain;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Common.DataTransferObjects;
+using Common.Identity;
 
 namespace DataLayer.Services;
 
@@ -30,23 +32,22 @@ public class AuthenticationService : IAuthenticationService
     }
 
     /// <summary>
-    /// Asynchronously performs a login operation with the provided username and password.
+    /// Asynchronously performs a login operation with the provided LoginModel.
     /// </summary>
-    /// <param name="username">The username of the user to login.</param>
-    /// <param name="password">The password of the user to login.</param>
+    /// <param name="model">The LoginModel containing the username and password of the user to login.</param>
     /// <returns>A Task that represents the asynchronous operation. The task result contains a string that represents the JWT token.</returns>
     /// <exception cref="Exception">Thrown when the username or password is invalid.</exception>
-    public async Task<string> Login(string username, string password)
+    public async Task<string> Login(LoginModel model)
     {
-        var user = await _repository.GetUserByUsername(username);
+        var user = await _repository.GetUserByUsername(model.Username);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
+        if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
         {
-            throw new Exception("Invalid username or password");
+            throw new ArgumentException("Invalid username or password");
         }
         var claims = new List<Claim>
         {
-            new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username)
+            new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username)
         };
 
         if (user.IsAdmin)
@@ -54,7 +55,7 @@ public class AuthenticationService : IAuthenticationService
             claims.Add(new Claim(IdentityData.AdminUserClaimName, "true"));
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"] ?? throw new NullReferenceException("There is no key in your JwtSettings")));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
@@ -66,28 +67,27 @@ public class AuthenticationService : IAuthenticationService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
+    
     /// <summary>
-    /// Asynchronously performs a login operation with the provided username and password.
+    /// Asynchronously registers a new user.
     /// </summary>
-    /// <param name="username">The username of the user to login.</param>
-    /// <param name="password">The password of the user to login.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains a string that represents the JWT token.</returns>
-    /// <exception cref="Exception">Thrown when the username or password is invalid.</exception>
-    public async Task Register(string username, string email, string password)
+    /// <param name="model">The RegisterModel containing the username, email, and password of the new user. The password will be hashed using BCrypt.</param>
+    /// <exception cref="System.Exception">Thrown when the username is already taken.</exception>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task Register(RegisterModel model)
     {
-        var user = await _repository.GetUserByUsername(username);
+        var user = await _repository.GetUserByUsername(model.Username);
 
         if (user != null)
         {
-            throw new Exception("Username already taken.");
+            throw new ArgumentException("Username already taken.");
         }
 
-        user = new Models.User
+        user = new User
         {
-            Username = username,
-            Email = email,
-            Password = BCrypt.Net.BCrypt.HashPassword(password),
+            Username = model.Username,
+            Email = model.Email,
+            Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
         };
 
         await _repository.CreateUser(user);
@@ -104,7 +104,7 @@ public class AuthenticationService : IAuthenticationService
         var user = await _repository.GetUserByUsername(username);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new ArgumentException("User not found");
         }
 
         user.IsAdmin = true;
