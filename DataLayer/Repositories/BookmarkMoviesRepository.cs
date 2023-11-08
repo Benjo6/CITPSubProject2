@@ -1,21 +1,73 @@
+using Npgsql;
+using NpgsqlTypes;
+using Common.Domain;
+using DataLayer.Generics;
+using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace DataLayer.Repositories;
-
-public class BookmarkMoviesRepository : IBookmarkMoviesRepository
+namespace DataLayer.Repositories
 {
-    public async Task<List<int>> GetBookmarkMovies(int userId)
+    public class BookmarkMoviesRepository : IBookmarkMoviesRepository
     {
-        throw new NotImplementedException();
-    }
+        private readonly AppDbContext context;
 
-    public async Task AddBookmarkMovies(int userId, int personId)
-    {
-        throw new NotImplementedException();
-    }
+        public BookmarkMoviesRepository(AppDbContext _context)
+        {
+            context = _context;
+        }
 
-    public async Task AddNote(int userId, int aliasId, string note)
-    {
-        throw new NotImplementedException();
+        public async Task AddBookmarkMovies(string userId, string aliasId)
+        {
+            using (var command = context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @person_id)");
+                command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
+                command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
+                await command.ExecuteNonQueryAsync();
+                
+            }
+        }
+
+        public async Task<List<string>> GetBookmarkMovies(string userId)
+        {
+            var bookmarkedMovies = new List<string>();
+
+            using (var command = context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = string.Format("Select * from get_bookmarks_movie(@user_id");
+                    command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            bookmarkedMovies.Add(reader.GetString(0));
+                        }
+                    }
+            }
+
+            return bookmarkedMovies;
+        }
+
+        public async Task AddNote(string userId, string aliasId, string note)
+        {
+            using (var command = context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = string.Format("Select * from add_note(@userId, @aliasId, @note)");
+                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
+                command.Parameters.Add(new NpgsqlParameter("aliasId", NpgsqlDbType.Varchar) { Value = aliasId });
+                command.Parameters.Add(new NpgsqlParameter("note", NpgsqlDbType.Text) { Value = note });
+                await command.ExecuteNonQueryAsync();
+                
+            }
+        }
     }
 }
