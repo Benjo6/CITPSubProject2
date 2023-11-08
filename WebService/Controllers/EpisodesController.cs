@@ -1,137 +1,101 @@
-﻿using Common.Domain;
+﻿using Common.DataTransferObjects;
+using Common.Domain;
 using DataLayer.Infrastructure;
+using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebService.Controllers
+namespace WebService.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class EpisodesController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class EpisodesController : ControllerBase
+    private readonly IEpisodesService _service;
+
+    public EpisodesController(IEpisodesService service)
     {
-        private readonly AppDbContext _context;
-
-        public EpisodesController(AppDbContext context)
+        _service = service;
+    }
+    
+    // GET: Episodes
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<EpisodeDTO>>> GetEpisodes()
+    {
+        try
         {
-            _context = context;
+            var episodes = await _service.GetAllEpisodes();
+            return Ok(episodes);
         }
-
-        // GET: api/Episodes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Episode>>> GetEpisodes()
+        catch(Exception ex)
         {
-            if (_context.Episodes == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Episodes.ToListAsync();
+            return BadRequest(ex.Message);
         }
+    }
 
-        // GET: api/Episodes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Episode>> GetEpisode(string id)
+    // GET: Episodes/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EpisodeDTO>> GetEpisode(string id)
+    {
+        try
         {
-            if (_context.Episodes == null)
-            {
-                return NotFound();
-            }
+            var episode = await _service.GetOneEpisode(id);
+            return Ok(episode);
 
-            var episode = await _context.Episodes.FindAsync(id);
-
-            if (episode == null)
-            {
-                return NotFound();
-            }
-
-            return episode;
         }
-
-        // PUT: api/Episodes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEpisode(string id, Episode episode)
+        catch (Exception ex)
         {
-            if (id != episode.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(episode).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EpisodeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return BadRequest(ex.Message);
         }
+    }
 
-        // POST: api/Episodes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Episode>> PostEpisode(Episode episode)
+    // PUT: api/Episodes/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<ActionResult<EpisodeDTO>> PutEpisode(string id ,AlterEpisodeDTO episode)
+    {
+        try
         {
-            if (_context.Episodes == null)
-            {
-                return Problem("Entity set 'Cit02Context.Episodes'  is null.");
-            }
+            var putEpisode = await _service.UpdateEpisode(id, episode);
+            return Ok(putEpisode);
 
-            _context.Episodes.Add(episode);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (EpisodeExists(episode.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetEpisode", new { id = episode.Id }, episode);
         }
-
-        // DELETE: api/Episodes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEpisode(string id)
+        catch (Exception ex)
         {
-            if (_context.Episodes == null)
-            {
-                return NotFound();
-            }
-
-            var episode = await _context.Episodes.FindAsync(id);
-            if (episode == null)
-            {
-                return NotFound();
-            }
-
-            _context.Episodes.Remove(episode);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest(ex.Message);
         }
+    }
 
-        private bool EpisodeExists(string id)
+    // POST: api/Episodes
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<EpisodeDTO>> PostEpisode([FromBody] AlterEpisodeDTO episode)
+    {
+        try
         {
-            return (_context.Episodes?.Any(e => e.Id == id)).GetValueOrDefault();
+            var postEpisode = await _service.AddEpisode(episode);
+            return Ok(postEpisode);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // DELETE: api/Episodes/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEpisode(string id)
+    {
+        try
+        {
+            var result = await _service.DeleteEpisode(id);
+            return Ok(result);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

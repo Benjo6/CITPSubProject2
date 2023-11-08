@@ -3,12 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
 
+[Table("alias")]
 public class Alias
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("id")]
-    public int Id { get; set; }
+    public string Id { get; set; }
 
     [Required]
     [StringLength(10)]

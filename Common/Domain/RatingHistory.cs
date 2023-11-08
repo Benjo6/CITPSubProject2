@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
 
+[Table("ratinghistory")]
 public class RatingHistory
 {
-    [Key, Column("user_id", Order = 0)]
-    public int UserId { get; set; }
+
+    [Key, StringLength(10), Column("user_id", TypeName = "char(10)", Order = 0)]
+    public string UserId { get; set; }
 
     [Key, StringLength(10), Column("movie_id", TypeName = "char(10)", Order = 1)]
     public string MovieId { get; set; } = null!;

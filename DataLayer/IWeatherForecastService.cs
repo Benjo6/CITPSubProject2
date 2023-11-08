@@ -1,7 +1,6 @@
-﻿namespace DataLayer
+﻿namespace DataLayer;
+
+public interface IWeatherForecastService
 {
-    public interface IWeatherForecastService
-    {
-        IEnumerable<WeatherForecast> GetWeatherForecasts();
-    }
+    IEnumerable<WeatherForecast> GetWeatherForecasts();
 }

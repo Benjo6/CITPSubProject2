@@ -1,5 +1,4 @@
 ﻿using Common.DataTransferObjects;
-using Common.Domain;
 using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
@@ -17,10 +16,10 @@ public class MoviesService : IMoviesService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<AddAndUpdateMovieDTO> AddMovie(CreateMovieDTO movie)
+    public async Task<AlterResponseMovieDTO> AddMovie(AlterMovieDTO movie)
     {
-        var addedMovie = await _repository.Add(_mapper.CreateMovieDTOToMovie(movie));
-        return _mapper.MovieToAddAndUpdateMovieDTO(addedMovie);
+        var addedMovie = await _repository.Add(_mapper.AlterMovieDTOToMovie(movie));
+        return _mapper.MovieToAlterResponseMovieDTO(addedMovie);
     }
 
     public Task<List<BestMatch>> BestMatchQuery(string[] keywords)
@@ -57,12 +56,14 @@ public class MoviesService : IMoviesService
         return _mapper.MovieToGetOneMovieDTO(getOne);
     }
 
-    public async Task<AddAndUpdateMovieDTO> UpdateMovie(Movie movie)
+    public async Task<AlterResponseMovieDTO> UpdateMovie(string id, AlterMovieDTO movie)
     {
-        _ = _repository.GetById(movie.Id);
-        await _repository.Update(movie);
-        var updatedMovie = await _repository.GetById(movie.Id);
-        return _mapper.MovieToAddAndUpdateMovieDTO(updatedMovie);
+        _ = await _repository.GetById(id);
+        var theMovie  = _mapper.AlterMovieDTOToMovie(movie);
+        theMovie.Id = id;
+        await _repository.Update(theMovie);
+        var updatedMovie = await _repository.GetById(theMovie.Id);
+        return _mapper.MovieToAlterResponseMovieDTO(updatedMovie);
     }
 
     public Task<List<WordFrequency>> WordToWordsQuery(string[] keywords)

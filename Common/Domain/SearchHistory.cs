@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
 
+[Table("searchhistory")]
 public class SearchHistory
 {
-    [Key, Column("id")]
-    public int Id { get; set; }
+    [Key, StringLength(10), Column("id", TypeName = "char(10)"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string Id { get; set; }
 
     [Required, Column("user_id")]
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     [Required, StringLength(255), Column("search_query")]
     public string SearchQuery { get; set; } = null!;

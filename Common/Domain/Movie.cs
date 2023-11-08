@@ -6,7 +6,7 @@ namespace Common.Domain;
 [Table("movie")]
 public class Movie
 {
-    [Key, StringLength(10), Column("id", TypeName = "char(10)"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
 
     [StringLength(255), Column("type")]
@@ -38,4 +38,9 @@ public class Movie
 
     [Column("votes")]
     public int? Votes { get; set; }
+    
+    public ICollection<Alias>? Aliases { get; set; }
+    public ICollection<Episode>? Episodes { get; set; }
+    public ICollection<Role>? Roles { get; set; }
+    public ICollection<RatingHistory>? RatingHistories { get; set; }
 }

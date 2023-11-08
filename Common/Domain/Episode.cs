@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
 
+[Table("episode")]
 public class Episode
 {
     [Key, StringLength(10), Column("id", TypeName = "char(10)")]

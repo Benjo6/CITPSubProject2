@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
 
+[Table("role")]
 public  class Role
 {
     [Key, StringLength(10), Column("movie_id", TypeName = "char(10)", Order = 0)]

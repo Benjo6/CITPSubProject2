@@ -1,123 +1,98 @@
-﻿using Common.Domain;
-using DataLayer.Infrastructure;
+﻿using Common.DataTransferObjects;
+using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace WebService.Controllers
+namespace WebService.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class AliasesController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class AliasesController : ControllerBase
+    private readonly IAliasesService _service;
+    
+    public AliasesController(IAliasesService service)
     {
-        private readonly AppDbContext _context;
-
-        public AliasesController(AppDbContext context)
+        _service = service;
+    }
+    
+    // GET: Aliases
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AliasDTO>>> GetAliases()
+    {
+        try
         {
-            _context = context;
+            var aliases = await _service.GetAllAliases();
+            return Ok(aliases);
         }
-
-        // GET: api/Aliases
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Alias>>> GetAliases()
+        catch(Exception ex)
         {
-            if (_context.Aliases == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Aliases.ToListAsync();
+            return BadRequest(ex.Message);
         }
+    }
 
-        // GET: api/Aliases/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Alias>> GetAlias(int id)
+    // GET: Aliases/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<AliasDTO>> GetAlias(string id)
+    {
+        try
         {
-            if (_context.Aliases == null)
-            {
-                return NotFound();
-            }
+            var alias = await _service.GetOneAlias(id);
+            return Ok(alias);
 
-            var @alias = await _context.Aliases.FindAsync(id);
-
-            if (@alias == null)
-            {
-                return NotFound();
-            }
-
-            return @alias;
         }
-
-        // PUT: api/Aliases/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAlias(int id, Alias @alias)
+        catch (Exception ex)
         {
-            if (id != @alias.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(@alias).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AliasExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return BadRequest(ex.Message);
         }
+    }
 
-        // POST: api/Aliases
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Alias>> PostAlias(Alias @alias)
+    // PUT: api/Aliases/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<ActionResult<AliasDTO>> PutAlias(string id, AlterAliasDTO alias)
+    {
+        try
         {
-            if (_context.Aliases == null)
-            {
-                return Problem("Entity set 'Cit02Context.Aliases'  is null.");
-            }
+            var putAlias = await _service.UpdateAlias(id, alias);
+            return Ok(putAlias);
 
-            _context.Aliases.Add(@alias);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAlias", new { id = @alias.Id }, @alias);
         }
-
-        // DELETE: api/Aliases/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAlias(int id)
+        catch (Exception ex)
         {
-            if (_context.Aliases == null)
-            {
-                return NotFound();
-            }
-
-            var @alias = await _context.Aliases.FindAsync(id);
-            if (@alias == null)
-            {
-                return NotFound();
-            }
-
-            _context.Aliases.Remove(@alias);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest(ex.Message);
         }
+    }
 
-        private bool AliasExists(int id)
+    // POST: api/Aliases
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<AliasDTO>> PostAlias(AlterAliasDTO alias)
+    {
+        try
         {
-            return (_context.Aliases?.Any(e => e.Id == id)).GetValueOrDefault();
+            var postAlias = await _service.AddAlias(alias);
+            return Ok(postAlias);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // DELETE: Aliases/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAlias(string id)
+    {
+        try
+        {
+            var result = await _service.DeleteAlias(id);
+            return Ok(result);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

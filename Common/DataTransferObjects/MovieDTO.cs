@@ -29,9 +29,9 @@ public class GetOneMovieDTO
     public ICollection<Episode> Episodes { get; set; }
 }
 
-public class AddAndUpdateMovieDTO
+public class AlterResponseMovieDTO
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Title { get; set; }
     public string OriginalTitle { get; set; }
     public string Type { get; set; }
@@ -42,12 +42,9 @@ public class AddAndUpdateMovieDTO
     public bool? IsAdult { get; set; }
     public decimal? Rating { get; set; }
     public int? Votes { get; set; }
-    public ICollection<Alias> Aliases { get; set; }
-    public ICollection<Episode> Episodes { get; set; }
-    public ICollection<RatingHistory> RatingHistories { get; set; }
 }
 
-public class CreateMovieDTO
+public class AlterMovieDTO
 {
     public string Title { get; set; }
     public string OriginalTitle { get; set; }
@@ -59,9 +56,6 @@ public class CreateMovieDTO
     public bool? IsAdult { get; set; }
     public decimal? Rating { get; set; }
     public int? Votes { get; set; }
-    public ICollection<Alias> Aliases { get; set; }
-    public ICollection<Episode> Episodes { get; set; }
-    public ICollection<RatingHistory> RatingHistories { get; set; }
 }
 
 public class SimilarMovie
