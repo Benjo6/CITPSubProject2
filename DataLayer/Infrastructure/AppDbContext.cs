@@ -92,11 +92,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(r => new { r.MovieId, r.PersonId });
-            
+
             entity.HasOne(r => r.Movie)
                 .WithMany(m => m.Roles)
                 .HasForeignKey(r => r.MovieId);
-            
+
             entity.HasOne(r => r.Person)
                 .WithMany(p => p.Roles)
                 .HasForeignKey(r => r.PersonId);

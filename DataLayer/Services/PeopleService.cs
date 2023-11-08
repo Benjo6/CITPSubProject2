@@ -1,5 +1,6 @@
 using Common.DataTransferObjects;
 using Common.Domain;
+using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 
@@ -8,8 +9,7 @@ namespace DataLayer.Services;
 public class PeopleService : IPeopleService
 {
     private IPeopleRepository _peopleRepository;
-    private ObjectMapper _mapper;
-    
+    private readonly ObjectMapper _mapper;
 
     public PeopleService(IPeopleRepository peopleRepository)
     {
@@ -19,36 +19,61 @@ public class PeopleService : IPeopleService
 
     public async Task<List<GetAllPersonDTO>> GetAllPerson()
     {
-        var getAll = await _repository.GetAll();
-        return _mapper.GetAllPersonDTO(getAll) ?? new List<GetAllPersonDTO>();
+        var getAll = await _peopleRepository.GetAll();
+        return _mapper.PersonToGetAllPersonsDTO(getAll) ?? new List<GetAllPersonDTO>();
     }
 
     public async Task<GetOnePersonDTO> GetOnePerson(string id)
     {
-        var getOne = await _repository.GetById(id);
-        return _mapper.GetOnePersonDTO(getOne);
+        var getOne = await _peopleRepository.GetById(id);
+        return _mapper.PersonToGetOnePersonDTO(getOne);
     }
 
     public async Task<UpdatePersonDTO> UpdatePerson(string id, AlterPersonDTO person)
     {
-        _ = await _repository.GetById(id);
-        var old  = _mapper.AlterPersonDTO(person);
-        old.Id = id;
-        await _repository.Update(ep);
-        var updated = await _repository.GetById(old.Id);
-        return _mapper.UpdatePersonDTO(updated);
+        _ = await _peopleRepository.GetById(id);
+        var theActor = _mapper.AlterPersonDTOToPerson(person);
+        theActor.Id = id;
+        await _peopleRepository.Update(theActor);
+        var updatedPerson = await _peopleRepository.GetById(theActor.Id);
+        return _mapper.PersonToUpdatePersonDTO(updatedPerson);
     }
 
-    public async Task<GetOnePersonDTO> AddPerson(AlterPersonDTO person)
+    public async Task<UpdatePersonDTO> AddPerson(AlterPersonDTO person)
     {
-        var added = await _repository.Add(_mapper.AlterPersonDTO(person));
-        return _mapper.GetOnePersonDTO(added);
+        var addedPerson = await _peopleRepository.Add(_mapper.AlterPersonDTOToPerson(person));
+        return _mapper.PersonToUpdatePersonDTO(addedPerson);
     }
 
     public async Task<bool> DeletePerson(string id)
     {
-        var entity = await _repository.GetById(id) ?? throw new KeyNotFoundException($"No entity found with id {id}");
+        var entity = await _peopleRepository.GetById(id) ?? throw new NotImplementedException($"No entity found with id {id}");
 
-        return await _repository.Delete(entity);
+        return await _peopleRepository.Delete(entity);
+    }
+
+    public Task<List<ActorBy>> FindActorsByName(string name)
+    {
+        return _peopleRepository.FindActorsByName(name) ?? throw new NullReferenceException("No actors found");
+    }
+
+    public Task<List<ActorBy>> FindActorsByMovie(string movieId)
+    {
+        return _peopleRepository.FindActorsByMovie(movieId) ?? throw new NullReferenceException("No actors found");
+    }
+
+    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
+    {
+        return _peopleRepository.GetPopularActorsInMovie(movieId);
+    }
+
+    public Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName)
+    {
+        return _peopleRepository.GetPopularCoPlayers(actorName);
+    }
+
+    public Task<List<PersonWord>> PersonWords(string word, int frequency)
+    {
+        return _peopleRepository.PersonWords(word, frequency);
     }
 }
