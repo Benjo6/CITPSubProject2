@@ -7,35 +7,47 @@ namespace DataLayer.Services;
 
 public class EpisodesService : IEpisodesService
 {
-    private IGenericRepository<Episode> _repository;
+    private GenericRepository<Episode> _repository;
+    private ObjectMapper _mapper;
 
-    public EpisodesService(IGenericRepository<Episode> repository)
+    public EpisodesService(GenericRepository<Episode> repository)
     {
         _repository = repository;
+        _mapper = new ObjectMapper();
     }
 
     public async Task<List<EpisodeDTO>> GetAllEpisodes()
     {
-        throw new NotImplementedException();
+        var getAll = await _repository.GetAll();
+        return _mapper.GetAllEpisodes(getAll) ?? new List<EpisodeDTO>();
     }
 
     public async Task<EpisodeDTO> GetOneEpisode(string id)
     {
-        throw new NotImplementedException();
+        var getOne = await _repository.GetById(id);
+        return _mapper.GetOneEpisode(getOne);
     }
 
     public async Task<EpisodeDTO> UpdateEpisode(string id, AlterEpisodeDTO episode)
     {
-        throw new NotImplementedException();
+        _ = await _repository.GetById(id);
+        var ep  = _mapper.AlterEpisodeDTO(episode);
+        ep.Id = id;
+        await _repository.Update(ep);
+        var updatedep = await _repository.GetById(ep.Id);
+        return _mapper.EpisodeDTO(updatedep);
     }
 
     public async Task<EpisodeDTO> AddEpisode(AlterEpisodeDTO episode)
     {
-        throw new NotImplementedException();
+        var addedepisode = await _repository.Add(_mapper.AlterMovieDTOToMovie(episode));
+        return _mapper.AlterEpisodeDTO(addedepisode);
     }
 
-    public async Task<EpisodeDTO> DeleteEpisode(string id)
+    public async Task<bool> DeleteEpisode(string id)
     {
-        throw new NotImplementedException();
+        var entity = await _repository.GetById(id) ?? throw new KeyNotFoundException($"No entity found with id {id}");
+
+        return await _repository.Delete(entity);
     }
 }
