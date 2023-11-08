@@ -1,12 +1,10 @@
-﻿using Common.DataTransferObjects;
-using Common.Domain;
+﻿using Common.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Infrastructure;
 
 public class AppDbContext : DbContext
 {
-
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -33,77 +31,89 @@ public class AppDbContext : DbContext
     public virtual DbSet<SearchHistory> SearchHistories { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
 
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BookmarkMovie>()
-            .HasKey(b => new { b.UserId, b.AliasId });
-        modelBuilder.Entity<BookmarkPersonality>()
-            .HasKey(b => new { b.UserId, b.PersonId });
-        modelBuilder.Entity<RatingHistory>()
-            .HasKey(r => new { r.UserId, r.MovieId });
-        modelBuilder.Entity<Role>()
-            .HasKey(r => new { r.MovieId, r.PersonId });
-        
-        // User to BookmarkMovie
-        modelBuilder.Entity<BookmarkMovie>()
-            .HasOne(b => b.User)
-            .WithMany(u => u.BookmarkMovies)
-            .HasForeignKey(b => b.UserId);
+        modelBuilder.Entity<Alias>(entity =>
+        {
+            entity.HasOne(a => a.Movie)
+                .WithMany(m => m.Aliases)
+                .HasForeignKey(a => a.MovieId);
+        });
 
-        // User to BookmarkPersonality
-        modelBuilder.Entity<BookmarkPersonality>()
-            .HasOne(b => b.User)
-            .WithMany(u => u.BookmarkPersonalities)
-            .HasForeignKey(b => b.UserId);
+        modelBuilder.Entity<BookmarkMovie>(entity =>
+        {
+            entity.HasKey(b => new { b.UserId, b.AliasId });
 
-        // User to RatingHistory
-        modelBuilder.Entity<RatingHistory>()
-            .HasOne(r => r.User)
-            .WithMany(u => u.RatingHistories)
-            .HasForeignKey(r => r.UserId);
+            entity.HasOne(b => b.User)
+                .WithMany(u => u.BookmarkMovies)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
-        // Movie to RatingHistory
-        modelBuilder.Entity<RatingHistory>()
-            .HasOne(r => r.Movie)
-            .WithMany(m => m.RatingHistories)
-            .HasForeignKey(r => r.MovieId);
+            entity.HasOne(b => b.Alias)
+                .WithMany(a => a.BookmarkMovies)
+                .HasForeignKey(b => b.AliasId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
 
-        // Movie to Role
-        modelBuilder.Entity<Role>()
-            .HasOne(r => r.Movie)
-            .WithMany(m => m.Roles)
-            .HasForeignKey(r => r.MovieId);
+        modelBuilder.Entity<BookmarkPersonality>(entity =>
+        {
+            entity.HasKey(b => new { b.UserId, b.PersonId });
 
-        // Person to Role
-        modelBuilder.Entity<Role>()
-            .HasOne(r => r.Person)
-            .WithMany(p => p.Roles)
-            .HasForeignKey(r => r.PersonId);
+            entity.HasOne(b => b.User)
+                .WithMany(u => u.BookmarkPersonalities)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
-        // Alias to BookmarkMovie
-        modelBuilder.Entity<BookmarkMovie>()
-            .HasOne(b => b.Alias)
-            .WithMany(a => a.BookmarkMovies)
-            .HasForeignKey(b => b.AliasId);
-
-        // Person to BookmarkPersonality
-        modelBuilder.Entity<BookmarkPersonality>()
-            .HasOne(b => b.Person)
-            .WithMany(p => p.BookmarkPersonalities)
-            .HasForeignKey(b => b.PersonId);
-        
-        // Movie to Alias
-        modelBuilder.Entity<Alias>()
-            .HasOne(a => a.Movie)
-            .WithMany(m => m.Aliases)
-            .HasForeignKey(a => a.MovieId);
-
-        // Movie to Episode
+            entity.HasOne(b => b.Person)
+                .WithMany(p => p.BookmarkPersonalities)
+                .HasForeignKey(b => b.PersonId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
         modelBuilder.Entity<Episode>()
             .HasOne(e => e.Series)
             .WithMany(m => m.Episodes)
             .HasForeignKey(e => e.SeriesId);
-    }
 
+
+        modelBuilder.Entity<RatingHistory>(entity =>
+        {
+            entity.HasKey(r => new { r.UserId, r.MovieId });
+            entity.HasOne(r => r.User)
+                .WithMany(u => u.RatingHistories)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(r => r.Movie)
+                .WithMany(m => m.RatingHistories)
+                .HasForeignKey(r => r.MovieId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(r => new { r.MovieId, r.PersonId });
+
+            entity.HasOne(r => r.Movie)
+                .WithMany(m => m.Roles)
+                .HasForeignKey(r => r.MovieId);
+
+            entity.HasOne(r => r.Person)
+                .WithMany(p => p.Roles)
+                .HasForeignKey(r => r.PersonId);
+        });
+
+        modelBuilder.Entity<SearchHistory>()
+            .HasOne(d => d.User)
+            .WithMany(p => p.SearchHistories)
+            .HasForeignKey(d => d.UserId);
+
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(u => u.Email)
+                .IsUnique();
+            entity.HasIndex(u => u.Password)
+                .IsUnique();
+        });
+    }
 }
