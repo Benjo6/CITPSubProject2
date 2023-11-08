@@ -22,7 +22,8 @@ namespace DataLayer.Repositories
 
         public async Task AddBookmarkPersonality(string userId, string personId)
         {
-            await _context.Database.ExecuteSqlInterpolatedAsync($"SELECT add_bookmark_personality({userId}, {personId})");
+            await _context.Database.ExecuteSqlInterpolatedAsync(
+                $"SELECT add_bookmark_personality({userId}, {personId})");
         }
 
         public async Task<List<string>> GetBookmarksPersonality(string userId)
@@ -48,5 +49,5 @@ namespace DataLayer.Repositories
                 }
             }
         }
-
+    }
 }

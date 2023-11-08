@@ -20,6 +20,10 @@ public partial class ObjectMapper
     public partial List<GetAllPersonDTO> PersonToGetAllPersonsDTO(List<Person> person);
     public partial GetOneMovieDTO MovieToGetOneMovieDTO(Movie movie);
     public partial GetOnePersonDTO PersonToGetOnePersonDTO(Person person);
+    public partial Person AlterPersonDTOToPerson(AlterPersonDTO person);
+
+    public partial UpdatePersonDTO PersonToUpdatePersonDTO(Person person);
+
     public partial RatingHistoryDTO RatingHistoryToRatingHistoryDTO(RatingHistory ratingHistory);
     public partial RoleDTO RoleToRoleDTO(Role role);
     public partial SearchHistoryDTO SearchHistoryToSearchHistoryDTO(SearchHistory searchHistory);
