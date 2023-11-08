@@ -13,10 +13,8 @@ public partial class ObjectMapper
     public partial BookmarkPersonalityDTO BookmarkPersonalityToBookmarkPersonalityDTO(
         BookmarkPersonality bookmarkPersonality);
     public partial EpisodeDTO EpisodeToEpisodeDTO(Episode episode);
-    
-    public partial AlterResponseMovieDTO MovieToAlterResponseMovieDTO(Movie movie);
-    public partial Movie AlterMovieDTOToMovie(AlterMovieDTO movie);
 
+    public partial AlterResponseMovieDTO MovieToAlterResponseMovieDTO(Movie movie);
     public partial Movie AlterMovieDTOToMovie(AlterMovieDTO movie);
     public partial List<GetAllMovieDTO> MovieToGetAllMoviesDTO(List<Movie> movie);
     public partial GetOneMovieDTO MovieToGetOneMovieDTO(Movie movie);
