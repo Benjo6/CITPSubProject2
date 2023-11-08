@@ -11,6 +11,7 @@ public static class ServicesExtension
     public static IServiceCollection AddServices(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
+        serviceCollection.AddScoped<IMoviesService, MoviesService>();
         serviceCollection.AddScoped<IWeatherForecastService, WeatherForecastService>();
         return serviceCollection;
     }
@@ -18,6 +19,7 @@ public static class ServicesExtension
     public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+        serviceCollection.AddScoped<IMoviesRepository, MoviesRepository>();
         
         return serviceCollection;
     }

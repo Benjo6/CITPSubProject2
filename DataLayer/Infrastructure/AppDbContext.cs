@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using Common.DataTransferObjects;
+using Common.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Infrastructure;
@@ -31,8 +32,6 @@ public class AppDbContext : DbContext
 
     public virtual DbSet<SearchHistory> SearchHistories { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
-
-    public virtual DbSet<Wi> Wis { get; set; } = null!;
 
     public virtual DbSet<WiWeighted> WiWeighteds { get; set; } = null!;
     

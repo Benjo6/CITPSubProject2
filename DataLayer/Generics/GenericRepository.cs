@@ -19,9 +19,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return entity;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(T entity)
     {
-        var entity = await GetById(id) ?? throw new KeyNotFoundException($"No entity found with id {id}"); ;
         _ = _context.Set<T>().Remove(entity);
         _ = await _context.SaveChangesAsync();
         return true;
@@ -33,7 +32,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().ToListAsync();
     }
 
-    public async Task<T> GetById(int id)
+    public async Task<T> GetById(string id)
     {
         return await _context.Set<T>().FindAsync(id) ?? throw new KeyNotFoundException($"No entity found with id {id}"); ;
     }

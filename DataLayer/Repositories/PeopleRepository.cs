@@ -17,12 +17,12 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
         throw new NotImplementedException();
     }
 
-    public async Task<List<ActorBy>> FindActorsByMovie(int movieId)
+    public async Task<List<ActorBy>> FindActorsByMovie(string movieId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<PopularActor>> GetPopularActorsInMovie(int movieId)
+    public async Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
     {
         throw new NotImplementedException();
     }

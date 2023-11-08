@@ -1,7 +1,7 @@
-﻿using Common.Domain;
-using DataLayer.Infrastructure;
+﻿using Common.DataTransferObjects;
+using Common.Domain;
+using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebService.Controllers
 {
@@ -9,129 +9,158 @@ namespace WebService.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IMoviesService _moviesService;
 
-        public MoviesController(AppDbContext context)
+        public MoviesController(IMoviesService moviesService)
         {
-            _context = context;
+            _moviesService = moviesService;
         }
 
-        // GET: api/Movies
+        // GET: Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<GetAllMovieDTO>>> GetMovies()
         {
-            if (_context.Movies == null)
+            try
             {
-                return NotFound();
+                var movies = await _moviesService.GetAllMovies();
+                return Ok(movies);
             }
-
-            return await _context.Movies.ToListAsync();
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // GET: api/Movies/5
+        // GET: Movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(string id)
+        public async Task<ActionResult<GetOneMovieDTO>> GetMovie(string id)
         {
-            if (_context.Movies == null)
+            try
             {
-                return NotFound();
+                var movie = await _moviesService.GetOneMovie(id);
+                return Ok(movie);
+
             }
-
-            var movie = await _context.Movies.FindAsync(id);
-
-            if (movie == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
+        }
 
-            return movie;
+
+        // GET: Movies/BestMatchQuery?keywords=Action&keywords=Comedy
+        [HttpGet("BestMatchQuery")]
+        public async Task<ActionResult<IEnumerable<BestMatch>>> BestMatchQuery([FromQuery] string[] keywords)
+        {
+            try
+            {
+                var bestMatchQuery = await _moviesService.BestMatchQuery(keywords);
+                return Ok(bestMatchQuery);
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: Movies/ExactMatch?keywords=Action&keywords=Comedy
+        [HttpGet("ExactMatch")]
+        public async Task<ActionResult<IEnumerable<string>>> ExactMatchQuery([FromQuery] string[] keywords)
+        {
+            try
+            {
+                var exactMatchQuery = await _moviesService.ExactMatchQuery(keywords);
+                return Ok(exactMatchQuery);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: Movies/FindSimilarMovies/13
+        [HttpGet("FindSimilarMovies")]
+        public async Task<ActionResult<IEnumerable<SimilarMovie>>> FindSimilarMovies([FromQuery] string movieId)
+        {
+            try
+            {
+                var similarMovies = await _moviesService.FindSimilarMovies(movieId);
+                return Ok(similarMovies);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: Movies/WordToWord?keywords=Action&keywords=Comedy
+        [HttpGet("WordToWords")]
+        public async Task<ActionResult<IEnumerable<WordFrequency>>> WordToWordsQuery([FromQuery] string[] keywords)
+        {
+            try
+            {
+                var wordToWord = await _moviesService.WordToWordsQuery(keywords);
+                return Ok(wordToWord);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(string id, Movie movie)
+        public async Task<ActionResult<AddAndUpdateMovieDTO>> PutMovie([FromBody] Movie movie)
         {
-            if (id != movie.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(movie).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var putMovie = await _moviesService.UpdateMovie(movie);
+                return Ok(putMovie);
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
         }
 
         // POST: api/Movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<AddAndUpdateMovieDTO>> PostMovie([FromBody] CreateMovieDTO movie)
         {
-            if (_context.Movies == null)
-            {
-                return Problem("Entity set 'Cit02Context.Movies'  is null.");
-            }
-
-            _context.Movies.Add(movie);
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (MovieExists(movie.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var postMovie = await _moviesService.AddMovie(movie);
+                return Ok(postMovie);
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(string id)
         {
-            if (_context.Movies == null)
+            try
             {
-                return NotFound();
-            }
+                var result = await _moviesService.DeleteMovie(id);
+                return Ok(result);
 
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-
-            _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool MovieExists(string id)
-        {
-            return (_context.Movies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
