@@ -6,7 +6,7 @@ namespace Common.Domain;
 [Table("person")]
 public class Person
 {
-    [Key, StringLength(10), Column("id", TypeName = "char(10)"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
 
     [Required, StringLength(255), Column("name")]

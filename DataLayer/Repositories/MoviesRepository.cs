@@ -5,122 +5,62 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using NpgsqlTypes;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
-
-namespace DataLayer.Repositories;
-
-public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
+namespace DataLayer.Repositories
 {
-    private readonly AppDbContext _context;
-
-    public MoviesRepository(AppDbContext context) : base(context)
+    public class RatingHistoriesRepository : IRatingHistoriesRepository
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    public async Task<List<string>> ExactMatchQuery(string[] keywords)
-    {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        public RatingHistoriesRepository(AppDbContext context)
         {
-            command.CommandText = "select * from exact_match_query(VARIADIC @keywords::varchar[])";
-            command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
-            _context.Database.OpenConnection();
+            _context = context;
+        }
 
-            using (var result = await command.ExecuteReaderAsync())
+        public async Task RateMovie(string userId, string movieId, int rating)
+        {
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
-                var exactMatches = new List<string>();
+                command.CommandText = "SELECT rate(@userId, @movieId, @rating)";
+                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
+                command.Parameters.Add(new NpgsqlParameter("movieId", NpgsqlDbType.Varchar) { Value = movieId });
+                command.Parameters.Add(new NpgsqlParameter("rating", NpgsqlDbType.Integer) { Value = rating });
 
-                while (await result.ReadAsync())
-                {
-                    var tconst = result.GetString(result.GetOrdinal("tconst"));
-                    exactMatches.Add(tconst);
-                }
-
-                return exactMatches;
+                _context.Database.OpenConnection();
+                await command.ExecuteNonQueryAsync();
             }
         }
-    }
 
-    public async Task<List<BestMatch>> BestMatchQuery(string[] keywords)
-    {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        public async Task<List<SimpleRatingHistory>> GetRatingHistory(string userId)
         {
-            command.CommandText = "select * from best_match_query(VARIADIC @keywords::varchar[])";
-            command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
-            _context.Database.OpenConnection();
-
-            using (var result = await command.ExecuteReaderAsync())
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
-                var bestMatches = new List<BestMatch>();
+                command.CommandText = "SELECT * FROM get_rating_history(@userId)";
+                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
 
-                while (await result.ReadAsync())
+                _context.Database.OpenConnection();
+
+                using (var result = await command.ExecuteReaderAsync())
                 {
-                    var bestMatch = new BestMatch
+                    var ratingHistory = new List<SimpleRatingHistory>();
+
+                    while (await result.ReadAsync())
                     {
-                        Rank = result.GetInt32(result.GetOrdinal("Rank")),
-                        Tconst = result.GetString(result.GetOrdinal("Tconst"))
-                    };
+                        var history = new SimpleRatingHistory
+                        {
+                            MovieId = result.GetString(result.GetOrdinal("movie_id")),
+                            RatingValue = result.GetInt32(result.GetOrdinal("rating_value"))
+                        };
+                        ratingHistory.Add(history);
+                    }
 
-                    bestMatches.Add(bestMatch);
+                    return ratingHistory;
                 }
-
-                return bestMatches;
-            }
-        }
-    }
-
-    public async Task<List<WordFrequency>> WordToWordsQuery(string[] keywords)
-    {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
-        {
-            command.CommandText = "select * from word_to_words_query(VARIADIC @keywords::varchar[])";
-            command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
-            _context.Database.OpenConnection();
-
-            using (var result = await command.ExecuteReaderAsync())
-            {
-                var wordFrequencies = new List<WordFrequency>();
-
-                while (await result.ReadAsync())
-                {
-                    var wordFrequency = new WordFrequency
-                    {
-                        Word = result.GetString(result.GetOrdinal("Word")),
-                        Frequency = result.GetInt32(result.GetOrdinal("Frequency"))
-                    };
-
-                    wordFrequencies.Add(wordFrequency);
-                }
-
-                return wordFrequencies;
-            }
-        }
-    }
-
-    public async Task<List<SimilarMovie>> FindSimilarMovies(string movieId)
-    {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
-        {
-            command.CommandText = "select * from find_similar_movies(@movieId)";
-            command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
-            _context.Database.OpenConnection();
-
-            using (var result = await command.ExecuteReaderAsync())
-            {
-                var similarMovies = new List<SimilarMovie>();
-
-                while (await result.ReadAsync())
-                {
-                    var similarMovie = new SimilarMovie
-                    {
-                        Id = result.GetString(result.GetOrdinal("similar_movie_id")),
-                        Title = result.GetString(result.GetOrdinal("similar_movie_title"))
-                    };
-
-                    similarMovies.Add(similarMovie);
-                }
-
-                return similarMovies;
             }
         }
     }

@@ -4,9 +4,9 @@ using DataLayer.Generics;
 
 namespace DataLayer.Repositories.Contracts;
 
-public interface IRatingHistoriesRepository : IGenericRepository<RatingHistory>
+public interface IRatingHistoriesRepository 
 {
-    public Task RateMovie(int userId, int movieId, int rating);
-    public Task<List<SimpleRatingHistory>> GetRatingHistory(int userId);
+    public Task RateMovie(string userId, string movieId, int rating);
+    public Task<List<SimpleRatingHistory>> GetRatingHistory(string userId);
 
 }

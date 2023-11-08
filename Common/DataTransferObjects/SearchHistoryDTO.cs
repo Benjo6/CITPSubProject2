@@ -14,4 +14,4 @@ public class SearchHistoryDTO
 
 
 
-public record SearchResult(string Id, string Title);
+public record SearchResult(string Id, string Title, DateTimeOffset timestamp);

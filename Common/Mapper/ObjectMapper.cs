@@ -17,7 +17,9 @@ public partial class ObjectMapper
     public partial AlterResponseMovieDTO MovieToAlterResponseMovieDTO(Movie movie);
     public partial Movie AlterMovieDTOToMovie(AlterMovieDTO movie);
     public partial List<GetAllMovieDTO> MovieToGetAllMoviesDTO(List<Movie> movie);
+    public partial List<GetAllPersonDTO> PersonToGetAllPersonsDTO(List<Person> person);
     public partial GetOneMovieDTO MovieToGetOneMovieDTO(Movie movie);
+    public partial GetOnePersonDTO PersonToGetOnePersonDTO(Person person);
     public partial RatingHistoryDTO RatingHistoryToRatingHistoryDTO(RatingHistory ratingHistory);
     public partial RoleDTO RoleToRoleDTO(Role role);
     public partial SearchHistoryDTO SearchHistoryToSearchHistoryDTO(SearchHistory searchHistory);

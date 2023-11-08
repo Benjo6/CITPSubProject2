@@ -66,6 +66,77 @@ public class PeopleController : ControllerBase
         }
     }
 
+    [HttpGet("ActorsByName")]
+    public async Task<ActionResult<IEnumerable<ActorBy>>> FindActorsByName([FromQuery] string name)
+    {
+        try
+        {
+            var actors = await _service.FindActorsByName(name);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("ActorsByMovie")]
+    public async Task<ActionResult<IEnumerable<ActorBy>>> FindActorsByMovie([FromQuery] string movieId)
+    {
+        try
+        {
+            var actors = await _service.FindActorsByMovie(movieId);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("PopularActor")]
+    public async Task<ActionResult<IEnumerable<PopularActor>>> GetPopGetPopularActorsInMovie([FromQuery] string movieId)
+    {
+        try
+        {
+            var actors = await _service.GetPopularActorsInMovie(movieId);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("CoPopularActor")]
+    public async Task<ActionResult<IEnumerable<PopularCoPlayer>>> GetPopularCoPlayers([FromQuery] string actorName)
+    {
+        try
+        {
+            var actors = await _service.GetPopularCoPlayers(actorName);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("ActorWords")]
+    public async Task<ActionResult<IEnumerable<PersonWord>>> PersonWords([FromQuery] string word, int frequency)
+    {
+        try
+        {
+            var actors = await _service.PersonWords(word, frequency);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
     // POST: People
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
