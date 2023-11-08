@@ -38,7 +38,8 @@ public class AppDbContext : DbContext
         {
             entity.HasOne(a => a.Movie)
                 .WithMany(m => m.Aliases)
-                .HasForeignKey(a => a.MovieId);
+                .HasForeignKey(a => a.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<BookmarkMovie>(entity =>
@@ -73,7 +74,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Episode>()
             .HasOne(e => e.Series)
             .WithMany(m => m.Episodes)
-            .HasForeignKey(e => e.SeriesId);
+            .HasForeignKey(e => e.SeriesId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
 
 
         modelBuilder.Entity<RatingHistory>(entity =>
@@ -83,6 +86,7 @@ public class AppDbContext : DbContext
                 .WithMany(u => u.RatingHistories)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+            
             entity.HasOne(r => r.Movie)
                 .WithMany(m => m.RatingHistories)
                 .HasForeignKey(r => r.MovieId)
@@ -95,17 +99,20 @@ public class AppDbContext : DbContext
             
             entity.HasOne(r => r.Movie)
                 .WithMany(m => m.Roles)
-                .HasForeignKey(r => r.MovieId);
+                .HasForeignKey(r => r.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             entity.HasOne(r => r.Person)
                 .WithMany(p => p.Roles)
-                .HasForeignKey(r => r.PersonId);
+                .HasForeignKey(r => r.PersonId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<SearchHistory>()
             .HasOne(d => d.User)
             .WithMany(p => p.SearchHistories)
-            .HasForeignKey(d => d.UserId);
+            .HasForeignKey(d => d.UserId)        
+            .OnDelete(DeleteBehavior.Cascade);
 
 
         modelBuilder.Entity<User>(entity =>

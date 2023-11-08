@@ -1,4 +1,5 @@
-﻿using DataLayer;
+﻿using Common.Domain;
+using DataLayer;
 using DataLayer.Infrastructure;
 using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Hosting;
@@ -57,20 +58,54 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
 
             await cntx.Database.EnsureCreatedAsync(); // Ensuring that the database for this context is created
 
-            // Add 5 WeatherForecasts, Replace with all the fixed data we want for the testing
-            for (int i = 0; i < 5; i++)
+            // Add predefined movies
+
+            #region Movie
+            var movie1 = new Movie
             {
-                var weatherForecast = new WeatherForecast
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(i)), // Adjusting the date as needed
-                    TemperatureC = 20 + i, // Adjusting the temperature as needed
-                    Summary = $"Summary {i}" // Adjusting the summary as needed
-                };
+                Id = "1",
+                Type = "Feature Film",
+                Title = "The Shawshank Redemption",
+                OriginalTitle = "The Shawshank Redemption",
+                IsAdult = false,
+                StartYear = "1994",
+                Runtime = 142,
+                Genres = "Drama",
+                Rating = 9.3m,
+                Votes = 2400000
+            };
 
-                cntx.WeatherForecasts.Add(weatherForecast); // Adding a new WeatherForecast instance to AppDbContext's WeatherForecasts DbSet 
-            }
+            var movie2 = new Movie
+            {
+                Id = "2",
+                Type = "Feature Film",
+                Title = "The Godfather",
+                OriginalTitle = "The Godfather",
+                IsAdult = false,
+                StartYear = "1972",
+                Runtime = 175,
+                Genres = "Crime, Drama",
+                Rating = 9.2m,
+                Votes = 1700000
+            };
 
-            await cntx.SaveChangesAsync(); // Saving all changes made in this context to the database.
+            var movie3 = new Movie
+            {
+                Id = "3",
+                Type = "Feature Film",
+                Title = "The Dark Knight",
+                OriginalTitle = "The Dark Knight",
+                IsAdult = false,
+                StartYear = "2008",
+                Runtime = 152,
+                Genres = "Action, Crime, Drama",
+                Rating = 9.0m,
+                Votes = 2400000
+            };
+            #endregion
+
+            cntx.Movies.AddRange(movie1, movie2, movie3);
+            await cntx.SaveChangesAsync();
         }
     }
     public async Task DisposeAsync() => await _dbContainer.StopAsync(); // Stopping the PostgreSQL container instance.
