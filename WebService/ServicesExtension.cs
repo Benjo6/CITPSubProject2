@@ -19,6 +19,7 @@ public static class ServicesExtension
         serviceCollection.AddScoped<IPeopleService, PeopleService>();
         serviceCollection.AddScoped<ISearchService, SearchService>();
         serviceCollection.AddScoped<IUserService, UserService>();
+        serviceCollection.AddScoped<IBookmarkService, BookmarkService>();
         serviceCollection.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
         

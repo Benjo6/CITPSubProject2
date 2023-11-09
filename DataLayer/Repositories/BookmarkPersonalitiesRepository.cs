@@ -49,5 +49,18 @@ namespace DataLayer.Repositories
                 }
             }
         }
+
+        public async Task<bool> DeleteBookmarkPersonality(string userId, string personId)
+        {
+            var bookmarkToRemove = _context.BookmarkPersonalities.FirstOrDefault(x => x.PersonId == personId && x.UserId == userId);
+
+            if (bookmarkToRemove != null)
+            {
+                _context.BookmarkPersonalities.Remove(bookmarkToRemove);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

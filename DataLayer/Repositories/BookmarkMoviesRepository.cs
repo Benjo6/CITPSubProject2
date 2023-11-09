@@ -26,7 +26,7 @@ namespace DataLayer.Repositories
             using (var command = context.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @person_id)");
+                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @alias_id)");
                 command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
                 command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
                 await command.ExecuteNonQueryAsync();
@@ -68,6 +68,19 @@ namespace DataLayer.Repositories
                 await command.ExecuteNonQueryAsync();
                 
             }
+        }
+
+        public async Task<bool> DeleteBookmarkMovie(string userId, string aliasId)
+        {
+            var bookmarkToRemove = context.BookmarkMovies.FirstOrDefault(x => x.AliasId == aliasId && x.UserId == userId);
+
+            if (bookmarkToRemove != null)
+            {
+                context.BookmarkMovies.Remove(bookmarkToRemove);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }
