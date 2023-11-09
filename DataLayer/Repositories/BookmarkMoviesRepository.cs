@@ -26,7 +26,7 @@ namespace DataLayer.Repositories
             using (var command = context.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @person_id)");
+                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @alias_id)");
                 command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
                 command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
                 await command.ExecuteNonQueryAsync();
@@ -34,7 +34,7 @@ namespace DataLayer.Repositories
             }
         }
 
-        public async Task<List<string>> GetBookmarkMovies(string userId)
+        public async Task<List<string>> GetBookmarksMovies(string userId)
         {
             var bookmarkedMovies = new List<string>();
 
