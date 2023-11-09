@@ -59,14 +59,28 @@ namespace WebService.Controllers
 
 
         [HttpDelete("Personality")]
-        public ActionResult DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
+        public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
         {
-            throw new NotImplementedException();
+            if (await _bookmarkService.RemoveBookmarkPersonality(userId, personId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         [HttpDelete("Movie")]
-        public ActionResult DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
+        public async Task<ActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
         {
-            throw new NotImplementedException();
+            if (await _bookmarkService.RemoveBookmarkMovie(userId, aliasId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
