@@ -8,7 +8,6 @@ namespace DataLayer.Services;
 public class MoviesService : IMoviesService
 {
     private readonly IMoviesRepository _repository;
-    private readonly IBookmarkMoviesRepository _bookmarkMoviesRepository;
     private readonly ObjectMapper _mapper;
 
     public MoviesService(IMoviesRepository repository)
@@ -23,18 +22,6 @@ public class MoviesService : IMoviesService
         return _mapper.MovieToAlterResponseMovieDTO(addedMovie);
     }
 
-    public async Task<BookmarkMovieDTO> AddMovieToBookmark(BookmarkMovieDTO bookmarkMovie)
-    {
-        try
-        {
-            await _bookmarkMoviesRepository.AddBookmarkMovies(bookmarkMovie.UserId, bookmarkMovie.AliasName);
-            var bookmarks = await _bookmarkMoviesRepository.GetBookmarkMovies(bookmarkMovie.UserId);
-            return new BookmarkMovieDTO { AliasName = bookmarkMovie.AliasName, BookmarkDate = bookmarkMovie.BookmarkDate, UserId = bookmarkMovie.UserId };
-        }
-        catch { 
-            return new BookmarkMovieDTO();
-        }
-    }
 
     public Task<List<BestMatch>> BestMatchQuery(string[] keywords)
     {
