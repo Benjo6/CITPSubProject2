@@ -17,9 +17,9 @@ public class AliasesService : IAliasesService
         _mapper = new ObjectMapper();
     }
     
-    public async Task<List<AliasDTO>> GetAllAliases()
+    public async Task<List<AliasDTO>> GetAllAliases(int? page = 1, int? perPage = 10)
     {
-        var aliases = await _repository.GetAll();
+        var aliases = await _repository.GetAll(page, perPage);
         var aliasesDTO = new List<AliasDTO>();
         aliases.ForEach(alias =>
         {

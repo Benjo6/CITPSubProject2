@@ -17,9 +17,9 @@ public class EpisodesService : IEpisodesService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<EpisodeDTO>> GetAllEpisodes()
+    public async Task<List<EpisodeDTO>> GetAllEpisodes(int? page = 1, int? perPage = 10)
     {
-        var getAll = await _repository.GetAll();
+        var getAll = await _repository.GetAll(page, perPage);
         return _mapper.ListEpisodeToListEpisodeDTO(getAll) ?? new List<EpisodeDTO>();
     }
 

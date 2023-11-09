@@ -5,6 +5,7 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Reflection.PortableExecutable;
 
 
 namespace DataLayer.Repositories;
@@ -18,7 +19,7 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
         _context = context;
     }
 
-    public async Task<List<string>> ExactMatchQuery(string[] keywords)
+    public async Task<List<string>> ExactMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
         using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
@@ -30,8 +31,15 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
             {
                 var exactMatches = new List<string>();
 
-                while (await result.ReadAsync())
+                int count = 0;
+                while (await result.ReadAsync() && count <= page * perPage)
                 {
+                    if (count < (page - 1) * perPage)
+                    {
+                        count++;
+                        continue;
+                    }
+                    count++;
                     var tconst = result.GetString(result.GetOrdinal("tconst"));
                     exactMatches.Add(tconst);
                 }
@@ -41,7 +49,7 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
         }
     }
 
-    public async Task<List<BestMatch>> BestMatchQuery(string[] keywords)
+    public async Task<List<BestMatch>> BestMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
         using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
@@ -52,9 +60,15 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
             using (var result = await command.ExecuteReaderAsync())
             {
                 var bestMatches = new List<BestMatch>();
-
-                while (await result.ReadAsync())
+                int count = 0;
+                while (await result.ReadAsync() && count <= page * perPage)
                 {
+                    if (count < (page - 1) * perPage)
+                    {
+                        count++;
+                        continue;
+                    }
+                    count++;
                     var bestMatch = new BestMatch
                     {
                         Rank = result.GetInt32(result.GetOrdinal("Rank")),
@@ -97,7 +111,7 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
         }
     }
 
-    public async Task<List<SimilarMovie>> FindSimilarMovies(string movieId)
+    public async Task<List<SimilarMovie>> FindSimilarMovies(string movieId, int? page = 1, int? perPage = 10)
     {
         using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
@@ -109,8 +123,15 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
             {
                 var similarMovies = new List<SimilarMovie>();
 
-                while (await result.ReadAsync())
+                int count = 0;
+                while (await result.ReadAsync() && count <= page * perPage)
                 {
+                    if (count < (page - 1) * perPage)
+                    {
+                        count++;
+                        continue;
+                    }
+                    count++;
                     var similarMovie = new SimilarMovie
                     {
                         Id = result.GetString(result.GetOrdinal("similar_movie_id")),

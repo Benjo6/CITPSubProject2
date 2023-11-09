@@ -8,6 +8,7 @@ using DataLayer.Repositories.Contracts;
 using Npgsql;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 using Common.DataTransferObjects;
+using System.Reflection.PortableExecutable;
 
 namespace DataLayer.Repositories
 {
@@ -26,7 +27,7 @@ namespace DataLayer.Repositories
                 $"SELECT add_bookmark_personality({userId}, {personId})");
         }
 
-        public async Task<List<string>> GetBookmarksPersonality(string userId)
+        public async Task<List<string>> GetBookmarksPersonality(string userId, int? page = 1, int? perPage = 10)
         {
             using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
@@ -38,8 +39,15 @@ namespace DataLayer.Repositories
                 {
                     var similarMovies = new List<string>();
 
-                    while (await result.ReadAsync())
+                    int count = 0;
+                    while (await result.ReadAsync() && count <= page * perPage)
                     {
+                        if (count < (page - 1) * perPage)
+                        {
+                            count++;
+                            continue;
+                        }
+                        count++;
                         var similarMovie = result.GetString(result.GetOrdinal("person_id"));
 
                         similarMovies.Add(similarMovie);

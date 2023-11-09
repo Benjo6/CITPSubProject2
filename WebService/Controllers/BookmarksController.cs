@@ -73,7 +73,7 @@ namespace WebService.Controllers
         [HttpDelete("Movie")]
         public async Task<ActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
         {
-            if (await _bookmarkService.RemoveBookmarkMovie(userId, aliasId))
+            if (await _bookmarkService.RemoveBookmarkMovies(userId, aliasId))
             {
                 return Ok();
             }
