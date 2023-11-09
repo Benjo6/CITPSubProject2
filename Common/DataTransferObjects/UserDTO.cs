@@ -10,7 +10,7 @@ public class UserDTO
     public string Username { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
-    public DateOnly RegistrationDate { get; set; }
+    public DateTime RegistrationDate { get; set; }
     public bool? IsAdmin { get; set; }
 
 }
@@ -20,7 +20,7 @@ public class AlterUserDTO
     public int Id { get; set; }
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
-    public DateOnly RegistrationDate { get; set; }
+    public DateTime RegistrationDate { get; set; }
 }
 
 /// <summary>

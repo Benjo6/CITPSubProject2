@@ -1,4 +1,5 @@
 using Common.DataTransferObjects;
+using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 
@@ -17,13 +18,18 @@ public class SearchService : ISearchService
 
     public async Task<List<SearchHistoryDTO>> GetAllSearchHistory()
     {
-        var getAll = await _repository.GetAll();
-        return _mapper.SearchHistoryDTO(getAll) ?? new List<SearchHistoryDTO>();
+       var getAll = await _searchHistoriesRepository.GetAll();
+       var all = new List<SearchHistoryDTO>();
+       foreach(var x in getAll)
+       {
+           all.Add(_mapper.SearchHistoryToSearchHistoryDTO(x));
+       }
+       return all;
     }
 
     public async Task<SearchHistoryDTO> GetOneSearchHistory(string id)
     {
-        var getOne = await _repository.GetById(id);
-        return _mapper.SearchHistoryDTO(getOne);
+        var getOne = await _searchHistoriesRepository.GetById(id);
+        return _mapper.SearchHistoryToSearchHistoryDTO(getOne);
     }
 }

@@ -1,5 +1,6 @@
 using Common.DataTransferObjects;
 using Common.Domain;
+using Common.Mapper;
 using DataLayer.Generics;
 using DataLayer.Services.Contracts;
 
@@ -19,23 +20,26 @@ public class UserService : IUserService
     public async Task<List<UserDTO>> GetAllUser()
     {
         var getAll = await _repository.GetAll();
-        return _mapper.UserDTO(getAll) ?? new List<UserDTO>();
+        var users = new List<UserDTO>();
+        foreach (var item in getAll)
+        {
+            users.Add(_mapper.UserToUserDTO(item));
+        }
+        return users;
     }
 
     public async Task<UserDTO> GetOneUser(string id)
     {
         var getOne = await _repository.GetById(id);
-        return _mapper.UserDTO(getOne);
+        return _mapper.UserToUserDTO(getOne);
     }
 
     public async Task<bool> UpdateUser(string id, AlterUserDTO user)
     {
-        _ = await _repository.GetById(id);
-        var old  = _mapper.AlterUserDTO(user);
-        old.Id = id;
+        var ep = _mapper.AlterUserDTOToUser(user);
         await _repository.Update(ep);
-        var updated = await _repository.GetById(old.Id);
-        return _mapper.AlterUserDTO(updated);
+        var updated = await _repository.GetById(ep.Id);
+        return true;
     }
 
     public async Task<bool> DeleteUser(string id)

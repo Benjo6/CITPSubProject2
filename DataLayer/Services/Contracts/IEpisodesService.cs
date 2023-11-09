@@ -8,5 +8,5 @@ public interface IEpisodesService
     Task<EpisodeDTO> GetOneEpisode(string id);
     Task<EpisodeDTO> UpdateEpisode(string id, AlterEpisodeDTO episode);
     Task<EpisodeDTO> AddEpisode(AlterEpisodeDTO episode);
-    Task<EpisodeDTO> DeleteEpisode(string id);
+    Task<bool> DeleteEpisode(string id);
 }
