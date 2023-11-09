@@ -77,7 +77,7 @@ namespace WebService.Controllers
         {
             try
             {
-                var result = await _bookmarkService.RemoveBookmarkMovie(userId,aliasId);
+                var result = await _bookmarkService.RemoveBookmarkMovies(userId,aliasId);
                 return Ok(result);
             }
             catch(Exception ex)

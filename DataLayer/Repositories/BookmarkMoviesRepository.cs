@@ -32,21 +32,29 @@ namespace DataLayer.Repositories
             }
         }
 
-        public async Task<List<string>> GetBookmarksMovies(string userId)
+
+        public async Task<List<string>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
         {
             var bookmarkedMovies = new List<string>();
 
             using (var command = context.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from get_bookmarks_movie(@user_id");
+                command.CommandText = string.Format("Select * from get_bookmarks_movie(@user_id)");
                     command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        int count  = 0;
+                        while (reader.Read() && count <= page*perPage)
                         {
+                            if(count < (page-1) * perPage)
+                            {
+                                count++;
+                                continue;
+                            }
                             bookmarkedMovies.Add(reader.GetString(0));
+                            count++;
                         }
                     }
             }

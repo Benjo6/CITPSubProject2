@@ -17,9 +17,9 @@ public class PeopleService : IPeopleService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<GetAllPersonDTO>> GetAllPerson()
+    public async Task<List<GetAllPersonDTO>> GetAllPerson(int? page = 1, int? perPage = 10)
     {
-        var getAll = await _peopleRepository.GetAll();
+        var getAll = await _peopleRepository.GetAll(page, perPage);
         return _mapper.PersonToGetAllPersonsDTO(getAll) ?? new List<GetAllPersonDTO>();
     }
 

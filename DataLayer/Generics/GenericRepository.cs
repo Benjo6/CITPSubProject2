@@ -1,5 +1,7 @@
 ﻿using DataLayer.Infrastructure;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DataLayer.Generics;
 
@@ -28,9 +30,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return true;
     }
 
-    public async Task<List<T>> GetAll()
+    public async Task<List<T>> GetAll(int? page = 1, int? perPage = 10)
     {
-        return await _dbSet.AsNoTracking().ToListAsync();
+        return await _dbSet.AsNoTracking().Skip((page-1)*perPage ?? 0).Take(perPage ?? 10).ToListAsync();
     }
 
     public async Task<T> GetById(string id)

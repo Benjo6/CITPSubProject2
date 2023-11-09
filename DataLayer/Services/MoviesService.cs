@@ -23,9 +23,9 @@ public class MoviesService : IMoviesService
     }
 
 
-    public Task<List<BestMatch>> BestMatchQuery(string[] keywords)
+    public Task<List<BestMatch>> BestMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
-        return _repository.BestMatchQuery(keywords);
+        return _repository.BestMatchQuery(keywords, page, perPage);
     }
 
     public async Task<bool> DeleteMovie(string id)
@@ -35,19 +35,19 @@ public class MoviesService : IMoviesService
         return await _repository.Delete(entity);
     }
 
-    public Task<List<string>> ExactMatchQuery(string[] keywords)
+    public Task<List<string>> ExactMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
-        return _repository.ExactMatchQuery(keywords);
+        return _repository.ExactMatchQuery(keywords, page, perPage);
     }
 
-    public Task<List<SimilarMovie>> FindSimilarMovies(string movieId)
+    public Task<List<SimilarMovie>> FindSimilarMovies(string movieId, int? page = 1, int? perPage = 10)
     {
-        return _repository.FindSimilarMovies(movieId) ?? throw new NullReferenceException("No similar movies");
+        return _repository.FindSimilarMovies(movieId, page, perPage) ?? throw new NullReferenceException("No similar movies");
     }
 
-    public async Task<List<GetAllMovieDTO>> GetAllMovies()
+    public async Task<List<GetAllMovieDTO>> GetAllMovies(int? page = 1, int? perPage = 10)
     {
-        var getAll = await _repository.GetAll();
+        var getAll = await _repository.GetAll(page, perPage);
         return _mapper.MovieToGetAllMoviesDTO(getAll) ?? new List<GetAllMovieDTO>();
     }
 

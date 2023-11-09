@@ -55,9 +55,9 @@ namespace DataLayer.Services
         }
 
 
-        public async Task<List<string>> GetBookmarkMovies(string userId)
+        public async Task<List<string>> GetBookmarkMovies(string userId, int? page = 1, int? perPage = 10)
         {
-            return await _moviesRepository.GetBookmarksMovies(userId);
+            return await _moviesRepository.GetBookmarksMovies(userId, page, perPage);
         }
         public async Task<bool> RemoveBookmarkMovie(string userId, string aliasId)
         {
@@ -84,9 +84,9 @@ namespace DataLayer.Services
             }
         }
 
-        public async Task<List<string>> GetBookmarkPersons(string userId)
+        public async Task<List<string>> GetBookmarkPersons(string userId, int? page = 1, int? perPage = 10)
         {
-            return await _personalityRepository.GetBookmarksPersonality(userId);
+            return await _personalityRepository.GetBookmarksPersonality(userId, page, perPage);
         }
     }
 }

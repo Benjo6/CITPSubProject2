@@ -17,11 +17,11 @@ public class AliasesController : ControllerBase
     
     // GET: Aliases
     [HttpGet]
-    public async Task<IActionResult> GetAliases()
+    public async Task<IActionResult> GetAliases([FromQuery] int page = 1, [FromQuery] int perPage = 10)
     {
         try
         {
-            var aliases = await _service.GetAllAliases();
+            var aliases = await _service.GetAllAliases(page, perPage);
             return Ok(aliases);
         }
         catch(Exception ex)
