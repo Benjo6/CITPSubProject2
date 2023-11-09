@@ -1,13 +1,8 @@
 using Npgsql;
 using NpgsqlTypes;
-using Common.Domain;
-using DataLayer.Generics;
 using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories
@@ -20,21 +15,24 @@ namespace DataLayer.Repositories
         {
             context = _context;
         }
-
+        
         public async Task AddBookmarkMovies(string userId, string aliasId)
         {
-            using (var command = context.Database.GetDbConnection().CreateCommand())
+            using (var connection = context.Database.GetDbConnection())
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @alias_id)");
-                command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
-                command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
-                await command.ExecuteNonQueryAsync();
-                
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @alias_id)");
+                    command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
+                    command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
+                    await command.ExecuteNonQueryAsync();
+                }
             }
         }
 
-        public async Task<List<string>> GetBookmarkMovies(string userId)
+        public async Task<List<string>> GetBookmarksMovies(string userId)
         {
             var bookmarkedMovies = new List<string>();
 

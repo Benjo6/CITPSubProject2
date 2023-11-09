@@ -1,12 +1,6 @@
-﻿using Common.Domain;
-using Common.Mapper;
+﻿using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataLayer.Services
 {
@@ -14,13 +8,11 @@ namespace DataLayer.Services
     {
         private readonly IBookmarkPersonalitiesRepository _personalityRepository;
         private readonly IBookmarkMoviesRepository _moviesRepository;
-        private readonly ObjectMapper _mapper;
 
         public BookmarkService(IBookmarkPersonalitiesRepository repositoryP , IBookmarkMoviesRepository repositoryM)
         {
             _personalityRepository = repositoryP;
             _moviesRepository = repositoryM;
-            _mapper = new ObjectMapper();
         }
 
         public async Task<bool> AddBookmarkMovies(string userId, string aliasId)
@@ -67,7 +59,7 @@ namespace DataLayer.Services
         {
             return await _moviesRepository.GetBookmarksMovies(userId);
         }
-        public async Task<bool> RemoveBookmarkMovies(string userId, string aliasId)
+        public async Task<bool> RemoveBookmarkMovie(string userId, string aliasId)
         {
             try
             {

@@ -6,13 +6,11 @@ namespace WebService.Tests.IntegrationTests;
 
 public class MoviesControllerTests : IClassFixture<WebAppFactoryFixture>
 {
-    private readonly WebAppFactoryFixture _fixture;
     private readonly HttpClient _client;
 
     public MoviesControllerTests(WebAppFactoryFixture fixture)
     {
-        _fixture = fixture;
-        _client = _fixture.CreateClient();
+        _client = fixture.CreateClient();
     }
     
     [Fact]

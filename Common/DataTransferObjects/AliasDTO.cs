@@ -5,7 +5,7 @@ namespace Common.DataTransferObjects;
 public class AliasDTO
 {
     public string Id { get; set; }
-    public virtual Movie? Movie { get; set; }
+    public string MovieId { get; set; }
     public int? Ordering { get; set; }
     public string? Title { get; set; }
     public string? Region { get; set; }

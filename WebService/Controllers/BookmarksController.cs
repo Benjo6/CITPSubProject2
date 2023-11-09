@@ -1,7 +1,5 @@
 ﻿using Common.DataTransferObjects;
-using Common.Domain;
 using DataLayer.Services.Contracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers
@@ -20,40 +18,43 @@ namespace WebService.Controllers
         [HttpPost("Movie")]
         public async Task<ActionResult> Create(BookmarkMovieDTO bookmarkMovie)
         {
-            if (await _bookmarkService.AddBookmarkMovies(bookmarkMovie.UserId, bookmarkMovie.AliasName))
+            try
             {
-                return Ok();
+                var result = await _bookmarkService.AddBookmarkMovies(bookmarkMovie.UserId,bookmarkMovie.AliasId);
+                return Ok(result);
             }
-            else
-            { 
-                return BadRequest(); 
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
         // POST: BookmarksController/Create
         [HttpPost("Personality")]
-        public async Task<ActionResult> Create(BookmarkPersonalityDTO bookmark)
+        public async Task<IActionResult> Create(BookmarkPersonalityDTO bookmark)
         {
-            if (await _bookmarkService.AddBookmarkPersonality(bookmark.UserId, bookmark.PersonId))
+            try
             {
-                return Ok();
+                var result = await _bookmarkService.AddBookmarkPersonality(bookmark.UserId,bookmark.PersonId);
+                return Ok(result);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPut("Movie")]
-        public async Task<ActionResult> AddNote([FromQuery] string userId, [FromQuery] string aliasId, [FromQuery] string note)
+        public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string aliasId, [FromQuery] string note)
         {
-            if (await _bookmarkService.AddNoteMovie(userId, aliasId, note))
+            try
             {
-                return Ok();
+                var result = await _bookmarkService.AddNoteMovie(userId,aliasId,note);
+                return Ok(result);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -61,25 +62,27 @@ namespace WebService.Controllers
         [HttpDelete("Personality")]
         public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
         {
-            if (await _bookmarkService.RemoveBookmarkPersonality(userId, personId))
+            try
             {
-                return Ok();
+                var result = await _bookmarkService.RemoveBookmarkPersonality(userId,personId);
+                return Ok(result);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
         [HttpDelete("Movie")]
-        public async Task<ActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
+        public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
         {
-            if (await _bookmarkService.RemoveBookmarkMovie(userId, aliasId))
+            try
             {
-                return Ok();
+                var result = await _bookmarkService.RemoveBookmarkMovie(userId,aliasId);
+                return Ok(result);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }
