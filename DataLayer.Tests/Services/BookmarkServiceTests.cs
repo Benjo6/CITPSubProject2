@@ -119,7 +119,7 @@ public class BookmarkServiceTests
         _moviesRepository.DeleteBookmarkMovie(userId, aliasId).Returns(true);
 
         // Act
-        var result = await _service.RemoveBookmarkMovie(userId, aliasId);
+        var result = await _service.RemoveBookmarkMovies(userId, aliasId);
 
         // Assert
         Assert.True(result);
@@ -134,7 +134,7 @@ public class BookmarkServiceTests
         _moviesRepository.DeleteBookmarkMovie(userId, aliasId).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _service.RemoveBookmarkMovie(userId, aliasId);
+        var result = await _service.RemoveBookmarkMovies(userId, aliasId);
 
         // Assert
         Assert.False(result);

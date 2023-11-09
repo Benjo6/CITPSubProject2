@@ -87,7 +87,7 @@ public class BookmarkControllerTests
         // Arrange
         var userId = "user1";
         var aliasId = "alias1";
-        _service.RemoveBookmarkMovie(userId, aliasId).Returns(true);
+        _service.RemoveBookmarkMovies(userId, aliasId).Returns(true);
 
         // Act
         var result = await _controller.DeleteBookmarkMovie(userId, aliasId);
@@ -166,7 +166,7 @@ public class BookmarkControllerTests
         // Arrange
         var userId = "user1";
         var aliasId = "alias1";
-        _service.RemoveBookmarkMovie(userId, aliasId).Throws(new Exception("Test exception"));
+        _service.RemoveBookmarkMovies(userId, aliasId).Throws(new Exception("Test exception"));
 
         // Act
         var result = await _controller.DeleteBookmarkMovie(userId, aliasId);
