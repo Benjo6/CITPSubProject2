@@ -34,7 +34,7 @@ namespace DataLayer.Repositories
             }
         }
 
-        public async Task<List<string>> GetBookmarksMovies(string userId)
+        public async Task<List<string>> GetBookmarkMovies(string userId)
         {
             var bookmarkedMovies = new List<string>();
 
@@ -68,6 +68,19 @@ namespace DataLayer.Repositories
                 await command.ExecuteNonQueryAsync();
                 
             }
+        }
+
+        public async Task<bool> DeleteBookmarkMovie(string userId, string aliasId)
+        {
+            var bookmarkToRemove = context.BookmarkMovies.FirstOrDefault(x => x.AliasId == aliasId && x.UserId == userId);
+
+            if (bookmarkToRemove != null)
+            {
+                context.BookmarkMovies.Remove(bookmarkToRemove);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

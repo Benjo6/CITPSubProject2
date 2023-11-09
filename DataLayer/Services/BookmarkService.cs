@@ -67,6 +67,30 @@ namespace DataLayer.Services
         {
             return await _moviesRepository.GetBookmarkMovies(userId);
         }
+        public async Task<bool> RemoveBookmarkMovies(string userId, string aliasId)
+        {
+            try
+            {
+                await _moviesRepository.DeleteBookmarkMovie(userId, aliasId);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<bool> RemoveBookmarkPersonality(string userId, string aliasId)
+        {
+            try
+            {
+                await _personalityRepository.DeleteBookmarkPersonality(userId, aliasId);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public async Task<List<string>> GetBookmarkPersons(string userId)
         {
