@@ -6,10 +6,10 @@ namespace Common.Domain;
 [Table("bookmarkmovie")]
 public class BookmarkMovie
 {
-    [Key, StringLength(10), Column("user_id", TypeName = "char(10)", Order = 0)]
+    [Key, StringLength(10), Column("user_id", TypeName = "varchar(10)", Order = 0)]
     public string UserId { get; set; } = null!;
     
-    [Key, StringLength(10), Column("alias_id", TypeName = "char(10)", Order = 1)] 
+    [Key, StringLength(10), Column("alias_id", TypeName = "varchar(10)", Order = 1)] 
     public string AliasId { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

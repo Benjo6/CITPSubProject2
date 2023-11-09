@@ -6,10 +6,10 @@ namespace Common.Domain;
 [Table("role")]
 public  class Role
 {
-    [Key, StringLength(10), Column("movie_id", TypeName = "char(10)", Order = 0)]
+    [Key, StringLength(10), Column("movie_id", TypeName = "varchar(10)", Order = 0)]
     public string? MovieId { get; set; }
 
-    [Key, StringLength(10), Column("person_id", TypeName = "char(10)", Order = 1)]
+    [Key, StringLength(10), Column("person_id", TypeName = "varchar(10)", Order = 1)]
     public string? PersonId { get; set; }
 
     [Column("ordering")]

@@ -6,11 +6,11 @@ namespace Common.Domain;
 [Table("bookmarkpersonality")]
 public class BookmarkPersonality
 {
-    [Key, StringLength(10), Column("user_id", TypeName = "char(10)", Order = 0)]
+    [Key, StringLength(10), Column("user_id", TypeName = "varchar(10)", Order = 0)]
     public string UserId { get; set; }
 
     [Required]
-    [Key, StringLength(10),Column("person_id", TypeName = "char(10)", Order = 1)]
+    [Key, StringLength(10),Column("person_id", TypeName = "varchar(10)", Order = 1)]
     public string PersonId { get; set; } = null!;
 
     [Required]

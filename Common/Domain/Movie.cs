@@ -21,10 +21,10 @@ public class Movie
     [Column("is_adult")]
     public bool? IsAdult { get; set; }
 
-    [StringLength(4), Column("start_year", TypeName = "char(4)")]
+    [StringLength(4), Column("start_year", TypeName = "varchar(4)")]
     public string? StartYear { get; set; }
 
-    [StringLength(4), Column("end_year", TypeName = "char(4)")]
+    [StringLength(4), Column("end_year", TypeName = "varchar(4)")]
     public string? EndYear { get; set; }
 
     [Column("runtime")]

@@ -39,7 +39,7 @@ public class AppDbContext : DbContext
             entity.HasOne(a => a.Movie)
                 .WithMany(m => m.Aliases)
                 .HasForeignKey(a => a.MovieId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .IsRequired(false).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<BookmarkMovie>(entity =>

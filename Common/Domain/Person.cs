@@ -12,10 +12,10 @@ public class Person
     [Required, StringLength(255), Column("name")]
     public string? Name { get; set; }
 
-    [StringLength(4), Column("birth_year", TypeName = "char(4)")]
+    [StringLength(4), Column("birth_year", TypeName = "varchar(4)")]
     public string? BirthYear { get; set; }
 
-    [StringLength(4), Column("death_year", TypeName = "char(4)")]
+    [StringLength(4), Column("death_year", TypeName = "varchar(4)")]
     public string? DeathYear { get; set; }
 
     [StringLength(255), Column("professions")]
