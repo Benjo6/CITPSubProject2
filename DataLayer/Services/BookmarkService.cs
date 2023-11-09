@@ -65,12 +65,12 @@ namespace DataLayer.Services
 
         public async Task<List<string>> GetBookmarkMovies(string userId)
         {
-            return await _moviesRepository.GetBookmarkMovies(userId);
+            return await _moviesRepository.GetBookmarksMovies(userId);
         }
 
         public async Task<List<string>> GetBookmarkPersons(string userId)
         {
-            throw new NotImplementedException();
+            return await _personalityRepository.GetBookmarksPersonality(userId);
         }
     }
 }
