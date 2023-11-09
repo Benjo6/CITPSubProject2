@@ -8,10 +8,10 @@ namespace DataLayer.Services;
 
 public class EpisodesService : IEpisodesService
 {
-    private GenericRepository<Episode> _repository;
+    private IGenericRepository<Episode> _repository;
     private ObjectMapper _mapper;
 
-    public EpisodesService(GenericRepository<Episode> repository)
+    public EpisodesService(IGenericRepository<Episode> repository)
     {
         _repository = repository;
         _mapper = new ObjectMapper();
