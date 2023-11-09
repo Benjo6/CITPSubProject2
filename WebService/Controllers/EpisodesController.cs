@@ -1,9 +1,6 @@
 ﻿using Common.DataTransferObjects;
-using Common.Domain;
-using DataLayer.Infrastructure;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebService.Controllers;
 
@@ -20,7 +17,7 @@ public class EpisodesController : ControllerBase
     
     // GET: Episodes
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EpisodeDTO>>> GetEpisodes()
+    public async Task<IActionResult> GetEpisodes()
     {
         try
         {
@@ -35,7 +32,7 @@ public class EpisodesController : ControllerBase
 
     // GET: Episodes/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<EpisodeDTO>> GetEpisode(string id)
+    public async Task<IActionResult> GetEpisode(string id)
     {
         try
         {
@@ -52,7 +49,7 @@ public class EpisodesController : ControllerBase
     // PUT: api/Episodes/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<ActionResult<EpisodeDTO>> PutEpisode(string id ,AlterEpisodeDTO episode)
+    public async Task<IActionResult> PutEpisode(string id ,AlterEpisodeDTO episode)
     {
         try
         {
@@ -69,7 +66,7 @@ public class EpisodesController : ControllerBase
     // POST: api/Episodes
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<EpisodeDTO>> PostEpisode([FromBody] AlterEpisodeDTO episode)
+    public async Task<IActionResult> PostEpisode([FromBody] AlterEpisodeDTO episode)
     {
         try
         {

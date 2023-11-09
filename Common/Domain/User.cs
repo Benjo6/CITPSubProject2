@@ -42,14 +42,14 @@ public class User
     /// </summary>
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     [Column("registration_date")]
-    public DateTime RegistrationDate { get; set; }
+    public DateTime? RegistrationDate { get; set; }
 
     /// <summary>
     /// IsAdmin property indicates whether the user is an admin or not in the User table.
     /// </summary>
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     [Column("isadmin")]
-    public bool IsAdmin { get; set; }
+    public bool? IsAdmin { get; set; }
 
     public ICollection<BookmarkMovie>? BookmarkMovies { get; set; }
     public ICollection<BookmarkPersonality>? BookmarkPersonalities { get; set; }

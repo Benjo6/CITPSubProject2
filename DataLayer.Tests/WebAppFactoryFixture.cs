@@ -70,12 +70,11 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
         Scope.Dispose(); // Disposing of the service scope.
     }
     
-       private static void AddDummyData(AppDbContext context)
+    private static void AddDummyData(AppDbContext context)
     {
-        // Add predefined movies
         var movies = new List<Movie>
         {
-            new Movie
+            new()
             {
                 Id = "1",
                 Type = "Feature Film",
@@ -88,7 +87,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Rating = 9.3m,
                 Votes = 2400000
             },
-            new Movie
+            new()
             {
                 Id = "2",
                 Type = "Feature Film",
@@ -101,7 +100,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Rating = 9.2m,
                 Votes = 1700000
             },
-            new Movie
+            new()
             {
                 Id = "3",
                 Type = "Feature Film",
@@ -115,11 +114,10 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Votes = 2400000
             }
         };
-
-        // Add dummy data for Alias class
+        
         var aliases = new List<Alias>
         {
-            new Alias
+            new()
             {
                 Id = "1",
                 MovieId = "1",
@@ -131,7 +129,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Attributes = "Attribute 1",
                 IsOriginal = true
             },
-            new Alias
+            new()
             {
                 Id = "2",
                 MovieId = "2",
@@ -143,7 +141,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Attributes = "Attribute 2",
                 IsOriginal = false
             },
-            new Alias
+            new()
             {
                 Id = "3",
                 MovieId = "3",
@@ -156,25 +154,24 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 IsOriginal = true
             }
         };
-
-        // Add dummy data for BookmarkMovie class
+        
         var bookmarkMovies = new List<BookmarkMovie>
         {
-            new BookmarkMovie
+            new()
             {
                 UserId = "User1",
                 AliasId = "1",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now),
                 Note = "Bookmark Note 1"
             },
-            new BookmarkMovie
+            new()
             {
                 UserId = "User2",
                 AliasId = "2",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now),
                 Note = "Bookmark Note 2"
             },
-            new BookmarkMovie
+            new()
             {
                 UserId = "User3",
                 AliasId = "3",
@@ -182,60 +179,57 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Note = "Bookmark Note 3"
             }
         };
-
-        // Add dummy data for BookmarkPersonality class
+        
         var bookmarkPersonalities = new List<BookmarkPersonality>
         {
-            new BookmarkPersonality
+            new()
             {
                 UserId = "User1",
                 PersonId = "Person1",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new BookmarkPersonality
+            new()
             {
                 UserId = "User2",
                 PersonId = "Person2",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new BookmarkPersonality
+            new()
             {
                 UserId = "User3",
                 PersonId = "Person3",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-
-        // Add dummy data for Episode class
+        
         var episodes = new List<Episode>
         {
-            new Episode
+            new()
             {
                 Id = "Episode1",
-                SeriesId = "Series1",
+                SeriesId = "1",
                 Season = 1,
                 Episode1 = 1
             },
-            new Episode
+            new()
             {
                 Id = "Episode2",
-                SeriesId = "Series1",
+                SeriesId = "1",
                 Season = 1,
                 Episode1 = 2
             },
-            new Episode
+            new()
             {
                 Id = "Episode3",
-                SeriesId = "Series2",
+                SeriesId = "2",
                 Season = 2,
                 Episode1 = 1
             }
         };
-
-        // Add dummy data for Person class
+        
         var persons = new List<Person>
         {
-            new Person
+            new()
             {
                 Id = "Person1",
                 Name = "John Doe",
@@ -244,7 +238,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Professions = "Actor, Director",
                 KnownFor = "The Shawshank Redemption, The Godfather"
             },
-            new Person
+            new()
             {
                 Id = "Person2",
                 Name = "Jane Smith",
@@ -253,7 +247,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Professions = "Actor",
                 KnownFor = "The Dark Knight"
             },
-            new Person
+            new()
             {
                 Id = "Person3",
                 Name = "Alice Johnson",
@@ -263,25 +257,24 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 KnownFor = "Inception"
             }
         };
-
-        // Add dummy data for RatingHistory class
+        
         var ratingHistories = new List<RatingHistory>
         {
-            new RatingHistory
+            new()
             {
                 UserId = "User1",
                 MovieId = "1",
                 RatingValue = 5,
                 RatingDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new RatingHistory
+            new()
             {
                 UserId = "User2",
                 MovieId = "2",
                 RatingValue = 4,
                 RatingDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new RatingHistory
+            new()
             {
                 UserId = "User3",
                 MovieId = "3",
@@ -289,11 +282,10 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 RatingDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-
-        // Add dummy data for Role class
+        
         var roles = new List<Role>
         {
-            new Role
+            new()
             {
                 MovieId = "1",
                 PersonId = "Person1",
@@ -302,7 +294,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Job = "Lead",
                 Characters = "Character 1"
             },
-            new Role
+            new()
             {
                 MovieId = "2",
                 PersonId = "Person2",
@@ -311,7 +303,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Job = "Supporting",
                 Characters = "Character 2"
             },
-            new Role
+            new()
             {
                 MovieId = "3",
                 PersonId = "Person3",
@@ -321,25 +313,24 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Characters = null
             }
         };
-
-        // Add dummy data for SearchHistory class
+        
         var searchHistories = new List<SearchHistory>
         {
-            new SearchHistory
+            new()
             {
                 Id = "Search1",
                 UserId = "User1",
                 SearchQuery = "Action movies",
                 SearchDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new SearchHistory
+            new()
             {
                 Id = "Search2",
                 UserId = "User2",
                 SearchQuery = "Drama movies",
                 SearchDate = DateOnly.FromDateTime(DateTime.Now)
             },
-            new SearchHistory
+            new()
             {
                 Id = "Search3",
                 UserId = "User3",
@@ -347,36 +338,29 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 SearchDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-
-// Add dummy data for User class
+        
         var users = new List<User>
         {
-            new User
+            new()
             {
                 Id = "User1",
                 Username = "user1",
                 Email = "user1@example.com",
                 Password = "password1",
-                RegistrationDate = DateTime.Now.AddYears(-2),
-                IsAdmin = false
             },
-            new User
+            new()
             {
                 Id = "User2",
                 Username = "user2",
                 Email = "user2@example.com",
                 Password = "password2",
-                RegistrationDate = DateTime.Now.AddYears(-1),
-                IsAdmin = false
             },
-            new User
+            new()
             {
                 Id = "User3",
                 Username = "admin",
                 Email = "admin@example.com",
                 Password = "adminpassword",
-                RegistrationDate = DateTime.Now.AddYears(-3),
-                IsAdmin = true
             }
         };
         context.Movies.AddRange(movies);
@@ -386,6 +370,8 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
         context.Episodes.AddRange(episodes);
         context.People.AddRange(persons);
         context.Roles.AddRange(roles);
+        context.RatingHistories.AddRange(ratingHistories);
+        context.SearchHistories.AddRange(searchHistories);
         context.Users.AddRange(users);
     }
 }

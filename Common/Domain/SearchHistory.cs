@@ -6,7 +6,7 @@ namespace Common.Domain;
 [Table("searchhistory")]
 public class SearchHistory
 {
-    [Key, StringLength(10), Column("id", TypeName = "varchar(10)"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, StringLength(50), Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; }
 
     [Required, Column("user_id")]
@@ -15,8 +15,8 @@ public class SearchHistory
     [Required, StringLength(255), Column("search_query")]
     public string SearchQuery { get; set; } = null!;
 
-    [Required, DatabaseGenerated(DatabaseGeneratedOption.Computed), Column("search_date")]
-    public DateOnly SearchDate { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed), Column("search_date")]
+    public DateOnly? SearchDate { get; set; }
 
     [ForeignKey("UserId")]
     public User? User { get; set; }

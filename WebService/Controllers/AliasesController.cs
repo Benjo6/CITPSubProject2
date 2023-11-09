@@ -17,7 +17,7 @@ public class AliasesController : ControllerBase
     
     // GET: Aliases
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AliasDTO>>> GetAliases()
+    public async Task<IActionResult> GetAliases()
     {
         try
         {
@@ -32,7 +32,7 @@ public class AliasesController : ControllerBase
 
     // GET: Aliases/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<AliasDTO>> GetAlias(string id)
+    public async Task<IActionResult> GetAlias(string id)
     {
         try
         {
@@ -49,7 +49,7 @@ public class AliasesController : ControllerBase
     // PUT: api/Aliases/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<ActionResult<AliasDTO>> PutAlias(string id, AlterAliasDTO alias)
+    public async Task<IActionResult> PutAlias(string id, AlterAliasDTO alias)
     {
         try
         {
@@ -66,7 +66,7 @@ public class AliasesController : ControllerBase
     // POST: api/Aliases
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<AliasDTO>> PostAlias(AlterAliasDTO alias)
+    public async Task<IActionResult> PostAlias(AlterAliasDTO alias)
     {
         try
         {

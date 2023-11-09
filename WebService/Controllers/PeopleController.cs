@@ -20,7 +20,7 @@ public class PeopleController : ControllerBase
 
     // GET: People
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetAllPersonDTO>>> GetPeople()
+    public async Task<IActionResult> GetPeople()
     {
         try
         {
@@ -35,7 +35,7 @@ public class PeopleController : ControllerBase
 
     // GET: People/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetOnePersonDTO>> GetPerson(string id)
+    public async Task<IActionResult> GetPerson(string id)
     {
         try
         {
@@ -52,7 +52,7 @@ public class PeopleController : ControllerBase
     // PUT: People/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<ActionResult<UpdatePersonDTO>> PutPerson(string id, AlterPersonDTO person)
+    public async Task<IActionResult> PutPerson(string id, AlterPersonDTO person)
     {
         try
         {
@@ -67,7 +67,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("ActorsByName")]
-    public async Task<ActionResult<IEnumerable<ActorBy>>> FindActorsByName([FromQuery] string name)
+    public async Task<IActionResult> FindActorsByName([FromQuery] string name)
     {
         try
         {
@@ -81,7 +81,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("ActorsByMovie")]
-    public async Task<ActionResult<IEnumerable<ActorBy>>> FindActorsByMovie([FromQuery] string movieId)
+    public async Task<IActionResult> FindActorsByMovie([FromQuery] string movieId)
     {
         try
         {
@@ -95,7 +95,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("PopularActor")]
-    public async Task<ActionResult<IEnumerable<PopularActor>>> GetPopGetPopularActorsInMovie([FromQuery] string movieId)
+    public async Task<IActionResult> GetPopularActorsInMovie([FromQuery] string movieId)
     {
         try
         {
@@ -109,7 +109,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("CoPopularActor")]
-    public async Task<ActionResult<IEnumerable<PopularCoPlayer>>> GetPopularCoPlayers([FromQuery] string actorName)
+    public async Task<IActionResult> GetPopularCoPlayers([FromQuery] string actorName)
     {
         try
         {
@@ -123,7 +123,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("ActorWords")]
-    public async Task<ActionResult<IEnumerable<PersonWord>>> PersonWords([FromQuery] string word, int frequency)
+    public async Task<IActionResult> PersonWords([FromQuery] string word, int frequency)
     {
         try
         {
@@ -140,7 +140,7 @@ public class PeopleController : ControllerBase
     // POST: People
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Person>> PostPerson([FromBody] AlterPersonDTO person)
+    public async Task<IActionResult> PostPerson([FromBody] AlterPersonDTO person)
     {
         try
         {

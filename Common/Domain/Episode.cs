@@ -6,10 +6,10 @@ namespace Common.Domain;
 [Table("episode")]
 public class Episode
 {
-    [Key, StringLength(10), Column("id", TypeName = "varchar(10)")]
-    public string Id { get; set; } = null!;
+    [Key, StringLength(50), Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string? Id { get; set; }
 
-    [StringLength(10), Column("series_id", TypeName = "varchar(10)")]
+    [StringLength(50), Column("series_id")]
     public string? SeriesId { get; set; }
 
     [Column("season")]

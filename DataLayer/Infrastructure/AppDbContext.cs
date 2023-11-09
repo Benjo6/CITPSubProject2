@@ -49,12 +49,12 @@ public class AppDbContext : DbContext
             entity.HasOne(b => b.User)
                 .WithMany(u => u.BookmarkMovies)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(b => b.Alias)
                 .WithMany(a => a.BookmarkMovies)
                 .HasForeignKey(b => b.AliasId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<BookmarkPersonality>(entity =>
@@ -64,20 +64,19 @@ public class AppDbContext : DbContext
             entity.HasOne(b => b.User)
                 .WithMany(u => u.BookmarkPersonalities)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(b => b.Person)
                 .WithMany(p => p.BookmarkPersonalities)
                 .HasForeignKey(b => b.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         });
+        
         modelBuilder.Entity<Episode>()
             .HasOne(e => e.Series)
             .WithMany(m => m.Episodes)
             .HasForeignKey(e => e.SeriesId)
             .OnDelete(DeleteBehavior.Cascade);
-            
-
 
         modelBuilder.Entity<RatingHistory>(entity =>
         {
@@ -90,7 +89,7 @@ public class AppDbContext : DbContext
             entity.HasOne(r => r.Movie)
                 .WithMany(m => m.RatingHistories)
                 .HasForeignKey(r => r.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Role>(entity =>

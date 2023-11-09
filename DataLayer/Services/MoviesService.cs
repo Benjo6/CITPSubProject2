@@ -59,6 +59,7 @@ public class MoviesService : IMoviesService
     public async Task<AlterResponseMovieDTO> UpdateMovie(string id, AlterMovieDTO movie)
     {
         var theMovie  = _mapper.AlterMovieDTOToMovie(movie);
+        theMovie.Id = id;
         await _repository.Update(theMovie);
         var updatedMovie = await _repository.GetById(theMovie.Id);
         return _mapper.MovieToAlterResponseMovieDTO(updatedMovie);

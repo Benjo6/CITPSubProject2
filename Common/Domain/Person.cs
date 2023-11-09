@@ -11,11 +11,11 @@ public class Person
 
     [Required, StringLength(255), Column("name")]
     public string? Name { get; set; }
-
-    [StringLength(4), Column("birth_year", TypeName = "varchar(4)")]
+    
+    [StringLength(4), Column("birth_year")]
     public string? BirthYear { get; set; }
 
-    [StringLength(4), Column("death_year", TypeName = "varchar(4)")]
+    [StringLength(4), Column("death_year")]
     public string? DeathYear { get; set; }
 
     [StringLength(255), Column("professions")]

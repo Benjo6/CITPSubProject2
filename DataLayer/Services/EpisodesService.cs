@@ -20,12 +20,7 @@ public class EpisodesService : IEpisodesService
     public async Task<List<EpisodeDTO>> GetAllEpisodes()
     {
         var getAll = await _repository.GetAll();
-        List<EpisodeDTO> list = new List<EpisodeDTO>();
-        foreach (var item in getAll)
-        {
-            list.Add(_mapper.EpisodeToEpisodeDTO(item));
-        }
-        return list;
+        return _mapper.ListEpisodeToListEpisodeDTO(getAll) ?? new List<EpisodeDTO>();
     }
 
     public async Task<EpisodeDTO> GetOneEpisode(string id)
@@ -36,17 +31,17 @@ public class EpisodesService : IEpisodesService
 
     public async Task<EpisodeDTO> UpdateEpisode(string id, AlterEpisodeDTO episode)
     {
-        var ep = await _repository.GetById(id);
-        ep = _mapper.AlterEpisodeDTOToEpisode(episode);
-        await _repository.Update(ep);
-        var updatedep = await _repository.GetById(ep.Id);
-        return _mapper.EpisodeToEpisodeDTO(updatedep);
+        var mappedEpisode = _mapper.AlterEpisodeDTOToEpisode(episode);
+        mappedEpisode.Id = id;
+        await _repository.Update(mappedEpisode);
+        var updatedEpisode = await _repository.GetById(mappedEpisode.Id);
+        return _mapper.EpisodeToEpisodeDTO(updatedEpisode);
     }
 
     public async Task<EpisodeDTO> AddEpisode(AlterEpisodeDTO episode)
     {
-        var addedepisode = await _repository.Add(_mapper.AlterEpisodeDTOToEpisode(episode));
-        return _mapper.EpisodeToEpisodeDTO(addedepisode);
+        var addedEpisode = await _repository.Add(_mapper.AlterEpisodeDTOToEpisode(episode));
+        return _mapper.EpisodeToEpisodeDTO(addedEpisode);
     }
 
     public async Task<bool> DeleteEpisode(string id)

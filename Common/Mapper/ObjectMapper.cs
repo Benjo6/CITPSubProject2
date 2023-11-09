@@ -30,7 +30,9 @@ public partial class ObjectMapper
     /*
      * Episode
      */
+    public partial List<EpisodeDTO> ListEpisodeToListEpisodeDTO(List<Episode> episode);
     public partial EpisodeDTO EpisodeToEpisodeDTO(Episode episode);
+
     public partial Episode EpisodeDTOTOEpisode(EpisodeDTO episode);
     public partial Episode AlterEpisodeDTOToEpisode(AlterEpisodeDTO episode);
     /* 
@@ -61,11 +63,15 @@ public partial class ObjectMapper
     /*
      * SearchHistory
      */
+    public partial List<SearchHistoryDTO> ListSearchToListSearchDTO(List<SearchHistory> searchHistory);
+
     public partial SearchHistoryDTO SearchHistoryToSearchHistoryDTO(SearchHistory searchHistory);
     public partial SearchHistory SearchHistoryDTOToSearchHistory(SearchHistoryDTO searchHistory);
     /*
      * User
      */     
+    public partial List<UserDTO> ListUserToListUserDTO(List<User> user);
+
     public partial UserDTO UserToUserDTO(User user);
     public partial User AlterUserDTOToUser(AlterUserDTO user);
     public partial User UserDTOToUser(UserDTO user);

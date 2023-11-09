@@ -1,3 +1,4 @@
+using Common.Domain;
 using DataLayer;
 using DataLayer.Generics;
 using DataLayer.Repositories;
@@ -19,6 +20,7 @@ public static class ServicesExtension
         serviceCollection.AddScoped<ISearchService, SearchService>();
         serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IWeatherForecastService, WeatherForecastService>();
+
         
         return serviceCollection;
     }
@@ -32,8 +34,9 @@ public static class ServicesExtension
         serviceCollection.AddScoped<IPeopleRepository, PeopleRepository>();
         serviceCollection.AddScoped<IRolesRepository, RolesRepository>();
         serviceCollection.AddScoped<ISearchHistoriesRepository, SearchHistoriesRepository>();
-        serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        
+        serviceCollection.AddScoped<IGenericRepository<Alias>, GenericRepository<Alias>>();
+        serviceCollection.AddScoped<IGenericRepository<Episode>, GenericRepository<Episode>>();
+        serviceCollection.AddScoped<IGenericRepository<User>, GenericRepository<User>>();   
         return serviceCollection;
     }
 }

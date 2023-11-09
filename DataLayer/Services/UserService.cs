@@ -20,12 +20,7 @@ public class UserService : IUserService
     public async Task<List<UserDTO>> GetAllUser()
     {
         var getAll = await _repository.GetAll();
-        var users = new List<UserDTO>();
-        foreach (var item in getAll)
-        {
-            users.Add(_mapper.UserToUserDTO(item));
-        }
-        return users;
+        return _mapper.ListUserToListUserDTO(getAll) ?? new List<UserDTO>();
     }
 
     public async Task<UserDTO> GetOneUser(string id)
@@ -36,9 +31,10 @@ public class UserService : IUserService
 
     public async Task<bool> UpdateUser(string id, AlterUserDTO user)
     {
-        var ep = _mapper.AlterUserDTOToUser(user);
-        await _repository.Update(ep);
-        var updated = await _repository.GetById(ep.Id);
+        var mappedUser = _mapper.AlterUserDTOToUser(user);
+        mappedUser.Id = id;
+        await _repository.Update(mappedUser);
+        _ = await _repository.GetById(mappedUser.Id);
         return true;
     }
 

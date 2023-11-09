@@ -50,7 +50,7 @@ public class AuthenticationService : IAuthenticationService
             new(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username)
         };
 
-        if (user.IsAdmin)
+        if (user.IsAdmin == true)
         {
             claims.Add(new Claim(IdentityData.AdminUserClaimName, "true"));
         }

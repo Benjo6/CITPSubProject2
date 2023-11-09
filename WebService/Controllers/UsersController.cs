@@ -1,5 +1,6 @@
 ﻿using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -17,7 +18,7 @@ public class UsersController : ControllerBase
     
     // GET: Users
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+    public async Task<IActionResult> GetUsers()
     {
         try
         {
@@ -32,7 +33,7 @@ public class UsersController : ControllerBase
 
     // GET: Users/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDTO>> GetUser(string id)
+    public async Task<IActionResult> GetUser(string id)
     {
         try
         {
@@ -47,7 +48,7 @@ public class UsersController : ControllerBase
     }
 
     // PUT: Users/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(string id, AlterUserDTO user)
     {
@@ -65,6 +66,7 @@ public class UsersController : ControllerBase
     
 
     // DELETE: api/Users/5
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {

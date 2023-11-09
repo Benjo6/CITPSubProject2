@@ -18,7 +18,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetAllMovieDTO>>> GetMovies()
+    public async Task<IActionResult> GetMovies()
     {
         try
         {
@@ -33,7 +33,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetOneMovieDTO>> GetMovie(string id)
+    public async Task<IActionResult> GetMovie(string id)
     {
         try
         {
@@ -50,7 +50,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies/BestMatchQuery?keywords=Action&keywords=Comedy
     [HttpGet("BestMatchQuery")]
-    public async Task<ActionResult<IEnumerable<BestMatch>>> BestMatchQuery([FromQuery] string[] keywords)
+    public async Task<IActionResult> BestMatchQuery([FromQuery] string[] keywords)
     {
         try
         {
@@ -66,7 +66,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies/ExactMatch?keywords=Action&keywords=Comedy
     [HttpGet("ExactMatch")]
-    public async Task<ActionResult<IEnumerable<string>>> ExactMatchQuery([FromQuery] string[] keywords)
+    public async Task<IActionResult> ExactMatchQuery([FromQuery] string[] keywords)
     {
         try
         {
@@ -82,7 +82,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies/FindSimilarMovies/13
     [HttpGet("FindSimilarMovies")]
-    public async Task<ActionResult<IEnumerable<SimilarMovie>>> FindSimilarMovies([FromQuery] string movieId)
+    public async Task<IActionResult> FindSimilarMovies([FromQuery] string movieId)
     {
         try
         {
@@ -98,7 +98,7 @@ public class MoviesController : ControllerBase
 
     // GET: Movies/WordToWord?keywords=Action&keywords=Comedy
     [HttpGet("WordToWords")]
-    public async Task<ActionResult<IEnumerable<WordFrequency>>> WordToWordsQuery([FromQuery] string[] keywords)
+    public async Task<IActionResult> WordToWordsQuery([FromQuery] string[] keywords)
     {
         try
         {
@@ -115,7 +115,7 @@ public class MoviesController : ControllerBase
     // PUT: api/Movies/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<ActionResult<AlterResponseMovieDTO>> PutMovie(string id, AlterMovieDTO movie)
+    public async Task<IActionResult> PutMovie(string id, AlterMovieDTO movie)
     {
         try
         {
@@ -132,7 +132,7 @@ public class MoviesController : ControllerBase
     // POST: api/Movies
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<AlterResponseMovieDTO>> PostMovie([FromBody] AlterMovieDTO movie)
+    public async Task<IActionResult> PostMovie([FromBody] AlterMovieDTO movie)
     {
         try
         {

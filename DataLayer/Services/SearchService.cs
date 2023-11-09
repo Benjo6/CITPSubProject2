@@ -18,13 +18,8 @@ public class SearchService : ISearchService
 
     public async Task<List<SearchHistoryDTO>> GetAllSearchHistory()
     {
-       var getAll = await _searchHistoriesRepository.GetAll();
-       var all = new List<SearchHistoryDTO>();
-       foreach(var x in getAll)
-       {
-           all.Add(_mapper.SearchHistoryToSearchHistoryDTO(x));
-       }
-       return all;
+        var getAll = await _searchHistoriesRepository.GetAll();
+        return _mapper.ListSearchToListSearchDTO(getAll) ?? new List<SearchHistoryDTO>();
     }
 
     public async Task<SearchHistoryDTO> GetOneSearchHistory(string id)

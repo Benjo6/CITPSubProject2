@@ -5,7 +5,7 @@ namespace Common.DataTransferObjects;
 
 public class UserDTO
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
 
     public string Username { get; set; } = null!;
     public string Email { get; set; } = null!;
@@ -17,7 +17,7 @@ public class UserDTO
 
 public class AlterUserDTO
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
     public DateTime RegistrationDate { get; set; }

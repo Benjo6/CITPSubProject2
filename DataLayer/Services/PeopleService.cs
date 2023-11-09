@@ -31,7 +31,6 @@ public class PeopleService : IPeopleService
 
     public async Task<UpdatePersonDTO> UpdatePerson(string id, AlterPersonDTO person)
     {
-        _ = await _peopleRepository.GetById(id);
         var theActor = _mapper.AlterPersonDTOToPerson(person);
         theActor.Id = id;
         await _peopleRepository.Update(theActor);

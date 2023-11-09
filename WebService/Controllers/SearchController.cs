@@ -1,5 +1,4 @@
-﻿using Common.DataTransferObjects;
-using DataLayer.Services.Contracts;
+﻿using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -17,7 +16,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History
     [HttpGet("History")]
-    public async Task<ActionResult<IEnumerable<SearchHistoryDTO>>> GetSearchHistories()
+    public async Task<IActionResult> GetSearchHistories()
     {
         try
         {
@@ -32,7 +31,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History/5
     [HttpGet("History/{id}")]
-    public async Task<ActionResult<SearchHistoryDTO>> GetOneSearchHistory(string id)
+    public async Task<IActionResult> GetOneSearchHistory(string id)
     {
         try
         {
