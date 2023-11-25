@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Common.Identity;
 using DataLayer.Infrastructure;
-using WebService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+namespace WebService;
 
 public class Program
 {

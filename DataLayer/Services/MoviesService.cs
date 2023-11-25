@@ -1,4 +1,5 @@
-﻿using Common.DataTransferObjects;
+﻿using Common;
+using Common.DataTransferObjects;
 using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
@@ -45,10 +46,10 @@ public class MoviesService : IMoviesService
         return _repository.FindSimilarMovies(movieId, page, perPage) ?? throw new NullReferenceException("No similar movies");
     }
 
-    public async Task<List<GetAllMovieDTO>> GetAllMovies(int? page = 1, int? perPage = 10)
+    public async Task<List<GetAllMovieDTO>> GetAllMovies(Filter filter)
     {
-        var getAll = await _repository.GetAll(page, perPage);
-        return _mapper.MovieToGetAllMoviesDTO(getAll) ?? new List<GetAllMovieDTO>();
+        var getAll = await _repository.GetAll(filter);
+        return _mapper.ListMovieToListGetAllMoviesDTO(getAll);
     }
 
     public async Task<GetOneMovieDTO> GetOneMovie(string id)

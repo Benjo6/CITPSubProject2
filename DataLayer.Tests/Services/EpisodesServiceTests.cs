@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Generics;
@@ -10,11 +11,13 @@ public class EpisodesServiceTests
 {
     private readonly IGenericRepository<Episode> _repository;
     private readonly EpisodesService _service;
+    private Filter _filter;
 
     public EpisodesServiceTests()
     {
         _repository = Substitute.For<IGenericRepository<Episode>>();
         _service = new EpisodesService(_repository);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -22,10 +25,10 @@ public class EpisodesServiceTests
     {
         // Arrange
         var episodes = new List<Episode> { new(), new() };
-        _repository.GetAll().Returns(episodes);
+        _repository.GetAll(_filter).Returns(episodes);
 
         // Act
-        var result = await _service.GetAllEpisodes();
+        var result = await _service.GetAllEpisodes(_filter);
 
         // Assert
         Assert.Equal(episodes.Count, result.Count);

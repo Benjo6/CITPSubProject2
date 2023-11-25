@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Testcontainers.PostgreSql;
+using WebService;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

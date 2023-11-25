@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ public class UsersControllerTests
 {
     private readonly IUserService _service;
     private readonly UsersController _controller;
+    private Filter _filter;
 
     public UsersControllerTests()
     {
         _service = Substitute.For<IUserService>();
         _controller = new UsersController(_service);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -23,10 +26,10 @@ public class UsersControllerTests
     {
         // Arrange
         var expectedUsers = new List<UserDTO>();
-        _service.GetAllUser().Returns(expectedUsers);
+        _service.GetAllUser(_filter).Returns(expectedUsers);
 
         // Act
-        var result = await _controller.GetUsers();
+        var result = await _controller.GetUsers(_filter);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -88,10 +91,10 @@ public class UsersControllerTests
     public async Task GetUsers_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllUser().Throws(new Exception("Test exception"));
+        _service.GetAllUser(_filter).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetUsers();
+        var result = await _controller.GetUsers(_filter);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

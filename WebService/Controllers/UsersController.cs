@@ -1,4 +1,5 @@
-﻿using Common.DataTransferObjects;
+﻿using Common;
+using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,12 @@ public class UsersController : ControllerBase
     
     // GET: Users
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers([FromQuery] Filter? filter=null)
     {
+        filter ??= new Filter();
         try
         {
-            var users = await _service.GetAllUser();
+            var users = await _service.GetAllUser(filter);
             return Ok(users);
         }
         catch(Exception ex)

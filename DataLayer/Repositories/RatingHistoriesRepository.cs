@@ -3,8 +3,8 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using NpgsqlTypes;
-using System.Threading.Tasks;
+
+namespace DataLayer.Repositories;
 
 public class RatingHistoriesRepository : IRatingHistoriesRepository
 {

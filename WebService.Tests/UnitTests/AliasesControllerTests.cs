@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ public class AliasesControllerTests
 {
     private readonly IAliasesService _service;
     private readonly AliasesController _controller;
+    private readonly Filter _filter;
 
     public AliasesControllerTests()
     {
         _service = Substitute.For<IAliasesService>();
         _controller = new AliasesController(_service);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -23,10 +26,10 @@ public class AliasesControllerTests
     {
         // Arrange
         var expectedAliases = new List<AliasDTO>();
-        _service.GetAllAliases().Returns(expectedAliases);
+        _service.GetAllAliases(_filter).Returns(expectedAliases);
 
         // Act
-        var result = await _controller.GetAliases();
+        var result = await _controller.GetAliases(_filter);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -106,10 +109,10 @@ public class AliasesControllerTests
     public async Task GetAliases_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllAliases().Throws(new Exception("Test exception"));
+        _service.GetAllAliases(_filter).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetAliases();
+        var result = await _controller.GetAliases(_filter);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

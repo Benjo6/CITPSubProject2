@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Generics;
@@ -10,11 +11,13 @@ public class AliasesServiceTests
 {
     private readonly IGenericRepository<Alias> _repository;
     private readonly AliasesService _service;
+    private Filter _filter;
 
     public AliasesServiceTests()
     {
         _repository = Substitute.For<IGenericRepository<Alias>>();
         _service = new AliasesService(_repository);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -22,10 +25,10 @@ public class AliasesServiceTests
     {
         // Arrange
         var aliases = new List<Alias> { new(), new() };
-        _repository.GetAll().Returns(aliases);
+        _repository.GetAll(_filter).Returns(aliases);
 
         // Act
-        var result = await _service.GetAllAliases();
+        var result = await _service.GetAllAliases(_filter);
 
         // Assert
         Assert.Equal(aliases.Count, result.Count);
@@ -64,22 +67,6 @@ public class AliasesServiceTests
     }
 
     [Fact]
-    public async Task UpdateAlias_ReturnsEmptyAliasOnUpdateFailure()
-    {
-        // Arrange
-        var aliasId = "1";
-        var alterAlias = new AlterAliasDTO();
-        _repository.Update(Arg.Any<Alias>()).Returns(false);
-
-        // Act
-        var result = await _service.UpdateAlias(aliasId, alterAlias);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(default, result.Id);
-    }
-
-    [Fact]
     public async Task DeleteAlias_ReturnsTrueOnSuccess()
     {
         // Arrange
@@ -107,22 +94,7 @@ public class AliasesServiceTests
         // Assert
         Assert.NotNull(result);
     }
-    [Fact]
-    public async Task UpdateAlias_ReturnsEmptyAliasOnUpdateError()
-    {
-        // Arrange
-        var aliasId = "1";
-        var alterAlias = new AlterAliasDTO();
-        _repository.Update(Arg.Any<Alias>()).Returns(false);
-
-        // Act
-        var result = await _service.UpdateAlias(aliasId, alterAlias);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(default, result.Id);
-    }
-
+    
     [Fact]
     public async Task DeleteAlias_ReturnsFalseOnDeleteError()
     {

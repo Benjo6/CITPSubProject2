@@ -1,4 +1,5 @@
-﻿using Common.DataTransferObjects;
+﻿using Common;
+using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,6 @@ namespace WebService.Controllers;
 public class EpisodesController : ControllerBase
 {
     private readonly IEpisodesService _service;
-
     public EpisodesController(IEpisodesService service)
     {
         _service = service;
@@ -17,11 +17,13 @@ public class EpisodesController : ControllerBase
     
     // GET: Episodes
     [HttpGet]
-    public async Task<IActionResult> GetEpisodes()
+    public async Task<IActionResult> GetEpisodes([FromQuery] Filter? filter = null)
     {
+        filter ??= new Filter();
         try
         {
-            var episodes = await _service.GetAllEpisodes();
+            var episodes = await _service.GetAllEpisodes(filter);
+            
             return Ok(episodes);
         }
         catch(Exception ex)

@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using Common.Mapper;
@@ -8,7 +9,7 @@ namespace DataLayer.Services;
 
 public class PeopleService : IPeopleService
 {
-    private IPeopleRepository _peopleRepository;
+    private readonly IPeopleRepository _peopleRepository;
     private readonly ObjectMapper _mapper;
 
     public PeopleService(IPeopleRepository peopleRepository)
@@ -17,10 +18,10 @@ public class PeopleService : IPeopleService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<GetAllPersonDTO>> GetAllPerson(int? page = 1, int? perPage = 10)
+    public async Task<List<GetAllPersonDTO>> GetAllPerson(Filter filter)
     {
-        var getAll = await _peopleRepository.GetAll(page, perPage);
-        return _mapper.PersonToGetAllPersonsDTO(getAll) ?? new List<GetAllPersonDTO>();
+        var getAll = await _peopleRepository.GetAll(filter);
+        return _mapper.ListPersonToListGetAllPersonsDTO(getAll);
     }
 
     public async Task<GetOnePersonDTO> GetOnePerson(string id)

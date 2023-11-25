@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Repositories.Contracts;
@@ -10,11 +11,13 @@ public class PeopleServiceTests
 {
     private readonly IPeopleRepository _peopleRepository;
     private readonly PeopleService _service;
+    private Filter _filter;
 
     public PeopleServiceTests()
     {
         _peopleRepository = Substitute.For<IPeopleRepository>();
         _service = new PeopleService(_peopleRepository);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -22,10 +25,10 @@ public class PeopleServiceTests
     {
         // Arrange
         var people = new List<Person> { new(), new() };
-        _peopleRepository.GetAll().Returns(people);
+        _peopleRepository.GetAll(_filter).Returns(people);
 
         // Act
-        var result = await _service.GetAllPerson();
+        var result = await _service.GetAllPerson(_filter);
 
         // Assert
         Assert.Equal(people.Count, result.Count);

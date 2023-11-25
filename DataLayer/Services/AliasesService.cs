@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using Common.Mapper;
@@ -8,8 +9,8 @@ namespace DataLayer.Services;
 
 public class AliasesService : IAliasesService
 {
-    private IGenericRepository<Alias> _repository;
-    private ObjectMapper _mapper;
+    private readonly IGenericRepository<Alias> _repository;
+    private readonly ObjectMapper _mapper;
 
     public AliasesService(IGenericRepository<Alias> repository)
     {
@@ -17,15 +18,10 @@ public class AliasesService : IAliasesService
         _mapper = new ObjectMapper();
     }
     
-    public async Task<List<AliasDTO>> GetAllAliases(int? page = 1, int? perPage = 10)
+    public async Task<List<AliasDTO>> GetAllAliases(Filter filter)
     {
-        var aliases = await _repository.GetAll(page, perPage);
-        var aliasesDTO = new List<AliasDTO>();
-        aliases.ForEach(alias =>
-        {
-            aliasesDTO.Add(_mapper.AliasToAliasDTO(alias));
-        });
-        return aliasesDTO;
+        var aliases = await _repository.GetAll(filter);
+        return _mapper.ListAliasToListAliasDTO(aliases);
     }
 
     public async Task<AliasDTO> GetOneAlias(string id)
@@ -37,7 +33,7 @@ public class AliasesService : IAliasesService
     {
         var aliasDb = _mapper.AlterAliasDTOToAlias(alias);
         aliasDb.Id = id;
-        return _mapper.AliasToAliasDTO(await _repository.GetById(id)) ?? new AliasDTO();
+        return _mapper.AliasToAliasDTO(await _repository.GetById(id));
     }
 
     public async Task<bool> DeleteAlias(string id)

@@ -1,11 +1,11 @@
-﻿using Common.DataTransferObjects;
-using Common.Domain;
+﻿using Common;
+using Common.DataTransferObjects;
 
 namespace DataLayer.Services.Contracts;
 
 public interface IMoviesService
 {
-    public Task<List<GetAllMovieDTO>> GetAllMovies(int? page = 1, int? perPage = 10);
+    public Task<List<GetAllMovieDTO>> GetAllMovies(Filter filter);
     public Task<GetOneMovieDTO> GetOneMovie(string id);
     public Task<AlterResponseMovieDTO> UpdateMovie(string id, AlterMovieDTO movie);
     public Task<bool> DeleteMovie (string id);

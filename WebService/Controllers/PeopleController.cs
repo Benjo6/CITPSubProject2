@@ -1,9 +1,7 @@
-﻿using Common.DataTransferObjects;
-using Common.Domain;
-using DataLayer.Infrastructure;
+﻿using Common;
+using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebService.Controllers;
 
@@ -20,11 +18,12 @@ public class PeopleController : ControllerBase
 
     // GET: People
     [HttpGet]
-    public async Task<IActionResult> GetPeople()
+    public async Task<IActionResult> GetPeople([FromQuery] Filter? filter = null)
     {
+        filter ??= new Filter();
         try
         {
-            var people = await _service.GetAllPerson();
+            var people = await _service.GetAllPerson(filter);
             return Ok(people);
         }
         catch(Exception ex)

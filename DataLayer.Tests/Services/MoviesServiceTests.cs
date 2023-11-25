@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Repositories.Contracts;
@@ -10,11 +11,13 @@ public class MoviesServiceTests
 {
     private readonly IMoviesRepository _repository;
     private readonly MoviesService _service;
+    private Filter _filter;
 
     public MoviesServiceTests()
     {
         _repository = Substitute.For<IMoviesRepository>();
         _service = new MoviesService(_repository);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -22,10 +25,10 @@ public class MoviesServiceTests
     {
         // Arrange
         var movies = new List<Movie> { new(), new() };
-        _repository.GetAll().Returns(movies);
+        _repository.GetAll(_filter).Returns(movies);
 
         // Act
-        var result = await _service.GetAllMovies();
+        var result = await _service.GetAllMovies(_filter);
 
         // Assert
         Assert.Equal(movies.Count, result.Count);

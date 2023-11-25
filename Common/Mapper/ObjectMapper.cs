@@ -11,8 +11,9 @@ public partial class ObjectMapper
      * Alias
      */
     public partial AliasDTO AliasToAliasDTO(Alias alias);
-    public partial Alias AliasDTOToAlias(AliasDTO alias);
     public partial Alias AlterAliasDTOToAlias(AlterAliasDTO alias);
+    public partial List<AliasDTO> ListAliasToListAliasDTO(List<Alias> movie);
+
     /*
      * BookmarkMovie
      */
@@ -40,12 +41,12 @@ public partial class ObjectMapper
      */
     public partial AlterResponseMovieDTO MovieToAlterResponseMovieDTO(Movie movie);
     public partial Movie AlterMovieDTOToMovie(AlterMovieDTO movie);
-    public partial List<GetAllMovieDTO> MovieToGetAllMoviesDTO(List<Movie> movie);
+    public partial List<GetAllMovieDTO> ListMovieToListGetAllMoviesDTO(List<Movie> movie);
     public partial GetOneMovieDTO MovieToGetOneMovieDTO(Movie movie);
     /*
      * Person
      */
-    public partial List<GetAllPersonDTO> PersonToGetAllPersonsDTO(List<Person> person);
+    public partial List<GetAllPersonDTO> ListPersonToListGetAllPersonsDTO(List<Person> person);
     public partial GetOnePersonDTO PersonToGetOnePersonDTO(Person person);
     public partial Person AlterPersonDTOToPerson(AlterPersonDTO person);
     public partial UpdatePersonDTO PersonToUpdatePersonDTO(Person person);

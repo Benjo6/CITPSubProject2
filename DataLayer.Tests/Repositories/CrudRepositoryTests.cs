@@ -1,3 +1,4 @@
+using Common;
 using Common.Domain;
 using DataLayer.Generics;
 
@@ -43,7 +44,7 @@ public class GenericRepositoryTests : IClassFixture<WebAppFactoryFixture>
         // Arrange
 
         // Act
-        var episodes = await _repository.GetAll();
+        var episodes = await _repository.GetAll(new Filter());
 
         // Assert
         Assert.True(episodes.Count == 3);

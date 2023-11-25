@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using Common.Mapper;
@@ -8,8 +9,8 @@ namespace DataLayer.Services;
 
 public class EpisodesService : IEpisodesService
 {
-    private IGenericRepository<Episode> _repository;
-    private ObjectMapper _mapper;
+    private readonly IGenericRepository<Episode> _repository;
+    private readonly ObjectMapper _mapper;
 
     public EpisodesService(IGenericRepository<Episode> repository)
     {
@@ -17,10 +18,10 @@ public class EpisodesService : IEpisodesService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<EpisodeDTO>> GetAllEpisodes(int? page = 1, int? perPage = 10)
+    public async Task<List<EpisodeDTO>> GetAllEpisodes(Filter filter)
     {
-        var getAll = await _repository.GetAll(page, perPage);
-        return _mapper.ListEpisodeToListEpisodeDTO(getAll) ?? new List<EpisodeDTO>();
+        var getAll = await _repository.GetAll(filter);
+        return _mapper.ListEpisodeToListEpisodeDTO(getAll);
     }
 
     public async Task<EpisodeDTO> GetOneEpisode(string id)

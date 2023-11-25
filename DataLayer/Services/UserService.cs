@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using Common.Mapper;
@@ -8,8 +9,8 @@ namespace DataLayer.Services;
 
 public class UserService : IUserService
 {
-    private IGenericRepository<User> _repository;
-    private ObjectMapper _mapper;
+    private readonly IGenericRepository<User> _repository;
+    private readonly ObjectMapper _mapper;
 
     public UserService(IGenericRepository<User> repository)
     {
@@ -17,10 +18,10 @@ public class UserService : IUserService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<UserDTO>> GetAllUser()
+    public async Task<List<UserDTO>> GetAllUser(Filter filter)
     {
-        var getAll = await _repository.GetAll();
-        return _mapper.ListUserToListUserDTO(getAll) ?? new List<UserDTO>();
+        var getAll = await _repository.GetAll(filter);
+        return _mapper.ListUserToListUserDTO(getAll);
     }
 
     public async Task<UserDTO> GetOneUser(string id)

@@ -1,4 +1,5 @@
-﻿using Common.DataTransferObjects;
+﻿using Common;
+using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,12 @@ public class MoviesController : ControllerBase
 
     // GET: Movies
     [HttpGet]
-    public async Task<IActionResult> GetMovies()
+    public async Task<IActionResult> GetMovies([FromQuery] Filter? filter = null)
     {
+        filter ??= new Filter();
         try
         {
-            var movies = await _service.GetAllMovies();
+            var movies = await _service.GetAllMovies(filter);
             return Ok(movies);
         }
         catch(Exception ex)

@@ -1,4 +1,5 @@
-﻿using DataLayer.Services.Contracts;
+﻿using Common;
+using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -16,11 +17,12 @@ public class SearchController : ControllerBase
 
     // GET: Search/History
     [HttpGet("History")]
-    public async Task<IActionResult> GetSearchHistories()
+    public async Task<IActionResult> GetSearchHistories([FromQuery] Filter? filter = null)
     {
+        filter ??= new Filter();
         try
         {
-            var searchHistories = await _service.GetAllSearchHistory();
+            var searchHistories = await _service.GetAllSearchHistory(filter);
             return Ok(searchHistories);
         }
         catch(Exception ex)
@@ -44,5 +46,4 @@ public class SearchController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
 }

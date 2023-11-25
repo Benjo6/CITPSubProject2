@@ -1,3 +1,4 @@
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ public class MoviesControllerTests
 {
     private readonly IMoviesService _service;
     private readonly MoviesController _controller;
+    private Filter _filter;
 
     public MoviesControllerTests()
     {
         _service = Substitute.For<IMoviesService>();
         _controller = new MoviesController(_service);
+        _filter = new Filter();
     }
 
     [Fact]
@@ -23,10 +26,10 @@ public class MoviesControllerTests
     {
         // Arrange
         var expectedMovies = new List<GetAllMovieDTO>();
-        _service.GetAllMovies().Returns(expectedMovies);
+        _service.GetAllMovies(_filter).Returns(expectedMovies);
 
         // Act
-        var result = await _controller.GetMovies();
+        var result = await _controller.GetMovies(_filter);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -174,10 +177,10 @@ public class MoviesControllerTests
     public async Task GetMovies_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllMovies().Throws(new Exception("Test exception"));
+        _service.GetAllMovies(_filter).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetMovies();
+        var result = await _controller.GetMovies(_filter);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
