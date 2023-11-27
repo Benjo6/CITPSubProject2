@@ -17,12 +17,16 @@ public class EpisodesController : ControllerBase
     
     // GET: Episodes
     [HttpGet]
-    public async Task<IActionResult> GetEpisodes([FromQuery] Filter? filter = null)
+    public async Task<IActionResult> GetEpisodes(        
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] string sortBy = "Id",
+        [FromQuery] bool asc = true)
     {
-        filter ??= new Filter();
         try
         {
-            var episodes = await _service.GetAllEpisodes(filter);
+            var episodes = await _service.GetAllEpisodes(new Filter(page,pageSize,sortBy,asc,conditions));
             
             return Ok(episodes);
         }

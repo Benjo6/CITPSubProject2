@@ -1,7 +1,5 @@
-﻿using System.Linq.Expressions;
-using Common;
+﻿using Common;
 using Common.DataTransferObjects;
-using Common.Domain;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 namespace WebService.Controllers;
@@ -19,12 +17,16 @@ public class AliasesController : ControllerBase
 
     // GET: Aliases
     [HttpGet]
-    public async Task<IActionResult> GetAliases([FromQuery] Filter? filter = null)
+    public async Task<IActionResult> GetAliases(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] IEnumerable<FilterCondition>? conditions = null,
+        [FromQuery] string sortBy = "Id",
+        [FromQuery] bool asc = true)
     {
-        filter ??= new Filter();
         try
         {
-            var aliases = await _service.GetAllAliases(filter);
+            var aliases = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
             return Ok(aliases);
         }
         catch(Exception ex)

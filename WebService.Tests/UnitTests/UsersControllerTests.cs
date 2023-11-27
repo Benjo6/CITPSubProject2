@@ -12,13 +12,11 @@ public class UsersControllerTests
 {
     private readonly IUserService _service;
     private readonly UsersController _controller;
-    private Filter _filter;
 
     public UsersControllerTests()
     {
         _service = Substitute.For<IUserService>();
         _controller = new UsersController(_service);
-        _filter = new Filter();
     }
 
     [Fact]
@@ -26,10 +24,10 @@ public class UsersControllerTests
     {
         // Arrange
         var expectedUsers = new List<UserDTO>();
-        _service.GetAllUser(_filter).Returns(expectedUsers);
+        _service.GetAllUser(Arg.Any<Filter>()).Returns(expectedUsers);
 
         // Act
-        var result = await _controller.GetUsers(_filter);
+        var result = await _controller.GetUsers();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -91,10 +89,10 @@ public class UsersControllerTests
     public async Task GetUsers_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllUser(_filter).Throws(new Exception("Test exception"));
+        _service.GetAllUser(Arg.Any<Filter>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetUsers(_filter);
+        var result = await _controller.GetUsers();
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

@@ -13,8 +13,8 @@ public class BookmarkPersonalityDTO
     
 public class AlterBookmarkPersonalityDTO
 {
-    public string UserId { get; set; } = null!;
-    public string PersonId { get; set; } = null!;
+    public string UserId { get; } = null!;
+    public string PersonId { get; } = null!;
 }
     
 public class UpdateResponseBookmarkPersonalityDTO

@@ -12,13 +12,11 @@ public class SearchControllerTests
 {
     private readonly ISearchService _service;
     private readonly SearchController _controller;
-    private Filter _filter;
 
     public SearchControllerTests()
     {
         _service = Substitute.For<ISearchService>();
         _controller = new SearchController(_service);
-        _filter = new Filter();
     }
 
     [Fact]
@@ -26,10 +24,10 @@ public class SearchControllerTests
     {
         // Arrange
         var expectedSearchHistories = new List<SearchHistoryDTO>();
-        _service.GetAllSearchHistory(_filter).Returns(expectedSearchHistories);
+        _service.GetAllSearchHistory(Arg.Any<Filter>()).Returns(expectedSearchHistories);
 
         // Act
-        var result = await _controller.GetSearchHistories(_filter);
+        var result = await _controller.GetSearchHistories();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -58,10 +56,10 @@ public class SearchControllerTests
     public async Task GetSearchHistories_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllSearchHistory(_filter).Throws(new Exception("Test exception"));
+        _service.GetAllSearchHistory(Arg.Any<Filter>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetSearchHistories(_filter);
+        var result = await _controller.GetSearchHistories();
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

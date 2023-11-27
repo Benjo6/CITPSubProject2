@@ -9,9 +9,6 @@ public class AppDbContext : DbContext
     {
     }
 
-    // Remove this in the future, it's just for testing
-    public virtual DbSet<WeatherForecast> WeatherForecasts { get; set; } = null!;
-
     public virtual DbSet<Alias> Aliases { get; set; } = null!;
 
     public virtual DbSet<BookmarkMovie> BookmarkMovies { get; set; } = null!;

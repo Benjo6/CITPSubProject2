@@ -12,13 +12,11 @@ public class AliasesControllerTests
 {
     private readonly IAliasesService _service;
     private readonly AliasesController _controller;
-    private readonly Filter _filter;
 
     public AliasesControllerTests()
     {
         _service = Substitute.For<IAliasesService>();
         _controller = new AliasesController(_service);
-        _filter = new Filter();
     }
 
     [Fact]
@@ -26,10 +24,10 @@ public class AliasesControllerTests
     {
         // Arrange
         var expectedAliases = new List<AliasDTO>();
-        _service.GetAllAliases(_filter).Returns(expectedAliases);
+        _service.GetAllAliases(Arg.Any<Filter>()).Returns(expectedAliases);
 
         // Act
-        var result = await _controller.GetAliases(_filter);
+        var result = await _controller.GetAliases();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -109,10 +107,10 @@ public class AliasesControllerTests
     public async Task GetAliases_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllAliases(_filter).Throws(new Exception("Test exception"));
+        _service.GetAllAliases(Arg.Any<Filter>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetAliases(_filter);
+        var result = await _controller.GetAliases();
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

@@ -18,8 +18,8 @@ public class UserDTO
 public class AlterUserDTO
 {
     public string Id { get; set; }
-    public string Email { get; set; } = null!;
-    public string Password { get; set; } = null!;
+    public string Email { get; } = null!;
+    public string Password { get; } = null!;
     public DateTime RegistrationDate { get; set; }
 }
 

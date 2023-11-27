@@ -19,12 +19,16 @@ public class UsersController : ControllerBase
     
     // GET: Users
     [HttpGet]
-    public async Task<IActionResult> GetUsers([FromQuery] Filter? filter=null)
+    public async Task<IActionResult> GetUsers(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] string sortBy = "Id",
+        [FromQuery] bool asc = true)
     {
-        filter ??= new Filter();
         try
         {
-            var users = await _service.GetAllUser(filter);
+            var users = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
             return Ok(users);
         }
         catch(Exception ex)

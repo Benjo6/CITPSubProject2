@@ -17,12 +17,16 @@ public class SearchController : ControllerBase
 
     // GET: Search/History
     [HttpGet("History")]
-    public async Task<IActionResult> GetSearchHistories([FromQuery] Filter? filter = null)
+    public async Task<IActionResult> GetSearchHistories(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] string sortBy = "Id",
+        [FromQuery] bool asc = true)
     {
-        filter ??= new Filter();
         try
         {
-            var searchHistories = await _service.GetAllSearchHistory(filter);
+            var searchHistories = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
             return Ok(searchHistories);
         }
         catch(Exception ex)

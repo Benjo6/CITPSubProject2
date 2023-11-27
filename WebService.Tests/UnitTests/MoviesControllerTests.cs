@@ -12,13 +12,11 @@ public class MoviesControllerTests
 {
     private readonly IMoviesService _service;
     private readonly MoviesController _controller;
-    private Filter _filter;
 
     public MoviesControllerTests()
     {
         _service = Substitute.For<IMoviesService>();
         _controller = new MoviesController(_service);
-        _filter = new Filter();
     }
 
     [Fact]
@@ -26,10 +24,10 @@ public class MoviesControllerTests
     {
         // Arrange
         var expectedMovies = new List<GetAllMovieDTO>();
-        _service.GetAllMovies(_filter).Returns(expectedMovies);
+        _service.GetAllMovies(Arg.Any<Filter>()).Returns(expectedMovies);
 
         // Act
-        var result = await _controller.GetMovies(_filter);
+        var result = await _controller.GetMovies();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -177,10 +175,10 @@ public class MoviesControllerTests
     public async Task GetMovies_ReturnsBadRequestOnError()
     {
         // Arrange
-        _service.GetAllMovies(_filter).Throws(new Exception("Test exception"));
+        _service.GetAllMovies(Arg.Any<Filter>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.GetMovies(_filter);
+        var result = await _controller.GetMovies();
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);

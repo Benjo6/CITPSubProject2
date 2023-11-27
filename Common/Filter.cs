@@ -2,18 +2,30 @@
 
 public class Filter
 {
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
-    public string SortBy { get; set; }
-    public bool IsAscending { get; set; } 
-    public IEnumerable<FilterCondition> Conditions { get; set; }
+    public int PageNumber { get; }
+    public int PageSize { get; }
+    public string SortBy { get; }
+    public bool IsAscending { get; } 
+    public IEnumerable<FilterCondition> Conditions { get; }
+
+    public Filter(int pageNumber, int pageSize, string sortBy, bool isAscending,
+        IEnumerable<FilterCondition>? conditions)
+    {
+        PageNumber = pageNumber;
+        PageSize = pageSize;
+        SortBy = sortBy;
+        IsAscending = isAscending;
+        Conditions = conditions ?? new List<FilterCondition>();
+    }
+    
+    // For the tests
     public Filter()
     {
-        Conditions = new List<FilterCondition>();
-        SortBy = string.Empty;
-        IsAscending = true;
         PageNumber = 1;
         PageSize = 10;
+        SortBy = "Id";
+        IsAscending =  true;
+        Conditions = new List<FilterCondition>();
     }
 }
 

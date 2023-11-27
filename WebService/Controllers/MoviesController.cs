@@ -1,6 +1,5 @@
 ﻿using Common;
 using Common.DataTransferObjects;
-using Common.Domain;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +18,16 @@ public class MoviesController : ControllerBase
 
     // GET: Movies
     [HttpGet]
-    public async Task<IActionResult> GetMovies([FromQuery] Filter? filter = null)
+    public async Task<IActionResult> GetMovies(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] string sortBy = "Id",
+        [FromQuery] bool asc = true)
     {
-        filter ??= new Filter();
         try
         {
-            var movies = await _service.GetAllMovies(filter);
+            var movies = await _service.GetAllMovies(new Filter(page,pageSize,sortBy,asc,conditions));
             return Ok(movies);
         }
         catch(Exception ex)
