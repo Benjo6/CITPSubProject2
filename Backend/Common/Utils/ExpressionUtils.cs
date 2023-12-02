@@ -2,6 +2,9 @@
 
 namespace Common.Utils;
 
+/// <summary>
+/// Helper class
+/// </summary>
 public static class ExpressionUtils
 {
     public static Expression<Func<T, object>> GetPropertyExpression<T>(string propertyName)
