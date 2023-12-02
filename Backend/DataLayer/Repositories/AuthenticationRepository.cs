@@ -12,7 +12,9 @@ namespace DataLayer.Repositories;
 /// </summary>
 public class AuthenticationRepository : IAuthenticationRepository
 {
-    // _context represents the database context used for data operations.
+    /// <summary>
+    /// _context represents the database context used for data operations.
+    /// </summary>
     private AppDbContext _context;
 
     /// <summary>

@@ -1,21 +1,22 @@
-using Npgsql;
-using NpgsqlTypes;
 using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
-using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using NpgsqlTypes;
+using System.Data;
 
 namespace DataLayer.Repositories
 {
     public class BookmarkMoviesRepository : IBookmarkMoviesRepository
     {
+
         private readonly AppDbContext context;
 
         public BookmarkMoviesRepository(AppDbContext _context)
         {
             context = _context;
         }
-        
+
         public async Task AddBookmarkMovies(string userId, string aliasId)
         {
             using (var connection = context.Database.GetDbConnection())
@@ -41,22 +42,22 @@ namespace DataLayer.Repositories
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = string.Format("Select * from get_bookmarks_movie(@user_id)");
-                    command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
+                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
 
-                    using (var reader = await command.ExecuteReaderAsync())
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    int count = 0;
+                    while (reader.Read() && count <= page * perPage)
                     {
-                        int count  = 0;
-                        while (reader.Read() && count <= page*perPage)
+                        if (count < (page - 1) * perPage)
                         {
-                            if(count < (page-1) * perPage)
-                            {
-                                count++;
-                                continue;
-                            }
-                            bookmarkedMovies.Add(reader.GetString(0));
                             count++;
+                            continue;
                         }
+                        bookmarkedMovies.Add(reader.GetString(0));
+                        count++;
                     }
+                }
             }
 
             return bookmarkedMovies;
@@ -72,7 +73,7 @@ namespace DataLayer.Repositories
                 command.Parameters.Add(new NpgsqlParameter("aliasId", NpgsqlDbType.Varchar) { Value = aliasId });
                 command.Parameters.Add(new NpgsqlParameter("note", NpgsqlDbType.Text) { Value = note });
                 await command.ExecuteNonQueryAsync();
-                
+
             }
         }
 
