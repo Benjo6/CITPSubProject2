@@ -21,13 +21,13 @@ public class MoviesController : ControllerBase
     public async Task<IActionResult> GetMovies(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] Dictionary<string, string>? filterCriteria = null,
         [FromQuery] string sortBy = "Id",
         [FromQuery] bool asc = true)
     {
         try
         {
-            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, conditions));
+            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
             return Ok(movies);
         }
         catch (Exception ex)

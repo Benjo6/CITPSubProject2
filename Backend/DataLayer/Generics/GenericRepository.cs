@@ -37,13 +37,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         IQueryable<T> query = _dbSet;
 
-        // Apply each filter condition
-        query = filter.Conditions.Select(condition => ExpressionUtils.GetFilterExpression<T>(condition)).Aggregate(query, (current, filterExpression) => current.Where(filterExpression));
+        // Apply flexible filtering
+        foreach (var criteria in filter.FilterCriteria)
+        {
+            var propertyInfo = typeof(T).GetProperty(criteria.Key);
+            if (propertyInfo != null)
+            {
+                query = query.Where(t => EF.Property<string>(t, criteria.Key).Contains(criteria.Value));
+            }
+        }
 
         // Apply sorting
         if (string.IsNullOrEmpty(filter.SortBy))
             return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-        
+
         var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
         query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
 
@@ -54,7 +61,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<T> GetById(string id)
     {
-        return await _dbSet.FindAsync(id) ?? throw new KeyNotFoundException($"No entity found with id {id}"); ;
+        return await _dbSet.FindAsync(id) ?? throw new KeyNotFoundException($"No entity found with id {id}");
+        ;
     }
 
     public async Task<bool> Update(T entity)

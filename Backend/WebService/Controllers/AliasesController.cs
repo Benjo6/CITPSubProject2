@@ -20,7 +20,7 @@ public class AliasesController : ControllerBase
     public async Task<IActionResult> GetAliases(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] IEnumerable<FilterCondition>? conditions = null,
+        [FromQuery] Dictionary<string,string>? conditions = null,
         [FromQuery] string sortBy = "Id",
         [FromQuery] bool asc = true)
     {

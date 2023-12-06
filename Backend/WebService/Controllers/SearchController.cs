@@ -20,7 +20,7 @@ public class SearchController : ControllerBase
     public async Task<IActionResult> GetSearchHistories(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] List<FilterCondition>? conditions = null,
+        [FromQuery] Dictionary<string,string>? conditions = null,
         [FromQuery] string sortBy = "Id",
         [FromQuery] bool asc = true)
     {

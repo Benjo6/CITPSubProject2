@@ -50,10 +50,6 @@ public class MoviesService : IMoviesService
     public async Task<List<GetAllMovieDTO>> GetAllMovies(Filter filter)
     {
         var getAll = await _repository.GetAll(filter);
-        foreach (var move in getAll)
-        {
-            Console.WriteLine(move.Episodes?.Count ?? 0);
-         }
         return _mapper.ListMovieToListGetAllMoviesDTO(getAll);
     }
 

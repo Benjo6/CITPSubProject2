@@ -1,46 +1,29 @@
-﻿namespace Common;
+namespace Common;
 
 public class Filter
 {
     public int PageNumber { get; }
     public int PageSize { get; }
     public string SortBy { get; }
-    public bool IsAscending { get; } 
-    public IEnumerable<FilterCondition> Conditions { get; }
+    public bool IsAscending { get; }
+    public Dictionary<string, string> FilterCriteria { get; } 
 
-    public Filter(int pageNumber, int pageSize, string sortBy, bool isAscending,
-        IEnumerable<FilterCondition>? conditions)
+    public Filter(int pageNumber, int pageSize, string sortBy, bool isAscending, Dictionary<string, string> filterCriteria)
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SortBy = sortBy;
         IsAscending = isAscending;
-        Conditions = conditions ?? new List<FilterCondition>();
+        FilterCriteria = filterCriteria; 
     }
-    
-    // For the tests
+
+    // For testing
     public Filter()
     {
         PageNumber = 1;
         PageSize = 10;
         SortBy = "Id";
-        IsAscending =  true;
-        Conditions = new List<FilterCondition>();
+        IsAscending = true;
+        FilterCriteria = new Dictionary<string, string>();
     }
-}
-
-public class FilterCondition
-{
-    public string PropertyName { get; set; }
-    public string Value { get; set; }
-    public OperatorEnum Operator { get; set; }
-}
-
-public enum OperatorEnum
-{
-    Equals,
-    Less,
-    LessOrEqual,
-    Greater,
-    GreaterOrEqual
 }
