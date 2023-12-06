@@ -19,5 +19,5 @@ public class SearchHistory
     public DateOnly? SearchDate { get; set; }
 
     [ForeignKey("UserId")]
-    public User? User { get; set; }
+    public virtual User? User { get; set; }
 }

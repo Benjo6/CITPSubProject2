@@ -1,5 +1,6 @@
 ﻿using Common.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataLayer.Infrastructure;
 
@@ -7,6 +8,13 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
+    }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseLazyLoadingProxies()
+            .LogTo(Console.WriteLine, LogLevel.Information);
     }
 
     public virtual DbSet<Alias> Aliases { get; set; } = null!;

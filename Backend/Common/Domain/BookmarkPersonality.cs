@@ -18,8 +18,8 @@ public class BookmarkPersonality
     public DateOnly? BookmarkDate { get; set; }
 
     [ForeignKey("PersonId")]
-    public Person Person { get; set; } = null!;
+    public virtual Person Person { get; set; } = null!;
 
     [ForeignKey("UserId")]
-    public User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

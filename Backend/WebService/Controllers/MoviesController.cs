@@ -27,10 +27,10 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _service.GetAllMovies(new Filter(page,pageSize,sortBy,asc,conditions));
+            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, conditions));
             return Ok(movies);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -61,7 +61,7 @@ public class MoviesController : ControllerBase
         {
             var bestMatchQuery = await _service.BestMatchQuery(keywords);
             return Ok(bestMatchQuery);
-                
+
         }
         catch (Exception ex)
         {

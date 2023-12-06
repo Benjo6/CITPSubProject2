@@ -35,7 +35,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<List<T>> GetAll(Filter filter)
     {
-        var query = _dbSet.AsNoTracking();
+        IQueryable<T> query = _dbSet;
 
         // Apply each filter condition
         query = filter.Conditions.Select(condition => ExpressionUtils.GetFilterExpression<T>(condition)).Aggregate(query, (current, filterExpression) => current.Where(filterExpression));
@@ -47,9 +47,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
         query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
 
-        // Apply pagination
+        // Apply pagination and convert to List
         return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
     }
+
 
     public async Task<T> GetById(string id)
     {

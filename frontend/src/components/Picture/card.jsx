@@ -1,14 +1,21 @@
+import React from 'react';
 import Card from 'react-bootstrap/Card';
 
+function BasicExample(props) {
+  const placeholderImage = 'https://via.placeholder.com/400';
 
-function BasicExample(props){
   return (
-    <Card style={{ width: '15rem', margin:'0.5rem'}} key={props.id}>
-      <Card.Img variant="top" src={props.img} />
+    <Card style={{ width: '15rem', margin: '0.5rem' }} key={props.Id}>
+      <Card.Img variant="top" src={props.Poster !== "N/A" ? props.Poster : placeholderImage} alt={props.title} />
       <Card.Body>
-        <Card.Title>{props.name}</Card.Title>
-        <Card.Text>Duration:{props.duration}</Card.Text>
-        <Card.Text>Genre:{props.genre}</Card.Text>
+        <Card.Title>{props.title}</Card.Title>
+        <Card.Text>Type: {props.type}</Card.Text>
+        <Card.Text>Runtime: {props.runtime ? `${props.runtime} minutes` : 'N/A'}</Card.Text>
+        <Card.Text>Genres: {props.genres || 'N/A'}</Card.Text>
+        <Card.Text>End Year: {props.endYear || 'N/A'}</Card.Text>
+        <Card.Text>Adult: {props.isAdult ? 'Yes' : 'No'}</Card.Text>
+        <Card.Text>Rating: {props.rating ? props.rating : 'N/A'}</Card.Text>
+        <Card.Text>Episodes: {props.episodesCount}</Card.Text>
       </Card.Body>
     </Card>
   );

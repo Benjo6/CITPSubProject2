@@ -41,7 +41,7 @@ public partial class ObjectMapper
      */
     public partial AlterResponseMovieDTO MovieToAlterResponseMovieDTO(Movie movie);
     public partial Movie AlterMovieDTOToMovie(AlterMovieDTO movie);
-    public partial List<GetAllMovieDTO> ListMovieToListGetAllMoviesDTO(List<Movie> movie);
+    public partial List<GetAllMovieDTO> ListMovieToListGetAllMoviesDTO(List<Movie> movies);
     public partial GetOneMovieDTO MovieToGetOneMovieDTO(Movie movie);
     /*
      * Person
@@ -77,3 +77,4 @@ public partial class ObjectMapper
     public partial User AlterUserDTOToUser(AlterUserDTO user);
     public partial User UserDTOToUser(UserDTO user);
 }
+

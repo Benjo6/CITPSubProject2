@@ -25,8 +25,8 @@ public  class Role
     public string? Characters { get; set; }
 
     [ForeignKey("MovieId")]
-    public Movie? Movie { get; set; }
+    public virtual Movie? Movie { get; set; }
 
     [ForeignKey("PersonId")]
-    public Person? Person { get; set; }
+    public virtual Person? Person { get; set; }
 }

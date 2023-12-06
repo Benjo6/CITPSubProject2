@@ -21,8 +21,8 @@ public class BookmarkMovie
     public string? Note { get; set; }
 
     [ForeignKey("AliasId")]
-    public Alias Alias { get; set; } = null!;
+    public virtual Alias Alias { get; set; } = null!;
 
     [ForeignKey("UserId")]
-    public User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

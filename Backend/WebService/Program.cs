@@ -13,6 +13,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Define a CORS policy
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendOrigin", policy =>
+            {
+                policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,6 +80,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseCors("FrontendOrigin");
 
         app.UseAuthentication();
         app.UseAuthorization();

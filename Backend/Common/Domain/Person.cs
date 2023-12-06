@@ -23,6 +23,6 @@ public class Person
 
     [StringLength(255), Column("known_for")]
     public string? KnownFor { get; set; }
-    public ICollection<Role> Roles { get; set; }
-    public ICollection<BookmarkPersonality> BookmarkPersonalities { get; set; }
+    public virtual ICollection<Role> Roles { get; set; }
+    public virtual ICollection<BookmarkPersonality> BookmarkPersonalities { get; set; }
 }

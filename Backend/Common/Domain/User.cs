@@ -51,8 +51,8 @@ public class User
     [Column("isadmin")]
     public bool? IsAdmin { get; set; }
 
-    public ICollection<BookmarkMovie>? BookmarkMovies { get; set; }
-    public ICollection<BookmarkPersonality>? BookmarkPersonalities { get; set; }
-    public ICollection<RatingHistory>? RatingHistories { get; set; }
-    public ICollection<SearchHistory>? SearchHistories { get; set; }
+    public virtual ICollection<BookmarkMovie>? BookmarkMovies { get; set; }
+    public virtual ICollection<BookmarkPersonality>? BookmarkPersonalities { get; set; }
+    public virtual ICollection<RatingHistory>? RatingHistories { get; set; }
+    public virtual ICollection<SearchHistory>? SearchHistories { get; set; }
 }
