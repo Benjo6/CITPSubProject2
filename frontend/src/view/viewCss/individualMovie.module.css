@@ -1,0 +1,30 @@
+.poster{
+    position: relative;
+    margin-left: 13%;
+    margin-top: -20%;
+}
+
+.info{
+    position: relative;
+    margin-top: -4%;
+    text-align: left;
+}
+
+.info h1{
+    color: #fff;
+}
+
+.desc{
+    background-color: #511E31;
+    border-radius: 16px;
+    color: #fff;
+    padding: 3%;
+    margin: 1%
+}
+
+.grad{
+    background-color: #511E31;
+    border-radius: 16px;
+    color: #fff;
+    padding: 3%;
+}
