@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import ControlledCarousel from '../components/carousel/carousel';
 import BasicExample from '../components/Picture/card';
-import { data } from "../utils/card";
 
 export default function HomePage() {
     const [movies, setMovies] = useState([]);
@@ -18,7 +17,6 @@ export default function HomePage() {
               return { ...movie, Poster: posterData.Poster };
             });
             const moviesWithPosters = await Promise.all(fetchPosterPromises);
-            console.log('Movies with posters:', moviesWithPosters); // Add this line to log the data
             setMovies(moviesWithPosters);
           } catch (error) {
             console.error('Error fetching data:', error);
