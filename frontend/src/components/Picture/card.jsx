@@ -5,7 +5,7 @@ function BasicExample(props) {
   const placeholderImage = 'https://via.placeholder.com/400';
 
   return (
-    <Card style={{ width: '15rem', margin: '0.5rem' }} key={props.Id}>
+    <Card style={{ width: '14rem', margin: '0.5rem' }} key={props.Id}>
       <Card.Img variant="top" src={props.Poster !== "N/A" ? props.Poster : placeholderImage} alt={props.title} />
       <Card.Body>
         <Card.Title>{props.title}</Card.Title>
