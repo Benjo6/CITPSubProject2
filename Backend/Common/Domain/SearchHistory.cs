@@ -20,4 +20,5 @@ public class SearchHistory
 
     [ForeignKey("UserId")]
     public virtual User? User { get; set; }
+    
 }

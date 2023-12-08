@@ -5,6 +5,6 @@ namespace DataLayer.Services.Contracts;
 
 public interface ISearchService
 {
-    Task<List<SearchHistoryDTO>> GetAllSearchHistory(Filter filter);
+    Task<(List<SearchHistoryDTO>, Metadata)> GetAllSearchHistory(Filter filter);
     Task<SearchHistoryDTO> GetOneSearchHistory(string id);
 }

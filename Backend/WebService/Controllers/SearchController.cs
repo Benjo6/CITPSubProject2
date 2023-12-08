@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,8 +29,8 @@ public class SearchController : ControllerBase
     {
         try
         {
-            var searchHistories = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(searchHistories);
+            var (searchHistories, metadata) = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new {searchHistories,metadata});
         }
         catch(Exception ex)
         {

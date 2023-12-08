@@ -5,7 +5,7 @@ namespace DataLayer.Services.Contracts;
 
 public interface IPeopleService
 {
-    Task<List<GetAllPersonDTO>> GetAllPerson(Filter filter);
+    Task<(List<GetAllPersonDTO>, Metadata)> GetAllPerson(Filter filter);
     Task<GetOnePersonDTO> GetOnePerson(string id);
     Task<UpdatePersonDTO> UpdatePerson(string id, AlterPersonDTO person);
     Task<UpdatePersonDTO> AddPerson(AlterPersonDTO person);

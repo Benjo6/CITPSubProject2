@@ -20,4 +20,5 @@ public class Episode
 
     [ForeignKey("SeriesId")]
     public virtual Movie? Series { get; set; }
+    
 }

@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +30,8 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
-            return Ok(movies);
+            var (movies, metadata) = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
+            return Ok(new{movies,metadata});
         }
         catch (Exception ex)
         {

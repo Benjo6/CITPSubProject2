@@ -33,9 +33,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return true;
     }
 
-    public async Task<List<T>> GetAll(Filter filter)
+    public async Task<(List<T>,Metadata)> GetAll(Filter filter)
     {
         IQueryable<T> query = _dbSet;
+        var metaData = new Metadata();
 
         // Apply flexible filtering
         foreach (var criteria in filter.FilterCriteria)
@@ -46,16 +47,22 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
                 query = query.Where(t => EF.Property<string>(t, criteria.Key).Contains(criteria.Value));
             }
         }
+        
+        // Get total count before pagination
+        metaData.TotalCount = await query.CountAsync();
 
         // Apply sorting
-        if (string.IsNullOrEmpty(filter.SortBy))
-            return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-
-        var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
-        query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
+        if (!string.IsNullOrEmpty(filter.SortBy))
+        {
+            var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
+            query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
+        }
 
         // Apply pagination and convert to List
-        return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+        var pagedResult = await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+
+        return (pagedResult,metaData);
+        
     }
 
 

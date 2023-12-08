@@ -23,4 +23,5 @@ public class RatingHistory
 
     [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
+    
 }

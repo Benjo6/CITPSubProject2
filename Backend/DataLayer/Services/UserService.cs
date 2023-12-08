@@ -18,10 +18,10 @@ public class UserService : IUserService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<UserDTO>> GetAllUser(Filter filter)
+    public async Task<(List<UserDTO>, Metadata)> GetAllUser(Filter filter)
     {
-        var getAll = await _repository.GetAll(filter);
-        return _mapper.ListUserToListUserDTO(getAll);
+        var (getAll, metadata) = await _repository.GetAll(filter);
+        return (_mapper.ListUserToListUserDTO(getAll), metadata);
     }
 
     public async Task<UserDTO> GetOneUser(string id)

@@ -17,10 +17,10 @@ public class SearchService : ISearchService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<SearchHistoryDTO>> GetAllSearchHistory(Filter filter)
+    public async Task<(List<SearchHistoryDTO>, Metadata)> GetAllSearchHistory(Filter filter)
     {
-        var getAll = await _searchHistoriesRepository.GetAll(filter);
-        return _mapper.ListSearchToListSearchDTO(getAll);
+        var (getAll, metadata) = await _searchHistoriesRepository.GetAll(filter);
+        return (_mapper.ListSearchToListSearchDTO(getAll), metadata);
     }
 
     public async Task<SearchHistoryDTO> GetOneSearchHistory(string id)

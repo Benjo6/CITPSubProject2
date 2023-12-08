@@ -18,10 +18,10 @@ public class PeopleService : IPeopleService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<GetAllPersonDTO>> GetAllPerson(Filter filter)
+    public async Task<(List<GetAllPersonDTO>, Metadata)> GetAllPerson(Filter filter)
     {
-        var getAll = await _peopleRepository.GetAll(filter);
-        return _mapper.ListPersonToListGetAllPersonsDTO(getAll);
+        var (getAll, metadata)= await _peopleRepository.GetAll(filter);
+        return (_mapper.ListPersonToListGetAllPersonsDTO(getAll), metadata);
     }
 
     public async Task<GetOnePersonDTO> GetOnePerson(string id)

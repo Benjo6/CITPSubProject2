@@ -5,7 +5,7 @@ namespace DataLayer.Services.Contracts;
 
 public interface IMoviesService
 {
-    public Task<List<GetAllMovieDTO>> GetAllMovies(Filter filter);
+    public Task<(List<GetAllMovieDTO>, Metadata)> GetAllMovies(Filter filter);
     public Task<GetOneMovieDTO> GetOneMovie(string id);
     public Task<AlterResponseMovieDTO> UpdateMovie(string id, AlterMovieDTO movie);
     public Task<bool> DeleteMovie (string id);

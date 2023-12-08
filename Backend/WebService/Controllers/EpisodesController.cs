@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +29,9 @@ public class EpisodesController : ControllerBase
     {
         try
         {
-            var episodes = await _service.GetAllEpisodes(new Filter(page,pageSize,sortBy,asc,conditions));
+            var (episodes, metadata) = await _service.GetAllEpisodes(new Filter(page,pageSize,sortBy,asc,conditions));
             
-            return Ok(episodes);
+            return Ok(new {episodes, metadata});
         }
         catch(Exception ex)
         {

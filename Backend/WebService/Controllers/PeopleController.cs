@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +30,8 @@ public class PeopleController : ControllerBase
     {
         try
         {
-            var people = await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(people);
+            var (people, metadata)= await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new {people,metadata});
         }
         catch(Exception ex)
         {

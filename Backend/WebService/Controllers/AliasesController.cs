@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +29,8 @@ public class AliasesController : ControllerBase
     {
         try
         {
-            var aliases = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(aliases);
+            var (aliases, metadata) = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new{aliases, metadata});
         }
         catch(Exception ex)
         {
