@@ -6,7 +6,7 @@ namespace Common.Domain;
 [Table("searchhistory")]
 public class SearchHistory
 {
-    [Key, StringLength(50), Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; }
 
     [Required, Column("user_id")]
