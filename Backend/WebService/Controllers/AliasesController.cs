@@ -34,7 +34,7 @@ public class AliasesController : ControllerBase
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -50,7 +50,7 @@ public class AliasesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -67,7 +67,7 @@ public class AliasesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -84,7 +84,7 @@ public class AliasesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -100,7 +100,7 @@ public class AliasesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

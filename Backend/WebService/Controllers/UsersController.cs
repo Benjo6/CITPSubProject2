@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -52,7 +52,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -69,7 +69,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
     
@@ -87,7 +87,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

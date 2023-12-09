@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Login = () => {
+const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://localhost:7098/Authentication/login', {
+      const response = await fetch('https://localhost:7098/Authentication/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, email, password }),
       });
       if (response.ok) {
-        alert('You have successfully logged in.');
-        navigate('/');
+        alert('You have successfully registered.');
+        navigate('/login'); // Redirect to the login page after successful registration
       } else {
         const errorData = await response.json();
-        setError(errorData.message);
+        let errorMessages = [];
+        for (const key in errorData.errors) {
+          errorData.errors[key].forEach((message) => {
+            errorMessages.push(<p key={message}>{message}</p>); // Create a paragraph for each error message
+          });
+        }
+        setError(errorMessages); // Set the error state to an array of JSX paragraphs1
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
@@ -35,9 +42,9 @@ const Login = () => {
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card">
-            <h5 className="card-header">Login</h5>
+            <h5 className="card-header">Register</h5>
             <div className="card-body">
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleRegister}>
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">Username</label>
                   <input
@@ -47,6 +54,18 @@ const Login = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Enter username"
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email"
                     required
                   />
                 </div>
@@ -62,9 +81,9 @@ const Login = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="btn btn-primary">Register</button>
                 {error && <div className="alert alert-danger mt-2">{error}</div>}
-              </form>
+                </form>
             </div>
           </div>
         </div>
@@ -73,4 +92,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

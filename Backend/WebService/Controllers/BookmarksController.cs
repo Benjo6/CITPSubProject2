@@ -1,4 +1,6 @@
-﻿using Common.DataTransferObjects;
+﻿using System;
+using System.Threading.Tasks;
+using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +27,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -40,7 +42,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -54,7 +56,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -69,7 +71,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
         [HttpDelete("Movie")]
@@ -82,7 +84,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
     }
