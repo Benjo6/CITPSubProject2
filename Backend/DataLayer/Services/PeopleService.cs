@@ -61,19 +61,11 @@ public class PeopleService : IPeopleService
     {
         return _peopleRepository.FindActorsByMovie(movieId) ?? throw new NullReferenceException("No actors found");
     }
-
-    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
-    {
-        return _peopleRepository.GetPopularActorsInMovie(movieId);
-    }
+    
 
     public Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName)
     {
         return _peopleRepository.GetPopularCoPlayers(actorName);
     }
-
-    public Task<List<PersonWord>> PersonWords(string word, int frequency)
-    {
-        return _peopleRepository.PersonWords(word, frequency);
-    }
+    
 }

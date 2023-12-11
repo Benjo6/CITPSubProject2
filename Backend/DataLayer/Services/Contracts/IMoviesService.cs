@@ -11,7 +11,6 @@ public interface IMoviesService
     public Task<bool> DeleteMovie (string id);
     public Task<AlterResponseMovieDTO> AddMovie(AlterMovieDTO movie);
     public Task<List<SimilarMovie>> FindSimilarMovies(string movieId, int? page = 1, int? perPage = 10);
-    public Task<List<string>> ExactMatchQuery(string[] keywords, int? page = 1, int? perPage = 10);
-    public Task<List<BestMatch>> BestMatchQuery(string[] keywords, int? page = 1, int? perPage = 10);
-    public Task<List<WordFrequency>> WordToWordsQuery(string[] keywords);
+    public Task<bool> RateMovie(string userId, string movieId, decimal rating);
+    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId);
 }

@@ -75,35 +75,6 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
         }
     }
 
-    public async Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
-    {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
-        {
-            var query = "select * from getpopularactorsinmovie(@movieId)";
-            command.CommandText = query;
-            command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
-            _context.Database.OpenConnection();
-
-            using (var result = await command.ExecuteReaderAsync())
-            {
-                var actors = new List<PopularActor>();
-
-                while (await result.ReadAsync())
-                {
-                    var popularActor = new PopularActor
-                    {
-                        ActorName = result.GetString(result.GetOrdinal("actor_name")),
-                        AverageRating = result.GetDecimal(result.GetOrdinal("average_rating"))
-                    };
-
-                    actors.Add(popularActor);
-                }
-
-                return actors;
-            }
-        }
-    }
-
     public async Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName)
     {
         using (var command = _context.Database.GetDbConnection().CreateCommand())

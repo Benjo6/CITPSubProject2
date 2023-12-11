@@ -5,7 +5,6 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Reflection.PortableExecutable;
 
 
 namespace DataLayer.Repositories;
@@ -21,17 +20,17 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
 
     public async Task<List<string>> ExactMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = "select * from exact_match_query(VARIADIC @keywords::varchar[])";
             command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var exactMatches = new List<string>();
 
-                int count = 0;
+                var count = 0;
                 while (await result.ReadAsync() && count <= page * perPage)
                 {
                     if (count < (page - 1) * perPage)
@@ -51,16 +50,16 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
 
     public async Task<List<BestMatch>> BestMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = "select * from best_match_query(VARIADIC @keywords::varchar[])";
             command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var bestMatches = new List<BestMatch>();
-                int count = 0;
+                var count = 0;
                 while (await result.ReadAsync() && count <= page * perPage)
                 {
                     if (count < (page - 1) * perPage)
@@ -85,13 +84,13 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
 
     public async Task<List<WordFrequency>> WordToWordsQuery(string[] keywords)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = "select * from word_to_words_query(VARIADIC @keywords::varchar[])";
             command.Parameters.Add(new NpgsqlParameter("keywords", keywords));
-            _context.Database.OpenConnection();
+            await _context.Database.OpenConnectionAsync();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var wordFrequencies = new List<WordFrequency>();
 
@@ -113,17 +112,17 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
 
     public async Task<List<SimilarMovie>> FindSimilarMovies(string movieId, int? page = 1, int? perPage = 10)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = "select * from find_similar_movies(@movieId)";
             command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
-            _context.Database.OpenConnection();
+            await _context.Database.OpenConnectionAsync();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var similarMovies = new List<SimilarMovie>();
 
-                int count = 0;
+                var count = 0;
                 while (await result.ReadAsync() && count <= page * perPage)
                 {
                     if (count < (page - 1) * perPage)
@@ -145,4 +144,99 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
             }
         }
     }
+    
+    public async Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
+    {
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
+        {
+            var query = "select * from getpopularactorsinmovie(@movieId)";
+            command.CommandText = query;
+            command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
+            await _context.Database.OpenConnectionAsync();
+
+            await using (var result = await command.ExecuteReaderAsync())
+            {
+                var actors = new List<PopularActor>();
+
+                while (await result.ReadAsync())
+                {
+                    var popularActor = new PopularActor
+                    {
+                        ActorName = result.GetString(result.GetOrdinal("actor_name")),
+                        AverageRating = result.GetDecimal(result.GetOrdinal("average_rating"))
+                    };
+
+                    actors.Add(popularActor);
+                }
+
+                return actors;
+            }
+        }
+    }
+
+    public async Task RateMovie(string userId, string movieId, decimal rating)
+    {
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = "SELECT rate(@userId, @movieId, @rating)";
+            command.Parameters.Add(new NpgsqlParameter("userId", userId));
+            command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
+            command.Parameters.Add(new NpgsqlParameter("rating", rating));
+            await _context.Database.OpenConnectionAsync();
+
+            await command.ExecuteNonQueryAsync();
+        }
+    }
+
+    public async Task<List<SearchResults>> StringSearch(string userId, string searchString)
+    {
+        var searchResults = new List<SearchResults>();
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = "SELECT * FROM string_search(@userId, @searchString)";
+            command.Parameters.Add(new NpgsqlParameter("userId", userId));
+            command.Parameters.Add(new NpgsqlParameter("searchString", searchString));
+            await _context.Database.OpenConnectionAsync();
+
+            await using (var result = await command.ExecuteReaderAsync())
+            {
+                while (await result.ReadAsync())
+                {
+                    searchResults.Add(new SearchResults
+                    {
+                        Id = result.GetString(result.GetOrdinal("id")),
+                        Title = result.GetString(result.GetOrdinal("title"))
+                    });
+                }
+            }
+        }
+        return searchResults;
+    }
+    
+    public async Task<List<SearchResults>> StructuredStringSearch(string userId, string title, string personName)
+    {
+        var searchResults = new List<SearchResults>();
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = "SELECT * FROM structured_string_search(@userId, @title, @personName)";
+            command.Parameters.Add(new NpgsqlParameter("userId", userId));
+            command.Parameters.Add(new NpgsqlParameter("title", title));
+            command.Parameters.Add(new NpgsqlParameter("personName", personName));
+            await _context.Database.OpenConnectionAsync();
+
+            await using (var result = await command.ExecuteReaderAsync())
+            {
+                while (await result.ReadAsync())
+                {
+                    searchResults.Add(new SearchResults
+                    {
+                        Id = result.GetString(result.GetOrdinal("id")),
+                        Title = result.GetString(result.GetOrdinal("title"))
+                    });
+                }
+            }
+        }
+        return searchResults;
+    }
+
 }

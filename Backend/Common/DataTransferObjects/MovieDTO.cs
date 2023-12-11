@@ -76,3 +76,9 @@ public class WordFrequency
     public string Word { get; set; }
     public long Frequency { get; set; }
 }
+
+public class SearchResults
+{
+    public string Id { get; set; }
+    public string Title { get; set; }
+}

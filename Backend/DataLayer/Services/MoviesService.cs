@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using Common;
+﻿using Common;
 using Common.DataTransferObjects;
 using Common.Mapper;
 using DataLayer.Repositories.Contracts;
@@ -24,22 +23,11 @@ public class MoviesService : IMoviesService
         return _mapper.MovieToAlterResponseMovieDTO(addedMovie);
     }
 
-
-    public Task<List<BestMatch>> BestMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
-    {
-        return _repository.BestMatchQuery(keywords, page, perPage);
-    }
-
     public async Task<bool> DeleteMovie(string id)
     {
         var entity = await _repository.GetById(id) ?? throw new KeyNotFoundException($"No entity found with id {id}");
 
         return await _repository.Delete(entity);
-    }
-
-    public Task<List<string>> ExactMatchQuery(string[] keywords, int? page = 1, int? perPage = 10)
-    {
-        return _repository.ExactMatchQuery(keywords, page, perPage);
     }
 
     public Task<List<SimilarMovie>> FindSimilarMovies(string movieId, int? page = 1, int? perPage = 10)
@@ -67,9 +55,22 @@ public class MoviesService : IMoviesService
         var updatedMovie = await _repository.GetById(theMovie.Id);
         return _mapper.MovieToAlterResponseMovieDTO(updatedMovie);
     }
-
-    public Task<List<WordFrequency>> WordToWordsQuery(string[] keywords)
+    
+    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
     {
-        return _repository.WordToWordsQuery(keywords);
+        return _repository.GetPopularActorsInMovie(movieId);
+    }
+    
+    public async Task<bool> RateMovie(string userId, string movieId, decimal rating)
+    {
+        try
+        {
+            await _repository.RateMovie(userId, movieId, rating);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
