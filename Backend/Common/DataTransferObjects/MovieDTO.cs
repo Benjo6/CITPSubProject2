@@ -81,4 +81,5 @@ public class SearchResults
 {
     public string Id { get; set; }
     public string Title { get; set; }
+    public float Relevance { get; set; }
 }

@@ -53,9 +53,9 @@ public class SearchService : ISearchService
         return await _peopleRepository.PersonWords(word, frequency);
     }
 
-    public async Task<List<SearchResults>> StringSearch(string userId, string searchString)
+    public async Task<List<SearchResults>> StringSearch(string userId, string searchString, int? resultCount = 10)
     {
-        return await _movieRepository.StringSearch(userId, searchString);
+        return await _movieRepository.StringSearch(userId, searchString,resultCount);
     }
 
     public async Task<List<SearchResults>> StructuredStringSearch(string userId, string title, string personName)

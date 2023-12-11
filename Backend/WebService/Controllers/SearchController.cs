@@ -117,11 +117,11 @@ public class SearchController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> Search(string userId, string searchString)
+    public async Task<IActionResult> Search(string userId, string searchString, int? resultCount = 10)
     {
         try
         {
-            var result = await _service.StringSearch(userId,searchString);
+            var result = await _service.StringSearch(userId,searchString, resultCount);
             return Ok(result);
         }
         catch (Exception ex)

@@ -188,14 +188,15 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
         }
     }
 
-    public async Task<List<SearchResults>> StringSearch(string userId, string searchString)
+    public async Task<List<SearchResults>> StringSearch(string userId, string searchString, int? resultCount = 10)
     {
         var searchResults = new List<SearchResults>();
         await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
-            command.CommandText = "SELECT * FROM string_search(@userId, @searchString)";
+            command.CommandText = "SELECT id, title, relevance FROM string_search(@userId, @searchString) LIMIT @resultCount";
             command.Parameters.Add(new NpgsqlParameter("userId", userId));
             command.Parameters.Add(new NpgsqlParameter("searchString", searchString));
+            command.Parameters.Add(new NpgsqlParameter("resultCount", resultCount));
             await _context.Database.OpenConnectionAsync();
 
             await using (var result = await command.ExecuteReaderAsync())
@@ -205,13 +206,15 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
                     searchResults.Add(new SearchResults
                     {
                         Id = result.GetString(result.GetOrdinal("id")),
-                        Title = result.GetString(result.GetOrdinal("title"))
+                        Title = result.GetString(result.GetOrdinal("title")),
+                        Relevance = result.GetFloat(result.GetOrdinal("relevance"))
                     });
                 }
             }
         }
         return searchResults;
     }
+
     
     public async Task<List<SearchResults>> StructuredStringSearch(string userId, string title, string personName)
     {
