@@ -44,4 +44,6 @@ public class Movie
     public virtual ICollection<Episode>? Episodes { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }
     public virtual ICollection<RatingHistory>? RatingHistories { get; set; }
+    
+
 }

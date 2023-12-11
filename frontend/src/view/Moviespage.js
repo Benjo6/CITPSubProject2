@@ -11,7 +11,8 @@ export default function MoviesPage() {
         try {
           const response = await fetch(`https://localhost:7098/Movies?page=${page}&pageSize=${pageSize}`);
           const moviesData = await response.json();
-          const fetchPosterPromises = moviesData.map(async (movie) => {
+          const moviesArray = moviesData.movies;
+          const fetchPosterPromises = moviesArray.map(async (movie) => {
             const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.title)}`);
             const posterData = await posterResponse.json();
             return { ...movie, Poster: posterData.Poster };
@@ -23,7 +24,7 @@ export default function MoviesPage() {
         }
       };
     
-      fetchMovies(15, 1);
+      fetchMovies(15, 3);
     }, []);
 return (
 <>

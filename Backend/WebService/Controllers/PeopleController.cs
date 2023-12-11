@@ -27,12 +27,12 @@ public class PeopleController : ControllerBase
     {
         try
         {
-            var people = await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(people);
+            var (people, metadata)= await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new {people,metadata});
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -48,7 +48,52 @@ public class PeopleController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    // GET: People/ActorsByName/Tom Hanks
+    [HttpGet("ActorsByName")]
+    public async Task<IActionResult> FindActorsByName([FromQuery] string name)
+    {
+        try
+        {
+            var actors = await _service.FindActorsByName(name);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+
+    // GET: People/ActorsByMovie/1id1
+    [HttpGet("ActorsByMovie")]
+    public async Task<IActionResult> FindActorsByMovie([FromQuery] string movieId)
+    {
+        try
+        {
+            var actors = await _service.FindActorsByMovie(movieId);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+
+    [HttpGet("CoPopularActor")]
+    public async Task<IActionResult> GetPopularCoPlayers([FromQuery] string actorName)
+    {
+        try
+        {
+            var actors = await _service.GetPopularCoPlayers(actorName);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -65,80 +110,9 @@ public class PeopleController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
-
-    [HttpGet("ActorsByName")]
-    public async Task<IActionResult> FindActorsByName([FromQuery] string name)
-    {
-        try
-        {
-            var actors = await _service.FindActorsByName(name);
-            return Ok(actors);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("ActorsByMovie")]
-    public async Task<IActionResult> FindActorsByMovie([FromQuery] string movieId)
-    {
-        try
-        {
-            var actors = await _service.FindActorsByMovie(movieId);
-            return Ok(actors);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("PopularActor")]
-    public async Task<IActionResult> GetPopularActorsInMovie([FromQuery] string movieId)
-    {
-        try
-        {
-            var actors = await _service.GetPopularActorsInMovie(movieId);
-            return Ok(actors);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("CoPopularActor")]
-    public async Task<IActionResult> GetPopularCoPlayers([FromQuery] string actorName)
-    {
-        try
-        {
-            var actors = await _service.GetPopularCoPlayers(actorName);
-            return Ok(actors);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpGet("ActorWords")]
-    public async Task<IActionResult> PersonWords([FromQuery] string word, int frequency)
-    {
-        try
-        {
-            var actors = await _service.PersonWords(word, frequency);
-            return Ok(actors);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
 
     // POST: People
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -153,7 +127,7 @@ public class PeopleController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -169,7 +143,7 @@ public class PeopleController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

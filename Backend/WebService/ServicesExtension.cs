@@ -5,6 +5,7 @@ using DataLayer.Repositories;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services;
 using DataLayer.Services.Contracts;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebService;
 

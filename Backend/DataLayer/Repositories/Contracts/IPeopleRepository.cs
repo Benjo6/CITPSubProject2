@@ -8,7 +8,6 @@ public interface IPeopleRepository : IGenericRepository<Person>
 {
     public Task<List<ActorBy>> FindActorsByName(string name);
     public Task<List<ActorBy>> FindActorsByMovie(string movieId);
-    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId);
     public Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName);
     public Task<List<PersonWord>> PersonWords(string word, int frequency);
     

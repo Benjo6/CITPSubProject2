@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,12 +29,12 @@ public class SearchController : ControllerBase
     {
         try
         {
-            var searchHistories = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(searchHistories);
+            var (searchHistories, metadata) = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new {searchHistories,metadata});
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -47,7 +50,101 @@ public class SearchController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
+    
+    // GET: Search/WordToWord?keywords=Action&keywords=Comedy
+    [HttpGet("WordToWords")]
+    public async Task<IActionResult> WordToWordsQuery([FromQuery] string[] keywords)
+    {
+        try
+        {
+            var wordToWord = await _service.WordToWordsQuery(keywords);
+            return Ok(wordToWord);
+
+        }
+        catch (Exception ex)
+        { 
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    // GET: Movies/BestMatchQuery?keywords=Action&keywords=Comedy
+    [HttpGet("BestMatchQuery")]
+    public async Task<IActionResult> BestMatchQuery([FromQuery] string[] keywords)
+    {
+        try
+        {
+            var bestMatchQuery = await _service.BestMatchQuery(keywords);
+            return Ok(bestMatchQuery);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+
+    // GET: Movies/ExactMatch?keywords=Action&keywords=Comedy
+    [HttpGet("ExactMatch")]
+    public async Task<IActionResult> ExactMatchQuery([FromQuery] string[] keywords)
+    {
+        try
+        {
+            var exactMatchQuery = await _service.ExactMatchQuery(keywords);
+            return Ok(exactMatchQuery);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet("ActorWords")]
+    public async Task<IActionResult> PersonWords(string word, int frequency)
+    {
+        try
+        {
+            var actors = await _service.PersonWords(word, frequency);
+            return Ok(actors);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Search(string userId, string searchString, int? resultCount = 10)
+    {
+        try
+        {
+            var result = await _service.StringSearch(userId,searchString, resultCount);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet("Structured")]
+    public async Task<IActionResult> StructuredSearch(string userId, string title, string personName)
+    {
+        try
+        {
+            var result = await _service.StructuredStringSearch(userId, title, personName);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    // string_search
+    
+    // structured_string_search
+    
 }

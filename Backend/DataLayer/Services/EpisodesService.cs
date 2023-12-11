@@ -18,10 +18,10 @@ public class EpisodesService : IEpisodesService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<EpisodeDTO>> GetAllEpisodes(Filter filter)
+    public async Task<(List<EpisodeDTO>,Metadata)> GetAllEpisodes(Filter filter)
     {
-        var getAll = await _repository.GetAll(filter);
-        return _mapper.ListEpisodeToListEpisodeDTO(getAll);
+        var (getAll,metadata) = await _repository.GetAll(filter);
+        return (_mapper.ListEpisodeToListEpisodeDTO(getAll), metadata);
     }
 
     public async Task<EpisodeDTO> GetOneEpisode(string id)

@@ -18,10 +18,10 @@ public class PeopleService : IPeopleService
         _mapper = new ObjectMapper();
     }
 
-    public async Task<List<GetAllPersonDTO>> GetAllPerson(Filter filter)
+    public async Task<(List<GetAllPersonDTO>, Metadata)> GetAllPerson(Filter filter)
     {
-        var getAll = await _peopleRepository.GetAll(filter);
-        return _mapper.ListPersonToListGetAllPersonsDTO(getAll);
+        var (getAll, metadata)= await _peopleRepository.GetAll(filter);
+        return (_mapper.ListPersonToListGetAllPersonsDTO(getAll), metadata);
     }
 
     public async Task<GetOnePersonDTO> GetOnePerson(string id)
@@ -61,19 +61,11 @@ public class PeopleService : IPeopleService
     {
         return _peopleRepository.FindActorsByMovie(movieId) ?? throw new NullReferenceException("No actors found");
     }
-
-    public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId)
-    {
-        return _peopleRepository.GetPopularActorsInMovie(movieId);
-    }
+    
 
     public Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName)
     {
         return _peopleRepository.GetPopularCoPlayers(actorName);
     }
-
-    public Task<List<PersonWord>> PersonWords(string word, int frequency)
-    {
-        return _peopleRepository.PersonWords(word, frequency);
-    }
+    
 }

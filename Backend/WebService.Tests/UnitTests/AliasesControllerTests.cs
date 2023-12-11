@@ -23,7 +23,7 @@ public class AliasesControllerTests
     public async Task GetAliases_ReturnsOkResult()
     {
         // Arrange
-        var expectedAliases = new List<AliasDTO>();
+        var expectedAliases = new (List<AliasDTO>,Metadata)();
         _service.GetAllAliases(Arg.Any<Filter>()).Returns(expectedAliases);
 
         // Act
@@ -31,7 +31,7 @@ public class AliasesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<AliasDTO>>(okResult.Value);
+        var model = Assert.IsAssignableFrom<IEnumerable<(AliasDTO,Metadata)>>(okResult.Value);
         Assert.Equal(expectedAliases, model);
     }
 

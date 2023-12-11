@@ -20,6 +20,12 @@ const NavBar = () => {
             <Nav.Link as={NavLink} to="/movie" className={styles.navLink}>
               Movie
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/login" className={styles.navLink}>
+              Login
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/register" className={styles.navLink}>
+              Register
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

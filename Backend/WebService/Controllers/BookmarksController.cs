@@ -1,6 +1,9 @@
-﻿using Common.DataTransferObjects;
+﻿using System;
+using System.Threading.Tasks;
+using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Exception = System.Exception;
 
 namespace WebService.Controllers
 {
@@ -14,7 +17,44 @@ namespace WebService.Controllers
         {
             _bookmarkService = bookmarkService;
         }
+        
+        // GET: Bookmarks/Movie/
+        [HttpGet("Movie")]
+        public async Task<IActionResult> GetMovies(
+            string userId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var result = await _bookmarkService.GetBookmarkMovies(userId,page,pageSize);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
+        
+        // GET: Bookmarks/Personality/
+        [HttpGet("Personality")]
+        public async Task<IActionResult> GetPerson(
+            string userId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var result = await _bookmarkService.GetBookmarkPersons(userId,page,pageSize);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
 
+        // POST: Bookmarks/Movie
         [HttpPost("Movie")]
         public async Task<ActionResult> Create(BookmarkMovieDTO bookmarkMovie)
         {
@@ -25,11 +65,11 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
-        // POST: BookmarksController/Create
+        // POST: Bookmarks/Personality
         [HttpPost("Personality")]
         public async Task<IActionResult> Create(BookmarkPersonalityDTO bookmark)
         {
@@ -40,7 +80,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -54,7 +94,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
 
@@ -69,7 +109,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
         [HttpDelete("Movie")]
@@ -82,7 +122,7 @@ namespace WebService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message = ex.Message});
             }
         }
     }

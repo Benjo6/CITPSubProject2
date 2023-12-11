@@ -25,4 +25,5 @@ public class Person
     public string? KnownFor { get; set; }
     public virtual ICollection<Role> Roles { get; set; }
     public virtual ICollection<BookmarkPersonality> BookmarkPersonalities { get; set; }
+    
 }

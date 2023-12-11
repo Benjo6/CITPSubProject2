@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -28,12 +31,12 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var users = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(users);
+            var (users, metadata) = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(new {users,metadata});
         }
         catch(Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -49,7 +52,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -66,7 +69,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
     
@@ -84,7 +87,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

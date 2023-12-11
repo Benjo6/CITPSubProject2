@@ -1,4 +1,6 @@
-﻿using Common.DataTransferObjects;
+﻿using System;
+using System.Threading.Tasks;
+using Common.DataTransferObjects;
 using Common.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +42,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
-            return Unauthorized(ex.Message);
+            return Unauthorized(new {message = ex.Message});
         }
     }
 
@@ -59,7 +61,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -80,7 +82,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

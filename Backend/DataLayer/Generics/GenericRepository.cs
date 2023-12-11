@@ -33,30 +33,37 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return true;
     }
 
-    public async Task<List<T>> GetAll(Filter filter)
+    public async Task<(List<T>, Metadata)> GetAll(Filter filter)
     {
         IQueryable<T> query = _dbSet;
 
-        // Apply flexible filtering
-        foreach (var criteria in filter.FilterCriteria)
+        // Apply flexible filtering using FilterUtils
+        if (filter != null && filter.FilterCriteria.Any())
         {
-            var propertyInfo = typeof(T).GetProperty(criteria.Key);
-            if (propertyInfo != null)
-            {
-                query = query.Where(t => EF.Property<string>(t, criteria.Key).Contains(criteria.Value));
-            }
+            query = FilterUtils.ApplyFilter(query, filter);
         }
 
-        // Apply sorting
-        if (string.IsNullOrEmpty(filter.SortBy))
-            return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+        // Prepare metadata with deferred execution for total count
+        var metaData = new Metadata
+        {
+            TotalCount = await query.CountAsync()
+        };
 
-        var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
-        query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
+        // Validate pagination parameters
+        var pageNumber = filter?.PageNumber > 0 ? filter.PageNumber : 1;
+        var pageSize = filter?.PageSize > 0 ? filter.PageSize : 10;
 
-        // Apply pagination and convert to List
-        return await query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+        // Apply sorting and pagination
+        if (!string.IsNullOrEmpty(filter?.SortBy))
+        {
+            var orderByExpression = ExpressionUtils.GetPropertyExpression<T>(filter.SortBy);
+            query = filter.IsAscending ? query.OrderBy(orderByExpression) : query.OrderByDescending(orderByExpression);
+        }
+        var pagedResult = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return (pagedResult, metaData);
     }
+
 
 
     public async Task<T> GetById(string id)

@@ -27,12 +27,12 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
-            return Ok(movies);
+            var (movies, metadata) = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
+            return Ok(new{movies,metadata});
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -48,44 +48,26 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
-
-
-    // GET: Movies/BestMatchQuery?keywords=Action&keywords=Comedy
-    [HttpGet("BestMatchQuery")]
-    public async Task<IActionResult> BestMatchQuery([FromQuery] string[] keywords)
+    
+    // GET: Movies/PopularActor/1id1
+    [HttpGet("PopularActor")]
+    public async Task<IActionResult> GetPopularActorsInMovie([FromQuery] string movieId)
     {
         try
         {
-            var bestMatchQuery = await _service.BestMatchQuery(keywords);
-            return Ok(bestMatchQuery);
-
+            var actors = await _service.GetPopularActorsInMovie(movieId);
+            return Ok(actors);
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
-    // GET: Movies/ExactMatch?keywords=Action&keywords=Comedy
-    [HttpGet("ExactMatch")]
-    public async Task<IActionResult> ExactMatchQuery([FromQuery] string[] keywords)
-    {
-        try
-        {
-            var exactMatchQuery = await _service.ExactMatchQuery(keywords);
-            return Ok(exactMatchQuery);
-
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // GET: Movies/FindSimilarMovies/13
+    // GET: Movies/FindSimilarMovies/1id1
     [HttpGet("FindSimilarMovies")]
     public async Task<IActionResult> FindSimilarMovies([FromQuery] string movieId)
     {
@@ -97,26 +79,10 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
-
-    // GET: Movies/WordToWord?keywords=Action&keywords=Comedy
-    [HttpGet("WordToWords")]
-    public async Task<IActionResult> WordToWordsQuery([FromQuery] string[] keywords)
-    {
-        try
-        {
-            var wordToWord = await _service.WordToWordsQuery(keywords);
-            return Ok(wordToWord);
-
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
+    
     // PUT: api/Movies/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
@@ -130,7 +96,23 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    // Rate
+    [HttpPut("Rate")]
+    public async Task<IActionResult> Rate(string userId, string movieId, decimal rating)
+    {
+        try
+        {
+            var putMovie = await _service.RateMovie(userId,movieId,rating);
+            return Ok(putMovie);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -147,7 +129,7 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 
@@ -163,7 +145,7 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new {message = ex.Message});
         }
     }
 }

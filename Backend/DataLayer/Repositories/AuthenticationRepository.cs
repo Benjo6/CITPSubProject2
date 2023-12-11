@@ -37,10 +37,10 @@ public class AuthenticationRepository : IAuthenticationRepository
         var usernameParam = new NpgsqlParameter("@username", user.Username);
         var passwordParam = new NpgsqlParameter("@password", user.Password);
         var emailParam = new NpgsqlParameter("@email", user.Email);
-        var isAdminParam = new NpgsqlParameter("@isAdmin", user.IsAdmin);
+        var isAdminParam = new NpgsqlParameter("@isadmin", user.IsAdmin);
 
         // Call the add_user function.
-        await _context.Database.ExecuteSqlRawAsync("SELECT add_user(@username, @password, @email,@isAdmin)", usernameParam, passwordParam, emailParam, isAdminParam);
+        await _context.Database.ExecuteSqlRawAsync("SELECT add_user(@username, @password, @email, @isadmin)", usernameParam, passwordParam, emailParam, isAdminParam);
     }
 
 

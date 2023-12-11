@@ -1,4 +1,6 @@
-﻿using Common.Domain;
+﻿using Common.DataTransferObjects;
+using Common.Domain;
+using Common.Identity;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 using Microsoft.Extensions.Configuration;
@@ -6,8 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Common.DataTransferObjects;
-using Common.Identity;
 
 namespace DataLayer.Services;
 
@@ -39,7 +39,7 @@ public class AuthenticationService : IAuthenticationService
     /// <exception cref="Exception">Thrown when the username or password is invalid.</exception>
     public async Task<string> Login(LoginModel model)
     {
-        var user = await _repository.GetUserByUsername(model.Username);
+        var user = await _repository.GetUserByUsername(model.Username) ?? throw new ArgumentException("Invalid username or password");
 
         if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
         {
@@ -67,7 +67,7 @@ public class AuthenticationService : IAuthenticationService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-    
+
     /// <summary>
     /// Asynchronously registers a new user.
     /// </summary>
@@ -88,6 +88,7 @@ public class AuthenticationService : IAuthenticationService
             Username = model.Username,
             Email = model.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+            IsAdmin = false
         };
 
         await _repository.CreateUser(user);

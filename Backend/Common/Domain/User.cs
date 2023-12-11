@@ -1,5 +1,4 @@
-﻿using Riok.Mapperly.Abstractions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Domain;
@@ -55,4 +54,6 @@ public class User
     public virtual ICollection<BookmarkPersonality>? BookmarkPersonalities { get; set; }
     public virtual ICollection<RatingHistory>? RatingHistories { get; set; }
     public virtual ICollection<SearchHistory>? SearchHistories { get; set; }
+    
 }
+
