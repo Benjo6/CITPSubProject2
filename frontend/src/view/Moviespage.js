@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import BasicExample from '../components/Picture/card';
+import { Button } from 'react-bootstrap';
 
-export default function MoviesPage() {
+function MoviesPage() {
+  const pageSize = 10;
   const [movies, setMovies] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = React.useState(false);
   
 
-  useEffect(() => {
-      const fetchMovies = async (pageSize, page) => {
+      const fetchMovies = React.useCallback(async () => {
         try {
+          setIsLoading(true);
           const response = await fetch(`https://localhost:7098/Movies?page=${page}&pageSize=${pageSize}`);
           const moviesData = await response.json();
+          setIsLoading(false);
           const moviesArray = moviesData.movies;
           const fetchPosterPromises = moviesArray.map(async (movie) => {
             const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.title)}`);
@@ -22,10 +27,14 @@ export default function MoviesPage() {
         } catch (error) {
           console.error('Error fetching data:', error);
         }
-      };
-    
-      fetchMovies(15, 3);
-    }, []);
+      }, [page]
+      );
+  
+  useEffect(() => {  
+      fetchMovies();
+    }, [fetchMovies]);
+
+
 return (
 <>
     <Container className='m-auto'>
@@ -34,8 +43,25 @@ return (
         return <BasicExample {...movie} />;
         })} 
         </div>
-        
+        <div className='d-flex mt-2 mb-2'>
+          
+          <Button
+    onClick={() => setPage(page - 1)}
+    disabled={isLoading || page === 0}
+  >
+    Previous
+  </Button>
+  <p className='m-auto'>{page}</p>
+  <Button
+    onClick={() => setPage(page + 1)}
+    disabled={isLoading || movies.length < pageSize}
+  >
+    Next
+  </Button> 
+        </div>
     </Container>
 </>
 );
 }
+
+export default MoviesPage;
