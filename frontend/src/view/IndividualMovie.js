@@ -7,7 +7,7 @@ export default function IndividualMovie(){
     useEffect(() => {
       const fetchMovies = async () => {
         try {
-          const response = await fetch('https://localhost:7098/Movies?pageSize=5');
+          const response = await fetch('https://localhost:7098/Movies/tt0088634');
           const moviesData = await response.json();
           const moviesArray = moviesData.movies;
           const fetchPosterPromises = moviesArray.map(async (movie) => {
