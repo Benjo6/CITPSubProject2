@@ -17,6 +17,7 @@ public class GetAllMovieDTO
 
 public class GetOneMovieDTO
 {
+    public string Id { get; set; }
     public string OriginalTitle { get; set; }
     public string Type { get; set; }
     public int? Runtime { get; set; }
@@ -26,8 +27,9 @@ public class GetOneMovieDTO
     public bool? IsAdult { get; set; }
     public decimal? Rating { get; set; }
     public int? Votes { get; set; }
-    public ICollection<Alias> Aliases { get; set; }
-    public ICollection<Episode> Episodes { get; set; }
+
+    public ICollection<EpisodeDTO> Episodes { get; set; } = new List<EpisodeDTO>();
+    public ICollection<AliasDTO> Aliases { get; set; } = new List<AliasDTO>();
 }
 
 public class AlterResponseMovieDTO

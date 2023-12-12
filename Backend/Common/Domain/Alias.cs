@@ -12,7 +12,7 @@ public class Alias
     public string Id { get; set; }
 
     [StringLength(50)]
-    [Column("movie_id", TypeName = "varchar(10)")]
+    [Column("movie_id")]
     public string? MovieId { get; set; }
 
     [Column("ordering")]
