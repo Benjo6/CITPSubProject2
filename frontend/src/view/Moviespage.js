@@ -4,7 +4,7 @@ import BasicExample from '../components/Picture/card';
 import { Button } from 'react-bootstrap';
 
 function MoviesPage() {
-  const pageSize = 10;
+  const pageSize = 12;
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -38,26 +38,26 @@ function MoviesPage() {
 return (
 <>
     <Container className='m-auto'>
-        <div className='d-flex flex-wrap'>
-           {movies.map((movie) => {
-        return <BasicExample {...movie} />;
-        })} 
-        </div>
-        <div className='d-flex mt-2 mb-2'>
+        <div className='d-flex'>
           
-          <Button
+          <Button variant='dark' className='btnhover'
     onClick={() => setPage(page - 1)}
     disabled={isLoading || page === 0}
   >
     Previous
   </Button>
-  <p className='m-auto'>{page}</p>
-  <Button
+  <span className='m-auto'>{page}</span>
+  <Button variant='dark' className='btnhover'
     onClick={() => setPage(page + 1)}
     disabled={isLoading || movies.length < pageSize}
   >
     Next
   </Button> 
+        </div>
+        <div className='d-flex flex-wrap'>
+           {movies.map((movie) => {
+        return <BasicExample {...movie} className='m-auto' />;
+        })} 
         </div>
     </Container>
 </>

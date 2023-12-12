@@ -33,16 +33,16 @@ export default function HomePage() {
                 <ControlledCarousel></ControlledCarousel>
             </Container>
             <Container className='my-auto pt-5'>
-                <h3>Top Picks</h3>
-                <div className='d-flex'>
+                <h3><span>Top Picks </span></h3>
+                <div className='d-flex flex-wrap'>
                 {movies.map((movie) => {
                         return <BasicExample {...movie} />;
                     })}
                 </div>
             </Container>
             <Container className='my-auto pt-5'>
-                <h3>Wishlist</h3>
-                <div className='d-flex'>
+                <h3><span>Wishlist</span></h3>
+                <div className='d-flex flex-wrap'>
                 {movies.map((movie) => {
                         return <BasicExample {...movie} />;
                     })}
