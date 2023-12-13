@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import {Link} from 'react-router-dom';
 
 function BasicExample(props) {
   const placeholderImage = 'https://via.placeholder.com/400';
@@ -9,7 +10,8 @@ function BasicExample(props) {
   }
   return (
     <div className='m-auto'>
-      <Card style={{ width: '10rem', height: '25rem', background: '#050505'}} key={props.Id} className='m-3'>
+      
+      <Card style={{ width: '10rem', height: '25rem', background: '#050505'}} key={props.Id} className='m-3'><Link to={`/movie/${props.id}`} className='h-full w-full shadow absolute z-10'>
       <Card.Img variant="top" src={props.Poster !== "N/A" ? props.Poster : placeholderImage} alt={props.title} style={{ width: '10rem' , height: '12rem'}} />
       <Card.Body>
         <Card.Title><span>{truncate(props.title)}</span></Card.Title>
@@ -17,7 +19,7 @@ function BasicExample(props) {
         <Card.Text><span>Adult: {props.isAdult ? 'Yes' : 'No'}</span></Card.Text>
         <Card.Text><span>Rating: {props.rating ? props.rating : 'N/A'}</span></Card.Text>
         <Button><i class="bi bi-star"></i></Button>
-      </Card.Body>
+      </Card.Body></Link>
     </Card>
     </div>
     

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Col, Container, Row } from "react-bootstrap";
 import styles from "./viewCss/individualMovie.module.css";
+import { useParams } from 'react-router-dom';
 
 
 export default function IndividualMovie(){
@@ -11,7 +12,7 @@ const fetchPosterAndPlot = async (title) => {
   return { Poster: data.Poster, Plot: data.Plot };
 };
 
-const id = 'tt0088634';
+const { id } = useParams();
 const [movie, setMovie] = useState([]);
 useEffect(() => {
 const fetchMovie =async () => {
@@ -45,7 +46,7 @@ const fetchMovie =async () => {
                         <p className='ms-4'>Genre: {movie.genres || 'N/A'}</p>
                         <p className='ms-4'>Date: {movie.startYear || 'N/A'}</p>
                         <p className='ms-4'>Adult: {movie.isAdult ? 'Yes' : 'No'}</p>
-                        <p className='ms-4'>Episodes: {movie.episodesCount}</p>
+                        <p className='ms-4'>Episodes: {movie.episodesCount  || 'N/A'}</p>
                       </span>
                     </div>
                 </Col>

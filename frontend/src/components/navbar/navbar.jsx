@@ -21,11 +21,6 @@ const NavBar = () => {
               Movies
               </span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/movie" className={styles.navLink}>
-            <span >
-              Movie
-              </span>
-            </Nav.Link>
             <Nav.Link as={NavLink} to="/login" className={styles.navLink}>
             <span >
               Login

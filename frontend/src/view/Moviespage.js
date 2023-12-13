@@ -56,7 +56,7 @@ return (
         </div>
         <div className='d-flex flex-wrap'>
            {movies.map((movie) => {
-        return <BasicExample {...movie} className='m-auto' />;
+        return <BasicExample key={movie.id} {...movie} className='m-auto' />
         })} 
         </div>
     </Container>

@@ -7,7 +7,8 @@ import './App.css'
 
 const App = () => {
   return (
-    <div className='App'>
+    <body className='App'>
+      <div >
       <Router>
       <NavBar />
       <div className="container mt-4">
@@ -19,6 +20,8 @@ const App = () => {
       </div>
     </Router>
     </div>
+    </body>
+    
     
   );
 };
