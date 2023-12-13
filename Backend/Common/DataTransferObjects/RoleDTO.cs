@@ -1,13 +1,15 @@
+using Common.Domain;
+
 namespace Common.DataTransferObjects;
 
 public class RoleDTO
 {
-    public string? MovieName { get; set; }
     public string? PersonName { get; set; }
     public int? Ordering { get; set; }
     public string? Category { get; set; }
     public string? Job { get; set; }
     public string? Characters { get; set; }
+
 }
     
 public class AlterRoleDTO
