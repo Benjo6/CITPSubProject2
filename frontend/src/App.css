@@ -6,6 +6,7 @@ min-height: 100vh;
 
 span {
   color: #ffffff;
+  text-decoration: none;
 }
 
 .btnhover:hover {

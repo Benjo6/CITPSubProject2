@@ -3,6 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 import { AiFillStar, AiOutlineStar} from 'react-icons/ai';
+import styles from './card.module.css'
 
 function BasicExample(props) {
   const placeholderImage = 'https://via.placeholder.com/400';
@@ -12,7 +13,8 @@ function BasicExample(props) {
   return (
     <div className='m-auto'>
       
-      <Card style={{ width: '10rem', height: '25rem', background: '#050505'}} key={props.Id} className='m-3'><Link to={`/movie/${props.id}`} className='h-full w-full shadow absolute z-10'><button className="absolute bg-black text-white right-0 rounded-full text-xl"><AiOutlineStar/></button>
+      <Card style={{ width: '10rem', height: '25rem', background: '#050505'}} key={props.Id} className='m-3'><Link to={`/movie/${props.id}`} className='h-full w-full position-absolute'>
+      <button className={styles.bookmark}><AiOutlineStar/></button>
       <Card.Img variant="top" src={props.Poster !== "N/A" ? props.Poster : placeholderImage} alt={props.title} style={{ width: '10rem' , height: '12rem'}} className='img object-cover' />
       <Card.Body>
         <Card.Title><span>{truncate(props.title)}</span></Card.Title>
