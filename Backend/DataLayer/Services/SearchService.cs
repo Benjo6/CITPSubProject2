@@ -53,10 +53,16 @@ public class SearchService : ISearchService
         return await _peopleRepository.PersonWords(word, frequency);
     }
 
-    public async Task<List<SearchResult>> StringSearch(string userId, string searchString, int? resultCount = 10)
+    public async Task<List<SearchResult>> StringSearch(string searchString, int? resultCount = 10)
     {
-        return await _movieRepository.StringSearch(userId, searchString,resultCount);
+        return await _movieRepository.StringSearch(searchString,resultCount);
     }
+    
+    public async Task<List<SearchResult>> LoggedInStringSearch(string userId, string searchString, int? resultCount = 10)
+    {
+        return await _movieRepository.LoggedInStringSearch(userId, searchString,resultCount);
+    }
+
 
     public async Task<List<StructuredSearchResult>> StructuredStringSearch(string userId, string title,
         string personName, int? resultCount)

@@ -117,11 +117,25 @@ public class SearchController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> Search(string userId, string searchString, int? resultCount = 10)
+    public async Task<IActionResult> Search(string searchString, int? resultCount = 10)
     {
         try
         {
-            var result = await _service.StringSearch(userId,searchString, resultCount);
+            var result = await _service.StringSearch(searchString, resultCount);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet("LoggedIn")]
+    public async Task<IActionResult> LoggedInSearch(string userId, string searchString, int? resultCount = 10)
+    {
+        try
+        {
+            var result = await _service.LoggedInStringSearch(userId,searchString, resultCount);
             return Ok(result);
         }
         catch (Exception ex)

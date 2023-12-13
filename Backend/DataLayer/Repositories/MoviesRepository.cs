@@ -187,8 +187,47 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
             await command.ExecuteNonQueryAsync();
         }
     }
+    
+    public async Task<List<SearchResult>> StringSearch(string searchString, int? resultCount)
+    {
+        // Define the SQL command text to call the string_search function
+        const string commandText = "SELECT * FROM string_search(@searchString);";
 
-    public async Task<List<SearchResult>> StringSearch(string userId, string searchString, int? resultCount)
+        // Create a parameter for the search string
+        var searchStringParam = new NpgsqlParameter("@searchString", searchString);
+
+        // Initialize a list to hold the search results
+        var searchResults = new List<SearchResult>();
+
+        // Use the existing database context to create a command
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
+        {
+            command.CommandText = commandText;
+            command.Parameters.Add(searchStringParam);
+
+            // Open the database connection
+            await _context.Database.OpenConnectionAsync();
+
+            // Execute the command and obtain a data reader
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                var count = 0;
+                while (await reader.ReadAsync() && (!resultCount.HasValue || count < resultCount.Value))
+                {
+                    // Extract the search result data from the current row
+                    var id = reader.GetString(0);
+                    var title = reader.GetString(1);
+                    var relevance = reader.GetDouble(2); 
+                    searchResults.Add(new SearchResult(id, title, relevance));
+                    count++;
+                }
+            }
+        }
+        return searchResults;
+    }
+
+
+    public async Task<List<SearchResult>> LoggedInStringSearch(string userId, string searchString, int? resultCount)
     {
         const string commandText = "SELECT * FROM string_search(@userId, @searchString)";
         var userIdParam = new NpgsqlParameter("@userId", userId);
@@ -211,7 +250,7 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
                 {
                     var id = reader.GetString(0);
                     var title = reader.GetString(1);
-                    var relevance = reader.GetDouble(2); // Assuming relevance is the third column returned by the function
+                    var relevance = reader.GetDouble(2); 
                     searchResults.Add(new SearchResult(id, title, relevance));
                     count++;
                 }

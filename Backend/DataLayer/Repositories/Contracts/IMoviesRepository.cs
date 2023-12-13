@@ -12,7 +12,9 @@ public interface IMoviesRepository : IGenericRepository<Movie>
     public Task<List<WordFrequency>> WordToWordsQuery(string[] keywords);
     public Task<List<PopularActor>> GetPopularActorsInMovie(string movieId);
     public Task RateMovie(string userId, string movieId, decimal rating);
-    public Task<List<SearchResult>> StringSearch(string userId, string searchString, int? resultCount);
+    public Task<List<SearchResult>> LoggedInStringSearch(string userId, string searchString, int? resultCount);
+    public Task<List<SearchResult>> StringSearch(string searchString, int? resultCount);
+
     public Task<List<StructuredSearchResult>> StructuredStringSearch(string userId, string title, string personName, int? resultCount);
 }
 
