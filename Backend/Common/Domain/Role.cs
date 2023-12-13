@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Common.Domain;
 
 [Table("role")]
-public  class Role
+public class Role
 {
     [Key, StringLength(50), Column("movie_id", Order = 0)]
     public string? MovieId { get; set; }

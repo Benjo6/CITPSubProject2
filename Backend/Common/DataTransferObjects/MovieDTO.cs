@@ -30,6 +30,8 @@ public class GetOneMovieDTO
 
     public ICollection<EpisodeDTO> Episodes { get; set; } = new List<EpisodeDTO>();
     public ICollection<AliasDTO> Aliases { get; set; } = new List<AliasDTO>();
+    public ICollection<RoleDTO> Roles { get; set; } = new List<RoleDTO>();
+
 }
 
 public class AlterResponseMovieDTO
