@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { MDBCarousel, MDBCarouselItem, MDBCarouselCaption } from 'mdb-react-ui-kit';
 
 
