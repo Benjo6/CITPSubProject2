@@ -19,14 +19,14 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
 
     public async Task<List<ActorBy>> FindActorsByName(string name)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand()) 
+        await using (var command = _context.Database.GetDbConnection().CreateCommand()) 
         {
             var query = "select * from find_actors_by_name(@name)";
             command.CommandText = query;
             command.Parameters.Add(new NpgsqlParameter("name", name));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync()) 
+            await using (var result = await command.ExecuteReaderAsync()) 
             {
                 var actors = new List<ActorBy>();
 
@@ -48,14 +48,14 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
 
     public async Task<List<ActorBy>> FindActorsByMovie(string movieId)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             var query = "select * from find_actors_by_movie(@movieId)";
             command.CommandText = query;
             command.Parameters.Add(new NpgsqlParameter("movieId", movieId));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var actors = new List<ActorBy>();
 
@@ -77,14 +77,14 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
 
     public async Task<List<PopularCoPlayer>> GetPopularCoPlayers(string actorName)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             var query = "select * from getpopularcoplayers(@actorName)";
             command.CommandText = query;
             command.Parameters.Add(new NpgsqlParameter("actorName", actorName));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var actors = new List<PopularCoPlayer>();
 
@@ -106,7 +106,7 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
 
     public async Task<List<PersonWord>> PersonWords(string word, int frequency)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             var query = "select * from person_words(@word, @frequency)";
             command.CommandText = query;
@@ -114,7 +114,7 @@ public class PeopleRepository : GenericRepository<Person>, IPeopleRepository
             command.Parameters.Add(new NpgsqlParameter("frequency", frequency));
             _context.Database.OpenConnection();
 
-            using (var result = await command.ExecuteReaderAsync())
+            await using (var result = await command.ExecuteReaderAsync())
             {
                 var actors = new List<PersonWord>();
 

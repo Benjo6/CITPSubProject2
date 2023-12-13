@@ -89,13 +89,14 @@ public class AppDbContext : DbContext
             entity.HasOne(r => r.User)
                 .WithMany(u => u.RatingHistories)
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-            
+                .OnDelete(DeleteBehavior.ClientCascade);
+    
             entity.HasOne(r => r.Movie)
                 .WithMany(m => m.RatingHistories)
                 .HasForeignKey(r => r.MovieId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // This ensures related RatingHistory records are deleted
         });
+
 
         modelBuilder.Entity<Role>(entity =>
         {

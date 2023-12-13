@@ -8,7 +8,13 @@ public class BookmarkMovieDTO
     public DateOnly BookmarkDate { get; set; }
 
 }
-    
+
+public class CreateBookmarkMovieDTO
+{  
+    public string UserId { get; set; }
+    public string AliasId { get; set; }
+}
+
 public class AlterBookmarkMovieDTO
 {
     public string UserId { get; set; }

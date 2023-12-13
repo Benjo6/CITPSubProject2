@@ -2,92 +2,84 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using NpgsqlTypes;
 using System.Data;
 
-namespace DataLayer.Repositories
+namespace DataLayer.Repositories;
+
+public class BookmarkMoviesRepository : IBookmarkMoviesRepository
 {
-    public class BookmarkMoviesRepository : IBookmarkMoviesRepository
+    private readonly AppDbContext _context;
+
+    public BookmarkMoviesRepository(AppDbContext context)
     {
+        _context = context;
+    }
 
-        private readonly AppDbContext context;
+    public async Task AddBookmarkMovies(string userId, string aliasId)
+    {
+        const string commandText = "SELECT add_bookmark_movie(@userId, @aliasId)";
+        var userIdParam = new NpgsqlParameter("@userId", userId);
+        var aliasIdParam = new NpgsqlParameter("@aliasId", aliasId);
 
-        public BookmarkMoviesRepository(AppDbContext _context)
+        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, aliasIdParam);
+    }
+
+    public async Task<List<string>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
+    {
+        var bookmarkedMovies = new List<string>();
+        const string commandText = "SELECT * FROM get_bookmarks_movie(@userId);";
+        var userIdParam = new NpgsqlParameter("@userId", userId);
+
+        await using (var connection = _context.Database.GetDbConnection())
         {
-            context = _context;
-        }
-
-        public async Task AddBookmarkMovies(string userId, string aliasId)
-        {
-            using (var connection = context.Database.GetDbConnection())
+            await connection.OpenAsync(); // Ensure the connection is open
+            await using (var command = connection.CreateCommand())
             {
-                connection.Open();
-                using (var command = connection.CreateCommand())
+                command.CommandType = CommandType.Text; // Use CommandType.Text for functions
+                command.CommandText = commandText;
+                command.Parameters.Add(userIdParam);
+
+                await using (var reader = await command.ExecuteReaderAsync())
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.CommandText = string.Format("Select * from add_bookmark_movie(@user_id, @alias_id)");
-                    command.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Varchar) { Value = userId });
-                    command.Parameters.Add(new NpgsqlParameter("alias_id", NpgsqlDbType.Varchar) { Value = aliasId });
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
-        }
+                    var count = 0;
+                    var skip = (page - 1) * perPage.Value; // Calculate the number of records to skip
+                    var take = page * perPage.Value; // Calculate the maximum number of records to take
 
-
-        public async Task<List<string>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
-        {
-            var bookmarkedMovies = new List<string>();
-
-            using (var command = context.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from get_bookmarks_movie(@user_id)");
-                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
-
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    int count = 0;
-                    while (reader.Read() && count <= page * perPage)
+                    while (await reader.ReadAsync())
                     {
-                        if (count < (page - 1) * perPage)
+                        if (count >= skip && count < take)
                         {
-                            count++;
-                            continue;
+                            bookmarkedMovies.Add(reader.GetString(0));
                         }
-                        bookmarkedMovies.Add(reader.GetString(0));
+
                         count++;
                     }
                 }
             }
-
-            return bookmarkedMovies;
         }
 
-        public async Task AddNote(string userId, string aliasId, string note)
-        {
-            using (var command = context.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = string.Format("Select * from add_note(@userId, @aliasId, @note)");
-                command.Parameters.Add(new NpgsqlParameter("userId", NpgsqlDbType.Varchar) { Value = userId });
-                command.Parameters.Add(new NpgsqlParameter("aliasId", NpgsqlDbType.Varchar) { Value = aliasId });
-                command.Parameters.Add(new NpgsqlParameter("note", NpgsqlDbType.Text) { Value = note });
-                await command.ExecuteNonQueryAsync();
+        return bookmarkedMovies;
+    }
+        
+    public async Task AddNote(string userId, string aliasId, string note)
+    {
+        const string commandText = "SELECT add_note(@userId, @aliasId, @note)";
+        var userIdParam = new NpgsqlParameter("@userId", userId);
+        var aliasIdParam = new NpgsqlParameter("@aliasId", aliasId);
+        var noteParam = new NpgsqlParameter("@note", note);
 
-            }
-        }
+        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, aliasIdParam, noteParam);
+    }
 
-        public async Task<bool> DeleteBookmarkMovie(string userId, string aliasId)
-        {
-            var bookmarkToRemove = context.BookmarkMovies.FirstOrDefault(x => x.AliasId == aliasId && x.UserId == userId);
+    public async Task<bool> DeleteBookmarkMovie(string userId, string aliasId)
+    {
+        var bookmarkToRemove =
+            _context.BookmarkMovies.FirstOrDefault(x => x.AliasId == aliasId && x.UserId == userId);
 
-            if (bookmarkToRemove != null)
-            {
-                context.BookmarkMovies.Remove(bookmarkToRemove);
-                await context.SaveChangesAsync();
-                return true;
-            }
-            return false;
-        }
+        if (bookmarkToRemove == null) return false;
+        _context.BookmarkMovies.Remove(bookmarkToRemove);
+        await _context.SaveChangesAsync();
+        return true;
+
     }
 }

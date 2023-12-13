@@ -56,11 +56,11 @@ namespace WebService.Controllers
 
         // POST: Bookmarks/Movie
         [HttpPost("Movie")]
-        public async Task<ActionResult> Create(BookmarkMovieDTO bookmarkMovie)
+        public async Task<ActionResult> CreateBMMovie(string userId, string aliasId)
         {
             try
             {
-                var result = await _bookmarkService.AddBookmarkMovies(bookmarkMovie.UserId,bookmarkMovie.AliasId);
+                var result = await _bookmarkService.AddBookmarkMovies(userId,aliasId);
                 return Ok(result);
             }
             catch(Exception ex)
@@ -71,11 +71,11 @@ namespace WebService.Controllers
 
         // POST: Bookmarks/Personality
         [HttpPost("Personality")]
-        public async Task<IActionResult> Create(BookmarkPersonalityDTO bookmark)
+        public async Task<ActionResult> CreateBMPerson(string userId, string personId)
         {
             try
             {
-                var result = await _bookmarkService.AddBookmarkPersonality(bookmark.UserId,bookmark.PersonId);
+                var result = await _bookmarkService.AddBookmarkPersonality(userId, personId);
                 return Ok(result);
             }
             catch(Exception ex)

@@ -17,7 +17,7 @@ public class RatingHistoriesRepository : IRatingHistoriesRepository
 
     public async Task RateMovie(string userId, string movieId, int rating)
     {
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = string.Format("Select * from add_rating(@userId, @movieId, @rating)");
             command.CommandType = System.Data.CommandType.StoredProcedure;
@@ -32,13 +32,13 @@ public class RatingHistoriesRepository : IRatingHistoriesRepository
     {
         var ratingHistory = new List<SimpleRatingHistory>();
 
-        using (var command = _context.Database.GetDbConnection().CreateCommand())
+        await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
             command.CommandText = string.Format("Select * from get_rating_history(@userId)");
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new NpgsqlParameter("userId", userId));
 
-            using (var reader = await command.ExecuteReaderAsync())
+            await using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {

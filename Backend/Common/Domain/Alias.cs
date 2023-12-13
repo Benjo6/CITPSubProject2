@@ -11,7 +11,6 @@ public class Alias
     [Column("id")]
     public string Id { get; set; }
 
-    [StringLength(50)]
     [Column("movie_id")]
     public string? MovieId { get; set; }
 

@@ -48,8 +48,9 @@ namespace DataLayer.Services
                 await _moviesRepository.AddNote(userId, aliasId, note);
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

@@ -29,13 +29,13 @@ namespace DataLayer.Repositories
 
         public async Task<List<string>> GetBookmarksPersonality(string userId, int? page = 1, int? perPage = 10)
         {
-            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            await using (var command = _context.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandText = "SELECT * FROM get_bookmarks_personality(@userId)";
                 command.Parameters.Add(new NpgsqlParameter("userId", userId));
                 _context.Database.OpenConnection();
 
-                using (var result = await command.ExecuteReaderAsync())
+                await using (var result = await command.ExecuteReaderAsync())
                 {
                     var similarMovies = new List<string>();
 
@@ -59,16 +59,13 @@ namespace DataLayer.Repositories
         }
 
         public async Task<bool> DeleteBookmarkPersonality(string userId, string personId)
-        {
+        { 
+            // Attempt to find the bookmark to remove
             var bookmarkToRemove = _context.BookmarkPersonalities.FirstOrDefault(x => x.PersonId == personId && x.UserId == userId);
-
-            if (bookmarkToRemove != null)
-            {
-                _context.BookmarkPersonalities.Remove(bookmarkToRemove);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            if (bookmarkToRemove == null) return false;
+            _context.BookmarkPersonalities.Remove(bookmarkToRemove);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

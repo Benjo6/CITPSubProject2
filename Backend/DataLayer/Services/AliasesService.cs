@@ -31,9 +31,11 @@ public class AliasesService : IAliasesService
 
     public async Task<AliasDTO> UpdateAlias(string id, AlterAliasDTO alias)
     {
-        var aliasDb = _mapper.AlterAliasDTOToAlias(alias);
-        aliasDb.Id = id;
-        return _mapper.AliasToAliasDTO(await _repository.GetById(id));
+        var mappedAlias = _mapper.AlterAliasDTOToAlias(alias);
+        mappedAlias.Id = id;
+        await _repository.Update(mappedAlias);
+        var updatedEpisode = await _repository.GetById(mappedAlias.Id);
+        return _mapper.AliasToAliasDTO(updatedEpisode);
     }
 
     public async Task<bool> DeleteAlias(string id)

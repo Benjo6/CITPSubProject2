@@ -131,11 +131,11 @@ public class SearchController : ControllerBase
     }
     
     [HttpGet("Structured")]
-    public async Task<IActionResult> StructuredSearch(string userId, string title, string personName)
+    public async Task<IActionResult> StructuredSearch(string userId, string title, string personName, int? resultCount = 10)
     {
         try
         {
-            var result = await _service.StructuredStringSearch(userId, title, personName);
+            var result = await _service.StructuredStringSearch(userId, title, personName, resultCount);
             return Ok(result);
         }
         catch (Exception ex)

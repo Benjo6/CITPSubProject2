@@ -10,4 +10,5 @@ public class SearchHistoryDTO
 
 
 
-public record SearchResult(string Id, string Title, DateTimeOffset timestamp);
+public record SearchResult(string Id, string Title, double relevance);
+public record StructuredSearchResult(string Id, string Title);

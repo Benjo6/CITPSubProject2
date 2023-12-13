@@ -188,58 +188,73 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
         }
     }
 
-    public async Task<List<SearchResults>> StringSearch(string userId, string searchString, int? resultCount = 10)
+    public async Task<List<SearchResult>> StringSearch(string userId, string searchString, int? resultCount)
     {
-        var searchResults = new List<SearchResults>();
+        const string commandText = "SELECT * FROM string_search(@userId, @searchString)";
+        var userIdParam = new NpgsqlParameter("@userId", userId);
+        var searchStringParam = new NpgsqlParameter("@searchString", searchString);
+
+        var searchResults = new List<SearchResult>();
+
         await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
-            command.CommandText = "SELECT id, title, relevance FROM string_search(@userId, @searchString) LIMIT @resultCount";
-            command.Parameters.Add(new NpgsqlParameter("userId", userId));
-            command.Parameters.Add(new NpgsqlParameter("searchString", searchString));
-            command.Parameters.Add(new NpgsqlParameter("resultCount", resultCount));
+            command.CommandText = commandText;
+            command.Parameters.Add(userIdParam);
+            command.Parameters.Add(searchStringParam);
+
             await _context.Database.OpenConnectionAsync();
 
-            await using (var result = await command.ExecuteReaderAsync())
+            await using (var reader = await command.ExecuteReaderAsync())
             {
-                while (await result.ReadAsync())
+                var count = 0;
+                while (await reader.ReadAsync() && (!resultCount.HasValue || count < resultCount.Value))
                 {
-                    searchResults.Add(new SearchResults
-                    {
-                        Id = result.GetString(result.GetOrdinal("id")),
-                        Title = result.GetString(result.GetOrdinal("title")),
-                        Relevance = result.GetFloat(result.GetOrdinal("relevance"))
-                    });
+                    var id = reader.GetString(0);
+                    var title = reader.GetString(1);
+                    var relevance = reader.GetDouble(2); // Assuming relevance is the third column returned by the function
+                    searchResults.Add(new SearchResult(id, title, relevance));
+                    count++;
                 }
             }
         }
+
         return searchResults;
     }
 
-    
-    public async Task<List<SearchResults>> StructuredStringSearch(string userId, string title, string personName)
+
+    public async Task<List<StructuredSearchResult>> StructuredStringSearch(string userId, string title, string personName, int? resultCount)
     {
-        var searchResults = new List<SearchResults>();
+        const string commandText = "SELECT * FROM structured_string_search(@userId, @title, @personName)";
+        var userIdParam = new NpgsqlParameter("@userId", userId);
+        var titleParam = new NpgsqlParameter("@title", title);
+        var personNameParam = new NpgsqlParameter("@personName", personName);
+
+        var searchResults = new List<StructuredSearchResult>();
+
         await using (var command = _context.Database.GetDbConnection().CreateCommand())
         {
-            command.CommandText = "SELECT * FROM structured_string_search(@userId, @title, @personName)";
-            command.Parameters.Add(new NpgsqlParameter("userId", userId));
-            command.Parameters.Add(new NpgsqlParameter("title", title));
-            command.Parameters.Add(new NpgsqlParameter("personName", personName));
+            command.CommandText = commandText;
+            command.Parameters.Add(userIdParam);
+            command.Parameters.Add(titleParam);
+            command.Parameters.Add(personNameParam);
+
             await _context.Database.OpenConnectionAsync();
 
-            await using (var result = await command.ExecuteReaderAsync())
+            await using (var reader = await command.ExecuteReaderAsync())
             {
-                while (await result.ReadAsync())
+                var count = 0;
+                while (await reader.ReadAsync() && (!resultCount.HasValue || count < resultCount.Value))
                 {
-                    searchResults.Add(new SearchResults
-                    {
-                        Id = result.GetString(result.GetOrdinal("id")),
-                        Title = result.GetString(result.GetOrdinal("title"))
-                    });
+                    var id = reader.GetString(0);
+                    var resultTitle = reader.GetString(1);
+                    searchResults.Add(new StructuredSearchResult(id, resultTitle));
+                    count++;
                 }
             }
+
+            await _context.Database.CloseConnectionAsync();
         }
+
         return searchResults;
     }
-
 }
