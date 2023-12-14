@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Col, Container, Row } from "react-bootstrap";
 import styles from "./viewCss/individualMovie.module.css";
+import SessionManager from "../Auth/SessionManager";
 import { useParams } from 'react-router-dom';
 
 
 export default function IndividualMovie(){
   const placeholderImage = 'https://via.placeholder.com/400';
 const fetchPosterAndPlot = async (title) => {
+  let token=SessionManager.getToken();
+  let payload = {
+    method: 'GET',
+    headers: {   
+        "access-control-allow-origin" : "*", 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+     }
+}
   const response = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(title)}`);
   const data = await response.json();
   return { Poster: data.Poster, Plot: data.Plot };
@@ -17,7 +28,7 @@ const [movie, setMovie] = useState([]);
 useEffect(() => {
 const fetchMovie =async () => {
   try {
-    const response = await fetch(`https://localhost:7098/Movies/${id}`);
+    const response = await fetch(`https://localhost:7098/Movies/${id}`, payload);
     const moviesData = await response.json();
     const posterAndPlot = await fetchPosterAndPlot(moviesData.originalTitle);
     setMovie({ ...moviesData, ...posterAndPlot });
