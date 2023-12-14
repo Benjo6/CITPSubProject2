@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Col, Container, Row } from "react-bootstrap";
 import styles from "./viewCss/individualMovie.module.css";
-import SessionManager from "../Auth/SessionManager";
+import SessionManager from "../components/Auth/SessionManager";
 import { useParams } from 'react-router-dom';
 
 
@@ -27,8 +27,8 @@ const fetchMovie =async () => {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
+          }
       }
-  }
     const response = await fetch(`https://localhost:7098/Movies/${id}`, payload);
     const moviesData = await response.json();
     const posterAndPlot = await fetchPosterAndPlot(moviesData.originalTitle);
