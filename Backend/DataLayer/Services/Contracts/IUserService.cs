@@ -5,8 +5,9 @@ namespace DataLayer.Services.Contracts;
 
 public interface IUserService
 {
-    public Task<(List<UserDTO>, Metadata)> GetAllUser(Filter filter);
+    public Task<List<UserDTO>> GetAllUser(Filter filter);
     public Task<UserDTO> GetOneUser(string id);
     public Task<bool> UpdateUser(string id, AlterUserDTO user);
     public Task<bool> DeleteUser (string id);
+    public Task<UserDTO> GetUserByUsername(string username);
 }

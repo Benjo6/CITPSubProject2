@@ -27,8 +27,8 @@ public class PeopleController : ControllerBase
     {
         try
         {
-            var (people, metadata)= await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(new {people,metadata});
+            var people = await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(people);
         }
         catch(Exception ex)
         {

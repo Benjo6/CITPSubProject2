@@ -18,10 +18,10 @@ public class AliasesService : IAliasesService
         _mapper = new ObjectMapper();
     }
     
-    public async Task<(List<AliasDTO>,Metadata)> GetAllAliases(Filter filter)
+    public async Task<List<AliasDTO>> GetAllAliases(Filter filter)
     {
-        var (aliases, metadata) = await _repository.GetAll(filter);
-        return (_mapper.ListAliasToListAliasDTO(aliases), metadata);
+        var aliases = await _repository.GetAll(filter);
+        return _mapper.ListAliasToListAliasDTO(aliases);
     }
 
     public async Task<AliasDTO> GetOneAlias(string id)

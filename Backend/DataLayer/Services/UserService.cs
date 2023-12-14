@@ -3,6 +3,7 @@ using Common.DataTransferObjects;
 using Common.Domain;
 using Common.Mapper;
 using DataLayer.Generics;
+using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 
 namespace DataLayer.Services;
@@ -10,23 +11,31 @@ namespace DataLayer.Services;
 public class UserService : IUserService
 {
     private readonly IGenericRepository<User> _repository;
+    private readonly IAuthenticationRepository _authenticationRepository;
     private readonly ObjectMapper _mapper;
 
-    public UserService(IGenericRepository<User> repository)
+    public UserService(IGenericRepository<User> repository, IAuthenticationRepository authenticationRepository)
     {
         _repository = repository;
+        _authenticationRepository = authenticationRepository;
         _mapper = new ObjectMapper();
     }
 
-    public async Task<(List<UserDTO>, Metadata)> GetAllUser(Filter filter)
+    public async Task<List<UserDTO>> GetAllUser(Filter filter)
     {
-        var (getAll, metadata) = await _repository.GetAll(filter);
-        return (_mapper.ListUserToListUserDTO(getAll), metadata);
+        var getAll = await _repository.GetAll(filter);
+        return _mapper.ListUserToListUserDTO(getAll);
     }
 
     public async Task<UserDTO> GetOneUser(string id)
     {
         var getOne = await _repository.GetById(id);
+        return _mapper.UserToUserDTO(getOne);
+    }
+    
+    public async Task<UserDTO> GetUserByUsername(string username)
+    {
+        var getOne = await _authenticationRepository.GetUserByUsername(username);
         return _mapper.UserToUserDTO(getOne);
     }
 

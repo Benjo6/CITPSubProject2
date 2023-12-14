@@ -27,8 +27,8 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var (movies, metadata) = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
-            return Ok(new{movies,metadata});
+            var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
+            return Ok(movies);
         }
         catch (Exception ex)
         {

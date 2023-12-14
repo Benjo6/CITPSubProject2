@@ -33,7 +33,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return true;
     }
 
-    public async Task<(List<T>, Metadata)> GetAll(Filter filter)
+    public async Task<List<T>> GetAll(Filter filter)
     {
         IQueryable<T> query = _dbSet;
 
@@ -42,12 +42,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         {
             query = FilterUtils.ApplyFilter(query, filter);
         }
-
-        // Prepare metadata with deferred execution for total count
-        var metaData = new Metadata
-        {
-            TotalCount = await query.CountAsync()
-        };
 
         // Validate pagination parameters
         var pageNumber = filter?.PageNumber > 0 ? filter.PageNumber : 1;
@@ -61,7 +55,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
         var pagedResult = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-        return (pagedResult, metaData);
+        return pagedResult;
     }
 
 

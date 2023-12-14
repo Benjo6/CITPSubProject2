@@ -31,8 +31,8 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var (users, metadata) = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(new {users,metadata});
+            var users = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(users);
         }
         catch(Exception ex)
         {
@@ -47,6 +47,22 @@ public class UsersController : ControllerBase
         try
         {
             var user = await _service.GetOneUser(id);
+            return Ok(user);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    // GET: Users/5
+    [HttpGet("ByUsername/{username}")]
+    public async Task<IActionResult> GetUserByUsername(string username)
+    {
+        try
+        {
+            var user = await _service.GetUserByUsername(username);
             return Ok(user);
 
         }
