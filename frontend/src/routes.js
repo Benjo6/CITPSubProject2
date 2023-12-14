@@ -3,6 +3,7 @@ import IndividualMovie from "./view/IndividualMovie";
 import LoginPage from "./view/LoginPage";
 import MoviesPage from "./view/Moviespage";
 import RegisterPage from "./view/RegisterPage";
+import SearchPage from "./view/SearchPage";
 
 
 const routes = [
@@ -10,7 +11,8 @@ const routes = [
     {path: '/movies', component: <MoviesPage />},
     {path: '/movie/:id', component: <IndividualMovie />},
     {path: '/login', component: <LoginPage/>},
-    {path: '/register', component: <RegisterPage/>}
+    {path: '/register', component: <RegisterPage/>},
+    {path: '/search', component: <SearchPage/>}
 
 ];
 
