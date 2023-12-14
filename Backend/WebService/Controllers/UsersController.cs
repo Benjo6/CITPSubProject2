@@ -55,6 +55,22 @@ public class UsersController : ControllerBase
             return BadRequest(new {message = ex.Message});
         }
     }
+    
+    // GET: Users/5
+    [HttpGet("ByUsername/{username}")]
+    public async Task<IActionResult> GetUserByUsername(string username)
+    {
+        try
+        {
+            var user = await _service.GetUserByUsername(username);
+            return Ok(user);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
 
     // PUT: Users/5
     [Authorize]
