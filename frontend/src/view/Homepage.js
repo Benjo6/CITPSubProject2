@@ -20,7 +20,7 @@ export default function HomePage() {
           'Authorization': 'Bearer ' + token
       }
   }
-          const response = await fetch('https://localhost:7098/Movies?pageSize=5', payload);
+          const response = await fetch('https://localhost:7098/Movies?pageSize=4', payload);
           const moviesData = await response.json();
           const moviesArray = moviesData.movies;
           const fetchPosterPromises = moviesArray.map(async (movie) => {

@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import styles from './NavBar.module.css';
+import SessionManager from '../Auth/SessionManager';
 
 const NavBar = () => {
+  const [loggedIn, setLoggedIn] = useState(SessionManager.getToken());
+
+  useEffect(() => {
+    setLoggedIn(SessionManager.getToken());
+  }, [SessionManager.getToken()]);
+
   return (
     <Navbar bg="black" expand="lg" className={styles.navbar} sticky='top'>
       <Container className={styles.navbarContainer}>
@@ -21,16 +28,17 @@ const NavBar = () => {
               Movies
               </span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/login" className={styles.navLink}>
+            {loggedIn ? 
+            <Nav.Link as={NavLink} to="/" className={styles.navLink} onClick={() => SessionManager.removeUserSession()}>
+            <span >
+              Logout
+              </span>
+            </Nav.Link> : <Nav.Link as={NavLink} to="/login" className={styles.navLink} >
             <span >
               Login
               </span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/register" className={styles.navLink}>
-            <span >
-              Register
-              </span>
-            </Nav.Link>
+            }
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -6,14 +6,13 @@ const SessionManager = {
         else return null;
     },
 
-    setUserSession(userName, token) {
-        sessionStorage.setItem('userName', userName);
+    setUserSession(userName, token, id) {
+        sessionStorage.setItem('username', userName);
         sessionStorage.setItem('token', token);
     },
 
     removeUserSession(){
-        sessionStorage.removeItem('userName');
-        sessionStorage.removeItem('token');
+        sessionStorage.clear();
     }
 }
 
