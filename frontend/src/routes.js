@@ -1,7 +1,7 @@
-import HomePage from "./view/HomePage";
+import HomePage from "./view/Homepage";
 import IndividualMovie from "./view/IndividualMovie";
 import LoginPage from "./view/LoginPage";
-import MoviesPage from "./view/MoviesPage";
+import MoviesPage from "./view/Moviespage";
 import RegisterPage from "./view/RegisterPage";
 
 

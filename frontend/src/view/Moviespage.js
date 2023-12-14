@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import BasicExample from '../components/Picture/card';
-import SessionManager from "../Auth/SessionManager";
+import SessionManager from "../components/Auth/SessionManager";
 import { Button } from 'react-bootstrap';
 
 function MoviesPage() {

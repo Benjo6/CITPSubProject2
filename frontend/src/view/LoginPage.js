@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SessionManager from "../Auth/SessionManager";
+import SessionManager from "../components/Auth/SessionManager";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 const Login = () => {
@@ -22,7 +22,7 @@ const Login = () => {
       if (response.ok) {
         alert('You have successfully logged in.');
         const data = await response.json();
-        SessionManager.setUserSession(userName, data.token);
+        SessionManager.setUserSession(username, data.token);
         navigate('/');
       } else {
         const errorData = await response.json();

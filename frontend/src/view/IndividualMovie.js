@@ -8,16 +8,7 @@ import { useParams } from 'react-router-dom';
 export default function IndividualMovie(){
   const placeholderImage = 'https://via.placeholder.com/400';
 const fetchPosterAndPlot = async (title) => {
-  let token=SessionManager.getToken();
-  let payload = {
-    method: 'GET',
-    headers: {   
-        "access-control-allow-origin" : "*", 
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-     }
-}
+  
   const response = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(title)}`);
   const data = await response.json();
   return { Poster: data.Poster, Plot: data.Plot };
@@ -28,6 +19,16 @@ const [movie, setMovie] = useState([]);
 useEffect(() => {
 const fetchMovie =async () => {
   try {
+    let token=SessionManager.getToken();
+    let payload = {
+      method: 'GET',
+      headers: {   
+          "access-control-allow-origin" : "*", 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+      }
+  }
     const response = await fetch(`https://localhost:7098/Movies/${id}`, payload);
     const moviesData = await response.json();
     const posterAndPlot = await fetchPosterAndPlot(moviesData.originalTitle);

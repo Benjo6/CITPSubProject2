@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import ControlledCarousel from '../components/carousel/carousel';
-import SessionManager from "../Auth/SessionManager";
+import SessionManager from "../components/Auth/SessionManager";
 import BasicExample from '../components/Picture/card';
 
 export default function HomePage() {
