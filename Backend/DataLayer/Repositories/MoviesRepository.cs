@@ -217,8 +217,8 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
                     // Extract the search result data from the current row
                     var id = reader.GetString(0);
                     var title = reader.GetString(1);
-                    var relevance = reader.GetDouble(2); 
-                    searchResults.Add(new SearchResult(id, title, relevance));
+                    var rating = reader.GetDecimal(2); 
+                    searchResults.Add(new SearchResult(id, title, rating));
                     count++;
                 }
             }
@@ -250,8 +250,8 @@ public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
                 {
                     var id = reader.GetString(0);
                     var title = reader.GetString(1);
-                    var relevance = reader.GetDouble(2); 
-                    searchResults.Add(new SearchResult(id, title, relevance));
+                    var rating = reader.GetDecimal(2); 
+                    searchResults.Add(new SearchResult(id, title, rating));
                     count++;
                 }
             }

@@ -31,8 +31,8 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var (users, metadata) = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(new {users,metadata});
+            var users = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(users);
         }
         catch(Exception ex)
         {

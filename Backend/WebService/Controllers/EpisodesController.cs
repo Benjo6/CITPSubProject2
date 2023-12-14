@@ -29,9 +29,9 @@ public class EpisodesController : ControllerBase
     {
         try
         {
-            var (episodes, metadata) = await _service.GetAllEpisodes(new Filter(page,pageSize,sortBy,asc,conditions));
+            var episodes= await _service.GetAllEpisodes(new Filter(page,pageSize,sortBy,asc,conditions));
             
-            return Ok(new {episodes, metadata});
+            return Ok(episodes);
         }
         catch(Exception ex)
         {

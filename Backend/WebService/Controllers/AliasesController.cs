@@ -29,8 +29,8 @@ public class AliasesController : ControllerBase
     {
         try
         {
-            var (aliases, metadata) = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(new{aliases, metadata});
+            var aliases = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(aliases);
         }
         catch(Exception ex)
         {

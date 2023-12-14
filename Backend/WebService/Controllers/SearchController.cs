@@ -29,8 +29,8 @@ public class SearchController : ControllerBase
     {
         try
         {
-            var (searchHistories, metadata) = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(new {searchHistories,metadata});
+            var searchHistories = await _service.GetAllSearchHistory(new Filter(page,pageSize,sortBy,asc,conditions));
+            return Ok(searchHistories);
         }
         catch(Exception ex)
         {

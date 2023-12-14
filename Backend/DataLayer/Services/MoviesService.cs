@@ -35,10 +35,10 @@ public class MoviesService : IMoviesService
         return _repository.FindSimilarMovies(movieId, page, perPage) ?? throw new NullReferenceException("No similar movies");
     }
 
-    public async Task<(List<GetAllMovieDTO>, Metadata)>GetAllMovies(Filter filter)
+    public async Task<List<GetAllMovieDTO>>GetAllMovies(Filter filter)
     {
-        var (getAll, metadata) = await _repository.GetAll(filter);
-        return (_mapper.ListMovieToListGetAllMoviesDTO(getAll),metadata);
+        var getAll = await _repository.GetAll(filter);
+        return _mapper.ListMovieToListGetAllMoviesDTO(getAll);
     }
 
     public async Task<GetOneMovieDTO> GetOneMovie(string id)
