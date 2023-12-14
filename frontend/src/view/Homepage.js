@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import ControlledCarousel from '../components/carousel/carousel';
+import SessionManager from "../Auth/SessionManager";
 import BasicExample from '../components/Picture/card';
 
 export default function HomePage() {
@@ -9,7 +10,17 @@ export default function HomePage() {
     useEffect(() => {
       const fetchMovies = async () => {
         try {
-          const response = await fetch('https://localhost:7098/Movies?pageSize=5');
+          let token=SessionManager.getToken();
+    let payload = {
+      method: 'GET',
+      headers: {   
+          "access-control-allow-origin" : "*", 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+      }
+  }
+          const response = await fetch('https://localhost:7098/Movies?pageSize=5', payload);
           const moviesData = await response.json();
           const moviesArray = moviesData.movies;
           const fetchPosterPromises = moviesArray.map(async (movie) => {

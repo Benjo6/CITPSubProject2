@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import BasicExample from '../components/Picture/card';
+import SessionManager from "../Auth/SessionManager";
 import { Button } from 'react-bootstrap';
 
 function MoviesPage() {
@@ -12,8 +13,18 @@ function MoviesPage() {
 
       const fetchMovies = React.useCallback(async () => {
         try {
+          let token=SessionManager.getToken();
+          let payload = {
+            method: 'GET',
+            headers: {   
+                "access-control-allow-origin" : "*", 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+             }
+        }
           setIsLoading(true);
-          const response = await fetch(`https://localhost:7098/Movies?page=${page}&pageSize=${pageSize}`);
+          const response = await fetch(`https://localhost:7098/Movies?page=${page}&pageSize=${pageSize}`, payload);
           const moviesData = await response.json();
           setIsLoading(false);
           const moviesArray = moviesData.movies;
