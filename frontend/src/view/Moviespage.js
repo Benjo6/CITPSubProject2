@@ -27,8 +27,7 @@ function MoviesPage() {
           const response = await fetch(`https://localhost:7098/Movies?page=${page}&pageSize=${pageSize}`, payload);
           const moviesData = await response.json();
           setIsLoading(false);
-          const moviesArray = moviesData.movies;
-          const fetchPosterPromises = moviesArray.map(async (movie) => {
+          const fetchPosterPromises = moviesData.map(async (movie) => {
             const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.title)}`);
             const posterData = await posterResponse.json();
             return { ...movie, Poster: posterData.Poster };

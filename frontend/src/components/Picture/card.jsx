@@ -2,11 +2,32 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import {Link} from 'react-router-dom';
 import { AiFillStar, AiOutlineStar} from 'react-icons/ai';
-import styles from './card.module.css'
+import styles from './card.module.css';
+import  { useState } from 'react';
+import { toast } from 'react-toastify';
+import SessionManager from '../Auth/SessionManager';
 
 
 function BasicExample(props) {
   const placeholderImage = 'https://via.placeholder.com/400';
+  const [userId, setUserId] = useState([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  //const user = localStorage.getItem(currentUser);
+
+  //if (SessionManager.getToken() === true) {
+  //  const userResponse = fetch(`https://localhost:7098/Users/ByUsername/${user}`)
+  //      const user = userResponse.json();
+ // }
+  
+  const BookmarkMovie =() => {
+    if (!userId) {toast.info("To bookmark this movie, please log in.");}
+    else {
+      if (isBookmarked === true){
+        setIsBookmarked(false);
+      }else { setIsBookmarked(true)}
+    }
+  }
+  
 
   return (
     <div className='m-auto'>

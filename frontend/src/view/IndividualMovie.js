@@ -59,6 +59,9 @@ const fetchMovie =async () => {
                         <p className='ms-4'>Date: {movie.startYear || 'N/A'}</p>
                         <p className='ms-4'>Adult: {movie.isAdult ? 'Yes' : 'No'}</p>
                         <p className='ms-4'>Episodes: {movie.episodesCount  || 'N/A'}</p>
+                        <p className='ms-4'>Aliases: {movie.alias.map((name) => {
+                          if (movie.id === name.movie_id)
+                          return name.id })  || 'N/A'}</p>
                       </span>
                     </div>
                 </Col>

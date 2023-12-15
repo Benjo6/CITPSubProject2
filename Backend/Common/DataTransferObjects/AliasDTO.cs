@@ -13,9 +13,11 @@ public class AliasDTO
     public string? Types { get; set; }
     public string? Attributes { get; set; }
     public bool? IsOriginal { get; set; }
+    public decimal MovieRating { get; set; }
     public virtual ICollection<BookmarkMovie> Bookmarkmovies { get; set; } = new List<BookmarkMovie>();
 }
-    
+
+
 public class AlterAliasDTO
 {
     public string? MovieId { get; set; }
