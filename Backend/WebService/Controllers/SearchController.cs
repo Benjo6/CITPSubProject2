@@ -116,12 +116,12 @@ public class SearchController : ControllerBase
         }
     }
     
-    [HttpGet]
-    public async Task<IActionResult> Search(string searchString, int? resultCount = 10)
+    [HttpGet("Movie")]
+    public async Task<IActionResult> MovieSearch(string searchString, int? resultCount = 10)
     {
         try
         {
-            var result = await _service.StringSearch(searchString, resultCount);
+            var result = await _service.MovieSearch(searchString, resultCount);
             return Ok(result);
         }
         catch (Exception ex)
@@ -130,12 +130,40 @@ public class SearchController : ControllerBase
         }
     }
     
-    [HttpGet("LoggedIn")]
-    public async Task<IActionResult> LoggedInSearch(string userId, string searchString, int? resultCount = 10)
+    [HttpGet("Movie/LoggedIn")]
+    public async Task<IActionResult> LoggedInMovieSearch(string userId, string searchString, int? resultCount = 10)
     {
         try
         {
-            var result = await _service.LoggedInStringSearch(userId,searchString, resultCount);
+            var result = await _service.LoggedInMovieSearch(userId,searchString, resultCount);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet("Person")]
+    public async Task<IActionResult> PersonSearch(string searchString, int? resultCount = 10)
+    {
+        try
+        {
+            var result = await _service.PersonSearch(searchString, resultCount);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new {message = ex.Message});
+        }
+    }
+    
+    [HttpGet("Person/LoggedIn")]
+    public async Task<IActionResult> LoggedInPersonSearch(string userId, string searchString, int? resultCount = 10)
+    {
+        try
+        {
+            var result = await _service.LoggedInPersonSearch(userId,searchString, resultCount);
             return Ok(result);
         }
         catch (Exception ex)
