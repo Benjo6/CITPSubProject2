@@ -6,9 +6,22 @@ const SessionManager = {
         else return null;
     },
 
+    getUserId() {
+        const id = sessionStorage.getItem('id');
+        if (id) return id;
+        else return null;
+    },
+
+    getUserName() {
+        const userName = sessionStorage.getItem('username');
+        if (userName) return userName;
+        else return null;
+    },
+
     setUserSession(userName, token, id) {
         sessionStorage.setItem('username', userName);
         sessionStorage.setItem('token', token);
+        sessionStorage.setItem('id', id);
     },
 
     removeUserSession(){
