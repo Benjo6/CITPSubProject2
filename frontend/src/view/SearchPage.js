@@ -1,4 +1,4 @@
-import BasicExample from "../components/Picture/card";
+import SearchCard from "../components/Picture/personCard";
 import { SearchBar } from "../components/SearchBar/SearchBar";
 import { useState } from 'react';
 
@@ -11,7 +11,7 @@ function SearchPage() {
         <SearchBar setResults={setResults}/>
         <div className='d-flex flex-wrap'>
         {results.map((movie) => {
-        return <BasicExample key={movie.id} {...movie} className='m-auto' />
+        return <SearchCard key={movie.id} {...movie} className='m-auto' />
         })} 
         </div>
         

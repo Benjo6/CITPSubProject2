@@ -28,6 +28,11 @@ const NavBar = () => {
               Movies
               </span>
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/search" className={styles.navLink}>
+            <span >
+              Search
+              </span>
+            </Nav.Link>
             {loggedIn ? 
             <Nav.Link as={NavLink} to="/" className={styles.navLink} onClick={() => SessionManager.removeUserSession()}>
             <span >
