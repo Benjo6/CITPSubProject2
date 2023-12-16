@@ -11,4 +11,5 @@ public class SearchHistoryDTO
 
 
 public record SearchResult(string Id, string Title, decimal rating);
+
 public record StructuredSearchResult(string Id, string Title);
