@@ -38,8 +38,9 @@ public class Movie
 
     [Column("votes")]
     public int? Votes { get; set; }
-   
+
     // Mark navigation properties as virtual for lazy loading
+    public virtual ICollection<BookmarkMovie> BookmarkMovies { get; set; }
     public virtual ICollection<Alias>? Aliases { get; set; }
     public virtual ICollection<Episode>? Episodes { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }

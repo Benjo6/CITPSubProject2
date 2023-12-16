@@ -49,16 +49,16 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<BookmarkMovie>(entity =>
         {
-            entity.HasKey(b => new { b.UserId, b.AliasId });
+            entity.HasKey(b => new { b.UserId, b.MovieId });
 
             entity.HasOne(b => b.User)
                 .WithMany(u => u.BookmarkMovies)
                 .HasForeignKey(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(b => b.Alias)
+            entity.HasOne(b => b.Movie)
                 .WithMany(a => a.BookmarkMovies)
-                .HasForeignKey(b => b.AliasId)
+                .HasForeignKey(b => b.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 

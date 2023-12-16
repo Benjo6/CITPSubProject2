@@ -15,13 +15,13 @@ public class BookmarkMoviesRepository : IBookmarkMoviesRepository
         _context = context;
     }
 
-    public async Task AddBookmarkMovies(string userId, string aliasId)
+    public async Task AddBookmarkMovies(string userId, string movieId)
     {
-        const string commandText = "SELECT add_bookmark_movie(@userId, @aliasId)";
+        const string commandText = "SELECT add_bookmark_movie(@userId, @movieId)";
         var userIdParam = new NpgsqlParameter("@userId", userId);
-        var aliasIdParam = new NpgsqlParameter("@aliasId", aliasId);
+        var movieIdParam = new NpgsqlParameter("@movieId", movieId);
 
-        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, aliasIdParam);
+        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, movieIdParam);
     }
 
     public async Task<List<string>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
@@ -61,20 +61,20 @@ public class BookmarkMoviesRepository : IBookmarkMoviesRepository
         return bookmarkedMovies;
     }
         
-    public async Task AddNote(string userId, string aliasId, string note)
+    public async Task AddNote(string userId, string movieId, string note)
     {
-        const string commandText = "SELECT add_note(@userId, @aliasId, @note)";
+        const string commandText = "SELECT add_note(@userId, @movieId, @note)";
         var userIdParam = new NpgsqlParameter("@userId", userId);
-        var aliasIdParam = new NpgsqlParameter("@aliasId", aliasId);
+        var movieIdParam = new NpgsqlParameter("@movieId", movieId);
         var noteParam = new NpgsqlParameter("@note", note);
 
-        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, aliasIdParam, noteParam);
+        await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, movieIdParam, noteParam);
     }
 
-    public async Task<bool> DeleteBookmarkMovie(string userId, string aliasId)
+    public async Task<bool> DeleteBookmarkMovie(string userId, string movieId)
     {
         var bookmarkToRemove =
-            _context.BookmarkMovies.FirstOrDefault(x => x.AliasId == aliasId && x.UserId == userId);
+            _context.BookmarkMovies.FirstOrDefault(x => x.MovieId == movieId && x.UserId == userId);
 
         if (bookmarkToRemove == null) return false;
         _context.BookmarkMovies.Remove(bookmarkToRemove);

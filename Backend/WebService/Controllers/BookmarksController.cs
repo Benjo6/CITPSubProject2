@@ -56,11 +56,11 @@ namespace WebService.Controllers
 
         // POST: Bookmarks/Movie
         [HttpPost("Movie")]
-        public async Task<ActionResult> CreateBMMovie(string userId, string aliasId)
+        public async Task<ActionResult> CreateBMMovie(string userId, string movieId)
         {
             try
             {
-                var result = await _bookmarkService.AddBookmarkMovies(userId,aliasId);
+                var result = await _bookmarkService.AddBookmarkMovies(userId,movieId);
                 return Ok(result);
             }
             catch(Exception ex)
@@ -85,11 +85,11 @@ namespace WebService.Controllers
         }
 
         [HttpPut("Movie")]
-        public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string aliasId, [FromQuery] string note)
+        public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string movieId, [FromQuery] string note)
         {
             try
             {
-                var result = await _bookmarkService.AddNoteMovie(userId,aliasId,note);
+                var result = await _bookmarkService.AddNoteMovie(userId,movieId,note);
                 return Ok(result);
             }
             catch(Exception ex)
@@ -113,11 +113,11 @@ namespace WebService.Controllers
             }
         }
         [HttpDelete("Movie")]
-        public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string aliasId)
+        public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string movieId)
         {
             try
             {
-                var result = await _bookmarkService.RemoveBookmarkMovies(userId,aliasId);
+                var result = await _bookmarkService.RemoveBookmarkMovies(userId, movieId);
                 return Ok(result);
             }
             catch(Exception ex)

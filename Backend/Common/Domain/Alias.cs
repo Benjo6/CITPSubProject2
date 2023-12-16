@@ -40,7 +40,6 @@ public class Alias
     [Column("is_original")]
     public bool? IsOriginal { get; set; }
 
-    public virtual ICollection<BookmarkMovie> BookmarkMovies { get; set; } = new List<BookmarkMovie>();
     
     [ForeignKey("MovieId")]
     public virtual Movie? Movie { get; set; }

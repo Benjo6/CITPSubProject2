@@ -15,11 +15,11 @@ namespace DataLayer.Services
             _moviesRepository = repositoryM;
         }
 
-        public async Task<bool> AddBookmarkMovies(string userId, string aliasId)
+        public async Task<bool> AddBookmarkMovies(string userId, string movieId)
         {
             try
             {
-                await _moviesRepository.AddBookmarkMovies(userId, aliasId);
+                await _moviesRepository.AddBookmarkMovies(userId, movieId);
                 return true;
             }
             catch
@@ -28,11 +28,11 @@ namespace DataLayer.Services
             }
         }
 
-        public async Task<bool> AddBookmarkPersonality(string userId, string aliasId)
+        public async Task<bool> AddBookmarkPersonality(string userId, string movieId)
         {
             try
             {
-                await _personalityRepository.AddBookmarkPersonality(userId, aliasId);
+                await _personalityRepository.AddBookmarkPersonality(userId, movieId);
                 return true;
             }
             catch
@@ -41,11 +41,11 @@ namespace DataLayer.Services
             }
         }
 
-        public async Task<bool> AddNoteMovie(string userId, string aliasId, string note)
+        public async Task<bool> AddNoteMovie(string userId, string movieId, string note)
         {
             try
             {
-                await _moviesRepository.AddNote(userId, aliasId, note);
+                await _moviesRepository.AddNote(userId, movieId, note);
                 return true;
             }
             catch(Exception ex)
@@ -60,11 +60,11 @@ namespace DataLayer.Services
         {
             return await _moviesRepository.GetBookmarksMovies(userId, page, perPage);
         }
-        public async Task<bool> RemoveBookmarkMovies(string userId, string aliasId)
+        public async Task<bool> RemoveBookmarkMovies(string userId, string movieId)
         {
             try
             {
-                await _moviesRepository.DeleteBookmarkMovie(userId, aliasId);
+                await _moviesRepository.DeleteBookmarkMovie(userId, movieId);
                 return true;
             }
             catch
@@ -72,11 +72,11 @@ namespace DataLayer.Services
                 return false;
             }
         }
-        public async Task<bool> RemoveBookmarkPersonality(string userId, string aliasId)
+        public async Task<bool> RemoveBookmarkPersonality(string userId, string movieId)
         {
             try
             {
-                await _personalityRepository.DeleteBookmarkPersonality(userId, aliasId);
+                await _personalityRepository.DeleteBookmarkPersonality(userId, movieId);
                 return true;
             }
             catch
