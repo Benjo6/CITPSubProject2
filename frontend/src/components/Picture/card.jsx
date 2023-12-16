@@ -14,9 +14,11 @@ function BasicExample(props) {
   const [user, setUser] = useState([])
   
   useEffect(() => {
-    fetch(`https://localhost:7098/Users/ByUsername/${username}`)
+    if(username){
+      fetch(`https://localhost:7098/Users/ByUsername/${username}`)
       .then(response => response.json())
       .then(json => setUser(json))
+    }
   }, [])
   
   const BookmarkMovie = async () => {
