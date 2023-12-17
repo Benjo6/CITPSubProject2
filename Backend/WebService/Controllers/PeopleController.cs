@@ -10,7 +10,6 @@ namespace WebService.Controllers;
 public class PeopleController : ControllerBase
 {
     private readonly IPeopleService _service;
-
     public PeopleController(IPeopleService service)
     {
         _service = service;
@@ -21,18 +20,19 @@ public class PeopleController : ControllerBase
     public async Task<IActionResult> GetPeople(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] Dictionary<string,string>? conditions = null,
+        [FromQuery] Dictionary<string, string>? conditions = null,
         [FromQuery] string sortBy = "Id",
         [FromQuery] bool asc = true)
     {
         try
         {
-            var people = await _service.GetAllPerson(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(people);
+            var people = await _service.GetAllPerson(new Filter(page, pageSize, sortBy, asc, conditions));
+            var listUri = Url.Action("GetPeople", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
+            return Ok(new { people = people, listUri = listUri });
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -43,27 +43,28 @@ public class PeopleController : ControllerBase
         try
         {
             var person = await _service.GetOnePerson(id);
-            return Ok(person);
-
+            var uri = Url.Action("GetPerson", new { id = id });
+            return Ok(new { person = person, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
-    
-    // GET: People/ActorsByName/Tom Hanks
+
+    // GET: People/ActorsByName/TomHanks
     [HttpGet("ActorsByName")]
     public async Task<IActionResult> FindActorsByName([FromQuery] string name)
     {
         try
         {
             var actors = await _service.FindActorsByName(name);
-            return Ok(actors);
+            var uri = Url.Action("FindActorsByName", new { name = name });
+            return Ok(new { actors = actors, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -74,14 +75,14 @@ public class PeopleController : ControllerBase
         try
         {
             var actors = await _service.FindActorsByMovie(movieId);
-            return Ok(actors);
+            var uri = Url.Action("FindActorsByMovie", new { movieId = movieId });
+            return Ok(new { actors = actors, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
-    
 
     [HttpGet("CoPopularActor")]
     public async Task<IActionResult> GetPopularCoPlayers([FromQuery] string actorName)
@@ -89,11 +90,12 @@ public class PeopleController : ControllerBase
         try
         {
             var actors = await _service.GetPopularCoPlayers(actorName);
-            return Ok(actors);
+            var uri = Url.Action("GetPopularCoPlayers", new { actorName = actorName });
+            return Ok(new { actors = actors, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -105,12 +107,12 @@ public class PeopleController : ControllerBase
         try
         {
             var putPerson = await _service.UpdatePerson(id, person);
-            return Ok(putPerson);
-
+            var uri = Url.Action("PutPerson", new { id = id });
+            return Ok(new { person = putPerson, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -122,12 +124,12 @@ public class PeopleController : ControllerBase
         try
         {
             var postPerson = await _service.AddPerson(person);
-            return Ok(postPerson);
-
+            var uri = Url.Action("PostPerson");
+            return Ok(new { person = postPerson, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -138,12 +140,12 @@ public class PeopleController : ControllerBase
         try
         {
             var result = await _service.DeletePerson(id);
-            return Ok(result);
-
+            var uri = Url.Action("DeletePerson", new { id = id });
+            return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

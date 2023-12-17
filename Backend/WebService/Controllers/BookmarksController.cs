@@ -1,129 +1,133 @@
-﻿using System;
-using System.Threading.Tasks;
-using Common.DataTransferObjects;
-using DataLayer.Services.Contracts;
+﻿using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Exception = System.Exception;
 
-namespace WebService.Controllers
+namespace WebService.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class BookmarksController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class BookmarksController : ControllerBase
+    private readonly IBookmarkService _bookmarkService;
+
+    public BookmarksController(IBookmarkService bookmarkService)
     {
-        private readonly IBookmarkService _bookmarkService;
+        _bookmarkService = bookmarkService;
+    }
 
-        public BookmarksController(IBookmarkService bookmarkService)
+    // GET: Bookmarks/Movie/
+    [HttpGet("Movie")]
+    public async Task<IActionResult> GetMovies(
+        string userId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        try
         {
-            _bookmarkService = bookmarkService;
+            var result = await _bookmarkService.GetBookmarkMovies(userId, page, pageSize);
+            var uri = Url.Action("GetMovies", new { userId = userId, page = page, pageSize = pageSize });
+            return Ok(new { result = result, uri = uri });
         }
-        
-        // GET: Bookmarks/Movie/
-        [HttpGet("Movie")]
-        public async Task<IActionResult> GetMovies(
-            string userId,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _bookmarkService.GetBookmarkMovies(userId,page,pageSize);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            return BadRequest(new { message = ex.Message });
         }
-        
-        // GET: Bookmarks/Personality/
-        [HttpGet("Personality")]
-        public async Task<IActionResult> GetPerson(
-            string userId,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
-        {
-            try
-            {
-                var result = await _bookmarkService.GetBookmarkPersons(userId,page,pageSize);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
-        }
+    }
 
-        // POST: Bookmarks/Movie
-        [HttpPost("Movie")]
-        public async Task<ActionResult> CreateBMMovie(string userId, string movieId)
+    // GET: Bookmarks/Personality/
+    [HttpGet("Personality")]
+    public async Task<IActionResult> GetPerson(
+        string userId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        try
         {
-            try
-            {
-                var result = await _bookmarkService.AddBookmarkMovies(userId,movieId);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            var result = await _bookmarkService.GetBookmarkPersons(userId, page, pageSize);
+            var uri = Url.Action("GetPerson", new { userId = userId, page = page, pageSize = pageSize });
+            return Ok(new { result = result, uri = uri });
         }
-
-        // POST: Bookmarks/Personality
-        [HttpPost("Personality")]
-        public async Task<ActionResult> CreateBMPerson(string userId, string personId)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _bookmarkService.AddBookmarkPersonality(userId, personId);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            return BadRequest(new { message = ex.Message });
         }
+    }
 
-        [HttpPut("Movie")]
-        public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string movieId, [FromQuery] string note)
+    // POST: Bookmarks/Movie
+    [HttpPost("Movie")]
+    public async Task<ActionResult> CreateBMMovie(string userId, string movieId)
+    {
+        try
         {
-            try
-            {
-                var result = await _bookmarkService.AddNoteMovie(userId,movieId,note);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            var result = await _bookmarkService.AddBookmarkMovies(userId, movieId);
+            var uri = Url.Action("CreateBMMovie", new { userId = userId, movieId = movieId });
+            return Ok(new { result = result, uri = uri });
         }
-
-
-        [HttpDelete("Personality")]
-        public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _bookmarkService.RemoveBookmarkPersonality(userId,personId);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            return BadRequest(new { message = ex.Message });
         }
-        [HttpDelete("Movie")]
-        public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string movieId)
+    }
+
+    // POST: Bookmarks/Personality
+    [HttpPost("Personality")]
+    public async Task<ActionResult> CreateBMPerson(string userId, string personId)
+    {
+        try
         {
-            try
-            {
-                var result = await _bookmarkService.RemoveBookmarkMovies(userId, movieId);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            var result = await _bookmarkService.AddBookmarkPersonality(userId, personId);
+            var uri = Url.Action("CreateBMPerson", new { userId = userId, personId = personId });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("Movie")]
+    public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string movieId, [FromQuery] string note)
+    {
+        try
+        {
+            var result = await _bookmarkService.AddNoteMovie(userId, movieId, note);
+            var uri = Url.Action("AddNote", new { userId = userId, movieId = movieId, note = note });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+
+    [HttpDelete("Personality")]
+    public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
+    {
+        try
+        {
+            var result = await _bookmarkService.RemoveBookmarkPersonality(userId, personId);
+            var uri = Url.Action("DeleteBookmarkPersonality", new { userId = userId, personId = personId });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+    [HttpDelete("Movie")]
+    public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string movieId)
+    {
+        try
+        {
+            var result = await _bookmarkService.RemoveBookmarkMovies(userId, movieId);
+            var uri = Url.Action("DeleteBookmarkMovie", new { userId = userId, movieId = movieId });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
     }
 }
+

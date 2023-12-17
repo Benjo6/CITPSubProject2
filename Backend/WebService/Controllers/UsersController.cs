@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +11,12 @@ namespace WebService.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _service;
-    
+
     public UsersController(IUserService service)
     {
         _service = service;
     }
-    
+
     // GET: Users
     [HttpGet]
     public async Task<IActionResult> GetUsers(
@@ -31,12 +28,13 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var users = await _service.GetAllUser(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(users);
+            var users = await _service.GetAllUser(new Filter(page, pageSize, sortBy, asc, conditions));
+            var listUri = Url.Action("GetUsers", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
+            return Ok(new { users = users, listUri = listUri });
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -47,15 +45,15 @@ public class UsersController : ControllerBase
         try
         {
             var user = await _service.GetOneUser(id);
-            return Ok(user);
-
+            var uri = Url.Action("GetUser", new { id = id });
+            return Ok(new { user = user, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
-    
+
     // GET: Users/5
     [HttpGet("ByUsername/{username}")]
     public async Task<IActionResult> GetUserByUsername(string username)
@@ -63,12 +61,12 @@ public class UsersController : ControllerBase
         try
         {
             var user = await _service.GetUserByUsername(username);
-            return Ok(user);
-
+            var uri = Url.Action("GetUserByUsername", new { username = username });
+            return Ok(new { user = user, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -80,15 +78,15 @@ public class UsersController : ControllerBase
         try
         {
             var result = await _service.UpdateUser(id, user);
-            return Ok(result);
-
+            var uri = Url.Action("PutUser", new { id = id });
+            return Ok(new { user = result, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
-    
+
 
     // DELETE: api/Users/5
     [Authorize]
@@ -98,12 +96,12 @@ public class UsersController : ControllerBase
         try
         {
             var result = await _service.DeleteUser(id);
-            return Ok(result);
-
+            var uri = Url.Action("DeleteUser", new { id = id });
+            return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -23,20 +20,22 @@ public class AliasesController : ControllerBase
     public async Task<IActionResult> GetAliases(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] Dictionary<string,string>? conditions = null,
+        [FromQuery] Dictionary<string, string>? conditions = null,
         [FromQuery] string sortBy = "Id",
         [FromQuery] bool asc = true)
     {
         try
         {
-            var aliases = await _service.GetAllAliases(new Filter(page,pageSize,sortBy,asc,conditions));
-            return Ok(aliases);
+            var aliases = await _service.GetAllAliases(new Filter(page, pageSize, sortBy, asc, conditions));
+            var uri = Url.Action("GetAliases", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
+            return Ok(new { aliases = aliases, uri = uri });
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
+
 
     // GET: Aliases/5
     [HttpGet("{id}")]
@@ -45,12 +44,12 @@ public class AliasesController : ControllerBase
         try
         {
             var alias = await _service.GetOneAlias(id);
-            return Ok(alias);
-
+            var uri = Url.Action("GetAlias", new { id = id });
+            return Ok(new { alias = alias, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -62,12 +61,12 @@ public class AliasesController : ControllerBase
         try
         {
             var putAlias = await _service.UpdateAlias(id, alias);
-            return Ok(putAlias);
-
+            var uri = Url.Action("GetAlias", new { id = id });
+            return Ok(new { alias = putAlias, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -79,12 +78,12 @@ public class AliasesController : ControllerBase
         try
         {
             var postAlias = await _service.AddAlias(alias);
-            return Ok(postAlias);
-
+            var uri = Url.Action("GetAlias", new { id = postAlias.Id });
+            return Ok(new { alias = postAlias, uri = uri });
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 
@@ -96,11 +95,10 @@ public class AliasesController : ControllerBase
         {
             var result = await _service.DeleteAlias(id);
             return Ok(result);
-
         }
         catch (Exception ex)
         {
-            return BadRequest(new {message = ex.Message});
+            return BadRequest(new { message = ex.Message });
         }
     }
 }
