@@ -31,6 +31,13 @@ export const SearchBar = ({ setResults }) => {
     fetchPerson(value);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      fetchData(input);
+      fetchPerson(input);
+    }
+  };
+
   return (
     <div className="input-wrapper">
       <FaSearch id="search-icon" />
@@ -38,6 +45,7 @@ export const SearchBar = ({ setResults }) => {
         placeholder="Type to search..."
         value={input}
         onChange={(e) => handleChange(e.target.value)}
+        onKeyUp={handleKeyPress}
       />
     </div>
   );
