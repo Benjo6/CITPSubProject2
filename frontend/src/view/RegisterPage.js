@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AuthenticationDataService from "../dataservices/AuthenticationDataService";
+
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -12,28 +14,11 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://localhost:7098/Authentication/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
-      if (response.ok) {
-        alert('You have successfully registered.');
-        navigate('/login'); // Redirect to the login page after successful registration
-      } else {
-        const errorData = await response.json();
-        let errorMessages = [];
-        for (const key in errorData.errors) {
-          errorData.errors[key].forEach((message) => {
-            errorMessages.push(<p key={message}>{message}</p>); // Create a paragraph for each error message
-          });
-        }
-        setError(errorMessages); // Set the error state to an array of JSX paragraphs1
-      }
+      await AuthenticationDataService.register({ username, email, password });
+      alert('You have successfully registered.');
+      navigate('/login'); // Redirect to the login page after successful registration
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(error.message);
     }
   };
 
@@ -83,7 +68,7 @@ const Register = () => {
                 </div>
                 <button type="submit" className="btn btn-primary">Register</button>
                 {error && <div className="alert alert-danger mt-2">{error}</div>}
-                </form>
+              </form>
             </div>
           </div>
         </div>

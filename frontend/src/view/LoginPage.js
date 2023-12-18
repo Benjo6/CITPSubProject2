@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SessionManager from "../components/Auth/SessionManager";
+import AuthenticationDataService from "../dataservices/AuthenticationDataService";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
@@ -12,24 +13,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://localhost:7098/Authentication/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-      if (response.ok) {
-        alert('You have successfully logged in.');
-        const data = await response.json();
-        SessionManager.setUserSession(username, data.token);
-        navigate('/');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message);
-      }
+      const data = await AuthenticationDataService.login({ username, password });
+      SessionManager.setUserSession(username, data.token);
+      alert('You have successfully logged in.');
+      navigate('/');
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(error.message);
     }
   };
 
