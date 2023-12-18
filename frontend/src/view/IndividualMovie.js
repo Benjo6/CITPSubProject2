@@ -4,6 +4,7 @@ import styles from "./viewCss/individualMovie.module.css";
 import SessionManager from "../components/Auth/SessionManager";
 import { useParams } from 'react-router-dom';
 import MoviesDataService from '../dataservices/MoviesDataService';
+import Rating from '../components/rating/rating';
 
 export default function IndividualMovie(){
   const placeholderImage = 'https://via.placeholder.com/400';
@@ -77,6 +78,7 @@ export default function IndividualMovie(){
             <div className={styles.grad}>
               <h5>Grading system</h5>
               <p>Rating: {movie.rating ? movie.rating : 'N/A'}</p>
+              <Rating/>
             </div>
           </Col>
         </Row>
