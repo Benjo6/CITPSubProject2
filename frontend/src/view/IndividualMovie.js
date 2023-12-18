@@ -9,7 +9,6 @@ import SessionManager from '../components/Auth/SessionManager';
 
 export default function IndividualMovie(){
   const [rating, setRating] = useState([]);
-  const username = SessionManager.getUserName();
   const [loggedIn, setLoggedIn] = useState();
 
     
@@ -41,7 +40,8 @@ export default function IndividualMovie(){
   }, [id]); // Adding id as a dependency
 
   const Rate = () => {
-    MoviesDataService.rate(useridd, movie.id, rating)
+   MoviesDataService.rate(useridd, movie.id, 8.6);
+
   }
   console.log(useridd);
   console.log(movie.id);

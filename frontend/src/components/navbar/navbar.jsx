@@ -33,7 +33,12 @@ const NavBar = () => {
               Search
               </span>
             </Nav.Link>
-            {loggedIn ? 
+            {loggedIn ? <Nav.Link as={NavLink} to="/bookmarks" className={styles.navLink}>
+            <span >
+              Bookmarks
+              </span>
+            </Nav.Link> : ""}
+            {loggedIn ?
             <Nav.Link as={NavLink} to="/" className={styles.navLink} onClick={() => SessionManager.removeUserSession()}>
             <span >
               Logout

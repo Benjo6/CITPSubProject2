@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
-import ControlledCarousel from '../components/carousel/carousel';
 import BasicExample from '../components/Picture/card';
 import MoviesDataService from '../dataservices/MoviesDataService';
 
@@ -22,9 +21,6 @@ fetchMovies();
 
 return (
 <>
-    <Container className='my-auto'>
-        <ControlledCarousel></ControlledCarousel>
-    </Container>
     <Container className='my-auto pt-5'>
         <h3><span>Top Picks </span></h3>
         <div className='d-flex flex-wrap'>
