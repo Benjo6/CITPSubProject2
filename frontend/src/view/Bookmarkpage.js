@@ -17,7 +17,8 @@ function Bookmarkpage(){
 
   const fetchBookmarks = async (userID) => {
       const bookmarkedMovies = await BookmarksDataService.getMovies(userID, 1, 12)
-      setbookmark(bookmarkedMovies);
+      const bookies = bookmarkedMovies.result;
+      setbookmark(bookies);
   }
 
   useEffect(()=>{
@@ -31,7 +32,7 @@ function Bookmarkpage(){
     <>
         <div className='d-flex flex-wrap'>
           {bookmark.map((movie) => {
-            return <BasicExample key={movie.id} {...movie} className='m-auto' />
+            return <BasicExample {...movie} className='m-auto' />
           })} 
         </div>
         
