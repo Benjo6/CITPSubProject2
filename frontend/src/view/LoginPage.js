@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SessionManager from "../components/Auth/SessionManager";
 import AuthenticationDataService from "../dataservices/AuthenticationDataService";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -57,6 +57,7 @@ const Login = () => {
                 <button type="submit" className="btn btn-primary">Login</button>
                 {error && <div className="alert alert-danger mt-2">{error}</div>}
               </form>
+              <h5>You do not have an account, yet?<Link to={'/register'}>Register HERE!</Link></h5>
             </div>
           </div>
         </div>
