@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,6 +19,10 @@ public class SearchControllerTests
     {
         _service = Substitute.For<ISearchService>();
         _controller = new SearchController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
@@ -31,8 +37,10 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<SearchHistoryDTO>>(okResult.Value);
-        Assert.Equal(expectedSearchHistories, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<SearchHistoriesResult>(json);
+        List<SearchHistoryDTO> returnedSearchDTOs = data.Histories.Select(a => a.SearchHistory).ToList();
+        Assert.Equal(expectedSearchHistories, returnedSearchDTOs);
     }
 
     [Fact]
@@ -48,8 +56,10 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<SearchHistoryDTO>(okResult.Value);
-        Assert.Equal(expectedSearchHistory, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<SearchHistoryWithUri>(json);
+        var model = data.SearchHistory;
+        Assert.Equal(expectedSearchHistory.Id, model.Id);
     }
 
     [Fact]
@@ -63,7 +73,7 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -78,7 +88,7 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -94,8 +104,9 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<BestMatch>>(okResult.Value);
-        Assert.Equal(expectedBestMatchQuery, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BestMatchResults>(json);
+        Assert.Equal(expectedBestMatchQuery, data.BestMatchQuery);
     }
 
 
@@ -112,8 +123,9 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
-        Assert.Equal(expectedExactMatchQuery, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<ExactMatchQueryResults>(json);
+        Assert.Equal(expectedExactMatchQuery, data.ExactMatchQuery);
     }
 
     [Fact]
@@ -129,8 +141,9 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<WordFrequency>>(okResult.Value);
-        Assert.Equal(expectedWordToWord, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<WordToWordsResults>(json);
+        Assert.Equal(expectedWordToWord, data.WordToWord);
     }
 
 
@@ -146,7 +159,7 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -161,7 +174,7 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -176,7 +189,7 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -193,8 +206,9 @@ public class SearchControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<PersonWord>>(okResult.Value);
-        Assert.Equal(expectedPersonWords, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PersonWordResults>(json);
+        Assert.Equal(expectedPersonWords, data.Actors);
     }
 
     [Fact]
@@ -210,6 +224,42 @@ public class SearchControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+}
+
+public class SearchHistoryWithUri
+{
+    public SearchHistoryDTO SearchHistory { get; set; }
+    public string Uri { get; set; }
+}
+
+public class SearchHistoriesResult
+{
+    public IEnumerable<SearchHistoryWithUri> Histories { get; set; }
+    public string Uri { get; set; }
+}
+
+public class PersonWordResults
+{
+    public IEnumerable<PersonWord> Actors { get; set; }
+    public string Uri { get; set; }
+}
+
+public class WordToWordsResults
+{
+    public IEnumerable<WordFrequency> WordToWord { get; set; }
+    public string Uri { get; set; }
+}
+
+public class ExactMatchQueryResults
+{
+    public IEnumerable<string> ExactMatchQuery { get; set; }
+    public string Uri { get; set; }
+}
+
+public class BestMatchResults
+{
+    public IEnumerable<BestMatch> BestMatchQuery { get; set; }
+    public string Uri { get; set; }
 }
