@@ -1,7 +1,6 @@
 ﻿using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -47,7 +46,7 @@ public class UsersController : ControllerBase
 
     // GET: Users/5
     [HttpGet("{id}")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> GetUser(string id)
     {
         try
@@ -64,7 +63,7 @@ public class UsersController : ControllerBase
 
     // GET: Users/5
     [HttpGet("ByUsername/{username}")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> GetUserByUsername(string username)
     {
         try
@@ -80,7 +79,7 @@ public class UsersController : ControllerBase
     }
 
     // PUT: Users/5
-    [Authorize]
+    //[Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(string id, AlterUserDTO user)
     {
@@ -98,7 +97,7 @@ public class UsersController : ControllerBase
 
 
     // DELETE: api/Users/5
-    [Authorize]
+    //[Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {

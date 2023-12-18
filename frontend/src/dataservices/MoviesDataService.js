@@ -60,19 +60,18 @@ const MoviesDataService = {
     
     rate: async (userId, movieId, rating) => {
         const token = SessionManager.getToken();
-        const response = await fetch(`${MoviesDataService.baseUrl}/Rate`, {
+        const response = await fetch(`${MoviesDataService.baseUrl}/Rate?userId=${userId}&movieId=${movieId}&rating=${rating}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer` + token
-            },
-            body: JSON.stringify({ userId, movieId, rating })
+                'Authorization': `Bearer ${token}`
+            }
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
         return await response.json();
-    }
+    }    
 };
 
 export default MoviesDataService;
