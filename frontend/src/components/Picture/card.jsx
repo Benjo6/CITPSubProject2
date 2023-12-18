@@ -5,7 +5,8 @@ import { AiFillStar, AiOutlineStar} from 'react-icons/ai';
 import styles from './card.module.css';
 import  { useState, useEffect } from 'react';
 import SessionManager from '../Auth/SessionManager';
-
+import UsersDataService from "../../dataservices/UsersDataService";
+import BookmarksDataService from "../../dataservices/BookmarksDataService";
 
 function BasicExample(props) {
   const placeholderImage = 'https://via.placeholder.com/400';
@@ -15,20 +16,14 @@ function BasicExample(props) {
   
   useEffect(() => {
     if(username){
-      fetch(`https://localhost:7098/Users/ByUsername/${username}`)
-      .then(response => response.json())
-      .then(json => setUser(json))
+      const response = UsersDataService.getUserByUsername(username)
+      setUser(response.user)
     }
-  }, [])
+  }, [username])
   
   const BookmarkMovie = async () => {
       if (isBookmarked === false){
-        const response = await fetch(`https://localhost:7098/Bookmarks/Movie?userId=${user.id}&movieId=${props.id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+        const response = await BookmarksDataService.createBMMovie(user.id, props.id);
         if (response.ok){setIsBookmarked(true)}
       }
   }

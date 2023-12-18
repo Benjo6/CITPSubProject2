@@ -5,19 +5,28 @@ import UsersDataService from "../dataservices/UsersDataService";
 import BasicExample from "../components/Picture/card";
 
 function Bookmarkpage(){
-    SessionManager.getToken()
-    const [bookmark, setbookmark] = useState([]);
-    const usn = SessionManager.getUserName();
-    const userID = UsersDataService.getUserByUsername(usn)
-    const fetchBookmarks = async () => {
-        const bookmarkedMovies = await BookmarksDataService.getMovies(userID, 1, 12)
-        setbookmark(bookmarkedMovies);
-    }
-    useEffect(()=>{
-        fetchBookmarks();
-    }, [fetchBookmarks])
+  const [bookmark, setbookmark] = useState([]);
+  const usn = SessionManager.getUserName();
 
-    console.log(SessionManager.getToken())
+  UsersDataService.getUserByUsername(usn)
+      .then(response => {
+          const userID = response.user.id;
+          fetchBookmarks(userID);
+      })
+      .catch(error => console.error(error));
+
+  const fetchBookmarks = async (userID) => {
+      const bookmarkedMovies = await BookmarksDataService.getMovies(userID, 1, 12)
+      setbookmark(bookmarkedMovies);
+  }
+
+  useEffect(()=>{
+      if(usn){
+          fetchBookmarks();
+      }
+  }, [usn])
+
+
     return(
     <>
         <div className='d-flex flex-wrap'>

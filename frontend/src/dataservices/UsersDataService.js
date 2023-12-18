@@ -36,14 +36,13 @@ const UsersDataService = {
                 'Authorization': `Bearer ${token}`
             }
         });
-        const res = response.json();
-        
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
+    
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await res;
+        return await response.json();
     },
-
+    
     putUser: async (id, user) => {
         const token = SessionManager.getToken();
         const response = await fetch(`${UsersDataService.baseUrl}/${id}`, {
