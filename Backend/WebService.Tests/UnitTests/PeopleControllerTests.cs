@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,6 +19,10 @@ public class PeopleControllerTests
     {
         _service = Substitute.For<IPeopleService>();
         _controller = new PeopleController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
@@ -31,8 +37,10 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<GetAllPersonDTO>>(okResult.Value);
-        Assert.Equal(expectedPeople, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PeopleResult>(json);
+        var returnedPeopleDTOs = data.People.Select(a => a.Person).ToList();
+        Assert.Equal(expectedPeople, returnedPeopleDTOs);
     }
 
     [Fact]
@@ -48,8 +56,10 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<GetOnePersonDTO>(okResult.Value);
-        Assert.Equal(expectedPerson, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PeopleWithUri>(json);
+        var model = data.Person;
+        Assert.Equal(expectedPerson.Id, model.Id);
     }
 
     [Fact]
@@ -66,8 +76,10 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<UpdatePersonDTO>(okResult.Value);
-        Assert.Equal(updatedPerson, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PeopleWithUri>(json);
+        var model = data.Person;
+        Assert.Equal(updatedPerson.Id, model.Id);
     }
 
     [Fact]
@@ -83,8 +95,9 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<ActorBy>>(okResult.Value);
-        Assert.Equal(expectedActors, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<ActorByResult>(json);
+        Assert.Equal(expectedActors, data.Actors);
     }
 
     [Fact]
@@ -100,25 +113,10 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<ActorBy>>(okResult.Value);
-        Assert.Equal(expectedActors, model);
-    }
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<ActorByResult>(json);
+        Assert.Equal(expectedActors, data.Actors);
 
-    [Fact]
-    public async Task GetPopularActorsInMovie_ReturnsOkResult()
-    {
-        // Arrange
-        var movieId = "123";
-        var expectedActors = new List<PopularActor>(); // Adjust as needed
-        _service.GetPopularActorsInMovie(movieId).Returns(expectedActors);
-
-        // Act
-        var result = await _controller.GetPopularActorsInMovie(movieId);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<PopularActor>>(okResult.Value);
-        Assert.Equal(expectedActors, model);
     }
 
     [Fact]
@@ -134,26 +132,9 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<PopularCoPlayer>>(okResult.Value);
-        Assert.Equal(expectedActors, model);
-    }
-
-    [Fact]
-    public async Task PersonWords_ReturnsOkResult()
-    {
-        // Arrange
-        var word = "test";
-        var frequency = 5;
-        var expectedPersonWords = new List<PersonWord>(); // Adjust as needed
-        _service.PersonWords(word, frequency).Returns(expectedPersonWords);
-
-        // Act
-        var result = await _controller.PersonWords(word, frequency);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<PersonWord>>(okResult.Value);
-        Assert.Equal(expectedPersonWords, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<CoActorsResult>(json);
+        Assert.Equal(expectedActors, data.Actors);
     }
 
     [Fact]
@@ -169,8 +150,10 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<UpdatePersonDTO>(okResult.Value);
-        Assert.Equal(createdPerson, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PeopleWithUri>(json);
+        var model = data.Person;
+        Assert.Equal(createdPerson.Id, model.Id);
     }
 
     [Fact]
@@ -186,7 +169,9 @@ public class PeopleControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(deletionResult, okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PeopleBooleanResult>(json);
+        Assert.True(data.Result);
     }
 
     [Fact]
@@ -200,7 +185,7 @@ public class PeopleControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -208,14 +193,14 @@ public class PeopleControllerTests
     {
         // Arrange
         var personId = "1";
-        _service.GetOnePerson(personId).Throws(new Exception("Test exception")); 
-            
+        _service.GetOnePerson(personId).Throws(new Exception("Test exception"));
+
         // Act
-        var result = await _controller.GetPerson(personId); 
-            
+        var result = await _controller.GetPerson(personId);
+
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -224,19 +209,19 @@ public class PeopleControllerTests
         // Arrange
         var personId = "1";
         var person = new AlterPersonDTO();
-        _service.UpdatePerson(personId, person).Throws(new Exception("Test exception")); 
-            
+        _service.UpdatePerson(personId, person).Throws(new Exception("Test exception"));
+
         // Act
-        var result = await _controller.PutPerson(personId, person); 
-            
+        var result = await _controller.PutPerson(personId, person);
+
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
     public async Task FindActorsByName_ReturnsBadRequestOnError()
-    { 
+    {
         // Arrange
         var name = "John";
         _service.FindActorsByName(name).Throws(new Exception("Test exception"));
@@ -246,12 +231,12 @@ public class PeopleControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
     public async Task FindActorsByMovie_ReturnsBadRequestOnError()
-    { 
+    {
         // Arrange
         var movieId = "123";
         _service.FindActorsByMovie(movieId).Throws(new Exception("Test exception"));
@@ -261,27 +246,12 @@ public class PeopleControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
-    }
-
-    [Fact]
-    public async Task GetPopularActorsInMovie_ReturnsBadRequestOnError()
-    { 
-        // Arrange
-        var movieId = "123";
-        _service.GetPopularActorsInMovie(movieId).Throws(new Exception("Test exception"));
-
-        // Act
-        var result = await _controller.GetPopularActorsInMovie(movieId);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
     public async Task GetPopularCoPlayers_ReturnsBadRequestOnError()
-    { 
+    {
         // Arrange
         var actorName = "John Doe";
         _service.GetPopularCoPlayers(actorName).Throws(new Exception("Test exception"));
@@ -291,28 +261,12 @@ public class PeopleControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
-    }
-
-    [Fact]
-    public async Task PersonWords_ReturnsBadRequestOnError()
-    { 
-        // Arrange
-        var word = "test";
-        var frequency = 5;
-        _service.PersonWords(word, frequency).Throws(new Exception("Test exception")); 
-            
-        // Act
-        var result = await _controller.PersonWords(word, frequency); 
-            
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
     public async Task PostPerson_ReturnsBadRequestOnError()
-    { 
+    {
         // Arrange
         var person = new AlterPersonDTO();
         _service.AddPerson(person).Throws(new Exception("Test exception"));
@@ -322,21 +276,52 @@ public class PeopleControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
     public async Task DeletePerson_ReturnsBadRequestOnError()
-    { 
+    {
         // Arrange
         var personId = "1";
-        _service.DeletePerson(personId).Throws(new Exception("Test exception")); 
-            
+        _service.DeletePerson(personId).Throws(new Exception("Test exception"));
+
         // Act
         var result = await _controller.DeletePerson(personId);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+}
+public class PeopleWithUri
+{
+    public GetAllPersonDTO Person { get; set; }
+    public string Uri { get; set; }
+}
+
+public class PeopleResult
+{
+    public IEnumerable<PeopleWithUri> People { get; set; }
+    public string Uri { get; set; }
+}
+
+public class ActorByResult
+{
+    public IEnumerable<ActorBy> Actors { get; set; }
+    public string Uri { get; set; }
+}
+
+public class CoActorsResult
+{
+    public IEnumerable<PopularCoPlayer> Actors { get; set; }
+    public string Uri { get; set; }
+}
+
+
+
+public class PeopleBooleanResult
+{
+    public bool Result { get; set; }
+    public string Uri { get; set; }
 }

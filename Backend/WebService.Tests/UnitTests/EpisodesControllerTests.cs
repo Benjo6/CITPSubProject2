@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,6 +19,10 @@ public class EpisodesControllerTests
     {
         _service = Substitute.For<IEpisodesService>();
         _controller = new EpisodesController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
@@ -31,8 +37,10 @@ public class EpisodesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<EpisodeDTO>>(okResult.Value);
-        Assert.Equal(expectedEpisodes, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<EpisodesResult>(json);
+        List<EpisodeDTO> returnedEpisodeDTOs = data.Episodes.Select(a => a.Episode).ToList();
+        Assert.Equal(expectedEpisodes, returnedEpisodeDTOs);
     }
 
     [Fact]
@@ -48,8 +56,10 @@ public class EpisodesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<EpisodeDTO>(okResult.Value);
-        Assert.Equal(expectedEpisode, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<EpisodeWithUri>(json);
+        var model = data.Episode;
+        Assert.Equal(expectedEpisode.Id, model.Id);
     }
 
     [Fact]
@@ -66,8 +76,10 @@ public class EpisodesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<EpisodeDTO>(okResult.Value);
-        Assert.Equal(updatedEpisode, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<EpisodeWithUri>(json);
+        var model = data.Episode;
+        Assert.Equal(updatedEpisode.Id, model.Id);
     }
 
     [Fact]
@@ -83,8 +95,10 @@ public class EpisodesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<EpisodeDTO>(okResult.Value);
-        Assert.Equal(createdEpisode, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<EpisodeWithUri>(json);
+        var model = data.Episode;
+        Assert.Equal(createdEpisode.Id, model.Id);
     }
 
     [Fact]
@@ -100,9 +114,11 @@ public class EpisodesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(deletionResult, okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<EpisodesBooleanResult>(json);
+        Assert.True(data.Result);
     }
-    
+
     [Fact]
     public async Task GetEpisodes_ReturnsBadRequestOnError()
     {
@@ -114,9 +130,9 @@ public class EpisodesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
-    
+
     [Fact]
     public async Task PutEpisode_ReturnsBadRequestOnError()
     {
@@ -130,7 +146,7 @@ public class EpisodesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -145,7 +161,7 @@ public class EpisodesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -160,6 +176,25 @@ public class EpisodesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+}
+
+public class EpisodeWithUri
+{
+    public EpisodeDTO Episode { get; set; }
+    public string Uri { get; set; }
+}
+
+public class EpisodesResult
+{
+    public IEnumerable<EpisodeWithUri> Episodes { get; set; }
+    public string Uri { get; set; }
+}
+
+
+public class EpisodesBooleanResult
+{
+    public bool Result { get; set; }
+    public string Uri { get; set; }
 }

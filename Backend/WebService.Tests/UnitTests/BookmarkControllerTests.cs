@@ -1,6 +1,7 @@
-using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -16,57 +17,107 @@ public class BookmarkControllerTests
     {
         _service = Substitute.For<IBookmarkService>();
         _controller = new BookmarksController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
-    public async Task CreateMovieBookmark_ReturnsOkResult()
-    {
-        // Arrange
-        var bookmarkMovie = new BookmarkMovieDTO();
-        _service.AddBookmarkMovies(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
-
-        // Act
-        var result = await _controller.Create(bookmarkMovie);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.True((bool)okResult.Value);
-    }
-
-    [Fact]
-    public async Task CreatePersonalityBookmark_ReturnsOkResult()
-    {
-        // Arrange
-        var bookmarkPersonality = new BookmarkPersonalityDTO();
-        _service.AddBookmarkPersonality(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
-
-        // Act
-        var result = await _controller.Create(bookmarkPersonality);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.True((bool)okResult.Value);
-    }
-
-    [Fact]
-    public async Task AddNoteMovie_ReturnsOkResult()
+    public async Task GetMovies_ReturnsOkResult()
     {
         // Arrange
         var userId = "user1";
-        var aliasId = "alias1";
-        var note = "Note for the movie";
-        _service.AddNoteMovie(userId, aliasId, note).Returns(true);
+        var expectedMovies = new List<string>();
+        _service.GetBookmarkMovies(userId, Arg.Any<int>(), Arg.Any<int>()).Returns(expectedMovies);
 
         // Act
-        var result = await _controller.AddNote(userId, aliasId, note);
+        var result = await _controller.GetMovies(userId);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.True((bool)okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksResult>(json);
+        List<string> returnedMovies = data.Result.Cast<string>().ToList();
+        Assert.Equal(expectedMovies, returnedMovies);
     }
 
     [Fact]
-    public async Task DeletePersonalityBookmark_ReturnsOkResult()
+    public async Task GetPerson_ReturnsOkResult()
+    {
+        // Arrange
+        var userId = "user1";
+        var expectedPersons = new List<string>();
+        _service.GetBookmarkPersons(userId, Arg.Any<int>(), Arg.Any<int>()).Returns(expectedPersons);
+
+        // Act
+        var result = await _controller.GetPerson(userId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksResult>(json);
+        List<string> returnedPersons = data.Result.Cast<string>().ToList();
+        Assert.Equal(expectedPersons, returnedPersons);
+    }
+
+    [Fact]
+    public async Task CreateBMMovie_ReturnsOkResult()
+    {
+        // Arrange
+        var userId = "user1";
+        var movieId = "movie1";
+        _service.AddBookmarkMovies(userId, movieId).Returns(true);
+
+        // Act
+        var result = await _controller.CreateBMMovie(userId, movieId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksBoolResult>(json);
+        Assert.True(data.Result);
+    }
+
+    [Fact]
+    public async Task CreateBMPerson_ReturnsOkResult()
+    {
+        // Arrange
+        var userId = "user1";
+        var personId = "person1";
+        _service.AddBookmarkPersonality(userId, personId).Returns(true);
+
+        // Act
+        var result = await _controller.CreateBMPerson(userId, personId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksBoolResult>(json);
+        Assert.True(data.Result);
+    }
+
+    [Fact]
+    public async Task AddNote_ReturnsOkResult()
+    {
+        // Arrange
+        var userId = "user1";
+        var movieId = "movie1";
+        var note = "Note for the movie";
+        _service.AddNoteMovie(userId, movieId, note).Returns(true);
+
+        // Act
+        var result = await _controller.AddNote(userId, movieId, note);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksBoolResult>(json);
+        Assert.True(data.Result);
+    }
+
+    [Fact]
+    public async Task DeleteBookmarkPersonality_ReturnsOkResult()
     {
         // Arrange
         var userId = "user1";
@@ -78,74 +129,76 @@ public class BookmarkControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.True((bool)okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksBoolResult>(json);
+        Assert.True(data.Result);
     }
 
     [Fact]
-    public async Task DeleteMovieBookmark_ReturnsOkResult()
+    public async Task DeleteBookmarkMovie_ReturnsOkResult()
     {
         // Arrange
         var userId = "user1";
-        var aliasId = "alias1";
-        _service.RemoveBookmarkMovies(userId, aliasId).Returns(true);
+        var movieId = "movie1";
+        _service.RemoveBookmarkMovies(userId, movieId).Returns(true);
 
         // Act
-        var result = await _controller.DeleteBookmarkMovie(userId, aliasId);
+        var result = await _controller.DeleteBookmarkMovie(userId, movieId);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.True((bool)okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<BookmarksBoolResult>(json);
+        Assert.True(data.Result);
     }
 
     [Fact]
-    public async Task CreateMovieBookmark_ReturnsBadRequestOnError()
+    public async Task CreateBMMovie_ReturnsBadRequestOnError()
     {
         // Arrange
-        var bookmarkMovie = new BookmarkMovieDTO();
         _service.AddBookmarkMovies(Arg.Any<string>(), Arg.Any<string>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.Create(bookmarkMovie);
+        var result = await _controller.CreateBMMovie("userId", "movieId");
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
-    public async Task CreatePersonalityBookmark_ReturnsBadRequestOnError()
+    public async Task CreateBMPerson_ReturnsBadRequestOnError()
     {
         // Arrange
-        var bookmarkPersonality = new BookmarkPersonalityDTO();
         _service.AddBookmarkPersonality(Arg.Any<string>(), Arg.Any<string>()).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.Create(bookmarkPersonality);
+        var result = await _controller.CreateBMPerson("userId", "personId");
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
-    public async Task AddNoteMovie_ReturnsBadRequestOnError()
+    public async Task AddNote_ReturnsBadRequestOnError()
     {
         // Arrange
         var userId = "user1";
-        var aliasId = "alias1";
+        var movieId = "movie1";
         var note = "Note for the movie";
-        _service.AddNoteMovie(userId, aliasId, note).Throws(new Exception("Test exception"));
+        _service.AddNoteMovie(userId, movieId, note).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.AddNote(userId, aliasId, note);
+        var result = await _controller.AddNote(userId, movieId, note);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
-    public async Task DeletePersonalityBookmark_ReturnsBadRequestOnError()
+    public async Task DeleteBookmarkPersonality_ReturnsBadRequestOnError()
     {
         // Arrange
         var userId = "user1";
@@ -157,22 +210,35 @@ public class BookmarkControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
-    public async Task DeleteMovieBookmark_ReturnsBadRequestOnError()
+    public async Task DeleteBookmarkMovie_ReturnsBadRequestOnError()
     {
         // Arrange
         var userId = "user1";
-        var aliasId = "alias1";
-        _service.RemoveBookmarkMovies(userId, aliasId).Throws(new Exception("Test exception"));
+        var movieId = "movie1";
+        _service.RemoveBookmarkMovies(userId, movieId).Throws(new Exception("Test exception"));
 
         // Act
-        var result = await _controller.DeleteBookmarkMovie(userId, aliasId);
+        var result = await _controller.DeleteBookmarkMovie(userId, movieId);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+}
+
+public class BookmarksResult
+{
+    public IEnumerable<string> Result { get; set; }
+    public string Uri { get; set; }
+}
+
+
+public class BookmarksBoolResult
+{
+    public bool Result { get; set; }
+    public string Uri { get; set; }
 }

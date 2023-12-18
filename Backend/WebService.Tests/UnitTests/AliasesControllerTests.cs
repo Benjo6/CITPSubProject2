@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,13 +19,17 @@ public class AliasesControllerTests
     {
         _service = Substitute.For<IAliasesService>();
         _controller = new AliasesController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
     public async Task GetAliases_ReturnsOkResult()
     {
         // Arrange
-        var expectedAliases = new (List<AliasDTO>,Metadata)();
+        var expectedAliases = new List<AliasDTO>();
         _service.GetAllAliases(Arg.Any<Filter>()).Returns(expectedAliases);
 
         // Act
@@ -31,8 +37,10 @@ public class AliasesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<(AliasDTO,Metadata)>>(okResult.Value);
-        Assert.Equal(expectedAliases, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AliasesResult>(json);
+        List<AliasDTO> returnedAliasDTOs = data.Aliases.Select(a => a.Alias).ToList();
+        Assert.Equal(expectedAliases, returnedAliasDTOs);
     }
 
     [Fact]
@@ -48,8 +56,10 @@ public class AliasesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<AliasDTO>(okResult.Value);
-        Assert.Equal(expectedAlias, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AliasWithUri>(json);
+        var model = data.Alias;
+        Assert.Equal(expectedAlias.Id, model.Id);
     }
 
     [Fact]
@@ -66,8 +76,10 @@ public class AliasesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<AliasDTO>(okResult.Value);
-        Assert.Equal(updatedAlias, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AliasWithUri>(json);
+        var model = data.Alias;
+        Assert.Equal(updatedAlias.Id, model.Id);
     }
 
     [Fact]
@@ -83,8 +95,10 @@ public class AliasesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<AliasDTO>(okResult.Value);
-        Assert.Equal(createdAlias, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AliasWithUri>(json);
+        var model = data.Alias;
+        Assert.Equal(createdAlias.Id, model.Id);
     }
 
     [Fact]
@@ -114,7 +128,7 @@ public class AliasesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -130,7 +144,7 @@ public class AliasesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -145,7 +159,7 @@ public class AliasesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -160,6 +174,19 @@ public class AliasesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+
+}
+
+public class AliasWithUri
+{
+    public AliasDTO Alias { get; set; }
+    public string Uri { get; set; }
+}
+
+public class AliasesResult
+{
+    public IEnumerable<AliasWithUri> Aliases { get; set; }
+    public string Uri { get; set; }
 }

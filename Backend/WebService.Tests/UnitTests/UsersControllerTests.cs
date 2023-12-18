@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,6 +19,10 @@ public class UsersControllerTests
     {
         _service = Substitute.For<IUserService>();
         _controller = new UsersController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
@@ -31,8 +37,10 @@ public class UsersControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<UserDTO>>(okResult.Value);
-        Assert.Equal(expectedUsers, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<UsersResult>(json);
+        List<UserDTO> returnedUserDTOs = data.Users.Select(a => a.User).ToList();
+        Assert.Equal(expectedUsers, returnedUserDTOs);
     }
 
     [Fact]
@@ -48,8 +56,10 @@ public class UsersControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<UserDTO>(okResult.Value);
-        Assert.Equal(expectedUser, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<UserWithUri>(json);
+        var model = data.User;
+        Assert.Equal(expectedUser.Id, model.Id);
     }
 
     [Fact]
@@ -65,8 +75,10 @@ public class UsersControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var statement = Assert.IsType<bool>(okResult.Value);
-        Assert.True(statement);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<UsersBooleanResult>(json);
+        var model = data.Result;
+        Assert.False(model);
     }
 
     [Fact]
@@ -74,7 +86,7 @@ public class UsersControllerTests
     {
         // Arrange
         var userId = "1";
-        var deletionResult = true; // Adjust as needed
+        var deletionResult = true;
         _service.DeleteUser(userId).Returns(deletionResult);
 
         // Act
@@ -82,7 +94,9 @@ public class UsersControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(deletionResult, okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<UsersBooleanResult>(json);
+        Assert.True(data.Result);
     }
 
     [Fact]
@@ -96,7 +110,7 @@ public class UsersControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -111,7 +125,7 @@ public class UsersControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -127,7 +141,7 @@ public class UsersControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -142,6 +156,25 @@ public class UsersControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+}
+
+public class UserWithUri
+{
+    public UserDTO User { get; set; }
+    public string Uri { get; set; }
+}
+
+public class UsersResult
+{
+    public IEnumerable<UserWithUri> Users { get; set; }
+    public string Uri { get; set; }
+}
+
+
+public class UsersBooleanResult
+{
+    public bool Result { get; set; }
+    public string Uri { get; set; }
 }

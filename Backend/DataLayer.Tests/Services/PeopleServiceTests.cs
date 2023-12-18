@@ -143,20 +143,7 @@ public class PeopleServiceTests
         Assert.Equal(actors.Count, result.Count);
     }
 
-    [Fact]
-    public async Task GetPopularActorsInMovie_ReturnsPopularActorsInMovie()
-    {
-        // Arrange
-        var movieId = "MovieId";
-        var actors = new List<PopularActor> { new(), new() };
-        _peopleRepository.GetPopularActorsInMovie(movieId).Returns(actors);
 
-        // Act
-        var result = await _service.GetPopularActorsInMovie(movieId);
-
-        // Assert
-        Assert.Equal(actors.Count, result.Count);
-    }
 
     [Fact]
     public async Task GetPopularCoPlayers_ReturnsPopularCoPlayers()
@@ -168,22 +155,6 @@ public class PeopleServiceTests
 
         // Act
         var result = await _service.GetPopularCoPlayers(actorName);
-
-        // Assert
-        Assert.Equal(actors.Count, result.Count);
-    }
-
-    [Fact]
-    public async Task PersonWords_ReturnsPersonWords()
-    {
-        // Arrange
-        var word = "Word";
-        var frequency = 10;
-        var actors = new List<PersonWord> { new(), new() };
-        _peopleRepository.PersonWords(word, frequency).Returns(actors);
-
-        // Act
-        var result = await _service.PersonWords(word, frequency);
 
         // Assert
         Assert.Equal(actors.Count, result.Count);

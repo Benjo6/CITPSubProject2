@@ -2,6 +2,8 @@ using Common;
 using Common.DataTransferObjects;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebService.Controllers;
@@ -17,6 +19,10 @@ public class MoviesControllerTests
     {
         _service = Substitute.For<IMoviesService>();
         _controller = new MoviesController(_service);
+
+        var urlHelper = Substitute.For<IUrlHelper>();
+        urlHelper.Action(Arg.Any<UrlActionContext>()).Returns("callbackUrl");
+        _controller.Url = urlHelper;
     }
 
     [Fact]
@@ -31,8 +37,10 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<GetAllMovieDTO>>(okResult.Value);
-        Assert.Equal(expectedMovies, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<MoviesResult>(json);
+        List<GetAllMovieDTO> returnedMoviesDTOs = data.Movies.Select(a => a.Movie).ToList();
+        Assert.Equal(expectedMovies, returnedMoviesDTOs);
     }
 
     [Fact]
@@ -48,42 +56,10 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<GetOneMovieDTO>(okResult.Value);
-        Assert.Equal(expectedMovie, model);
-    }
-
-    [Fact]
-    public async Task BestMatchQuery_ReturnsOkResult()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        var expectedBestMatchQuery = new List<BestMatch>(); // Adjust as needed
-        _service.BestMatchQuery(keywords).Returns(expectedBestMatchQuery);
-
-        // Act
-        var result = await _controller.BestMatchQuery(keywords);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<BestMatch>>(okResult.Value);
-        Assert.Equal(expectedBestMatchQuery, model);
-    }
-
-    [Fact]
-    public async Task ExactMatchQuery_ReturnsOkResult()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        var expectedExactMatchQuery = new List<string>(); // Adjust as needed
-        _service.ExactMatchQuery(keywords).Returns(expectedExactMatchQuery);
-
-        // Act
-        var result = await _controller.ExactMatchQuery(keywords);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
-        Assert.Equal(expectedExactMatchQuery, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<GetOneMovieWithUri>(json);
+        var model = data.Movie;
+        Assert.Equal(expectedMovie.Id, model.Id);
     }
 
     [Fact]
@@ -99,26 +75,12 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<SimilarMovie>>(okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<SimilarMovieResult>(json);
+        var model = data.SimilarMovies;
         Assert.Equal(expectedSimilarMovies, model);
     }
 
-    [Fact]
-    public async Task WordToWordsQuery_ReturnsOkResult()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        var expectedWordToWord = new List<WordFrequency>(); // Adjust as needed
-        _service.WordToWordsQuery(keywords).Returns(expectedWordToWord);
-
-        // Act
-        var result = await _controller.WordToWordsQuery(keywords);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsAssignableFrom<IEnumerable<WordFrequency>>(okResult.Value);
-        Assert.Equal(expectedWordToWord, model);
-    }
 
     [Fact]
     public async Task PutMovie_ReturnsOkResult()
@@ -134,8 +96,11 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<AlterResponseMovieDTO>(okResult.Value);
-        Assert.Equal(updatedMovie, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AlterMovieWithUri>(json);
+        var model = data.Movie;
+
+        Assert.Equal(updatedMovie.Id, model.Id);
     }
 
     [Fact]
@@ -151,8 +116,10 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var model = Assert.IsType<AlterResponseMovieDTO>(okResult.Value);
-        Assert.Equal(createdMovie, model);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<AlterMovieWithUri>(json);
+        var model = data.Movie;
+        Assert.Equal(createdMovie.Id, model.Id);
     }
 
     [Fact]
@@ -168,7 +135,9 @@ public class MoviesControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(deletionResult, okResult.Value);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<MovieBooleanResult>(json);
+        Assert.True(data.Result);
     }
 
     [Fact]
@@ -182,7 +151,7 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -197,37 +166,7 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
-    }
-
-    [Fact]
-    public async Task BestMatchQuery_ReturnsBadRequestOnError()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        _service.BestMatchQuery(keywords).Throws(new Exception("Test exception"));
-
-        // Act
-        var result = await _controller.BestMatchQuery(keywords);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
-    }
-    
-    [Fact]
-    public async Task ExactMatchQuery_ReturnsBadRequestOnError()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        _service.ExactMatchQuery(keywords).Throws(new Exception("Test exception"));
-
-        // Act
-        var result = await _controller.ExactMatchQuery(keywords);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -242,22 +181,7 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
-    }
-
-    [Fact]
-    public async Task WordToWordsQuery_ReturnsBadRequestOnError()
-    {
-        // Arrange
-        var keywords = new string[] { "Action", "Comedy" };
-        _service.WordToWordsQuery(keywords).Throws(new Exception("Test exception"));
-
-        // Act
-        var result = await _controller.WordToWordsQuery(keywords);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -273,7 +197,7 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -288,7 +212,7 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -303,6 +227,80 @@ public class MoviesControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
+
+    [Fact]
+    public async Task GetPopularActorsInMovie_ReturnsOkResult()
+    {
+        // Arrange
+        var movieId = "123";
+        var expectedActors = new List<PopularActor>(); // Adjust as needed
+        _service.GetPopularActorsInMovie(movieId).Returns(expectedActors);
+
+        // Act
+        var result = await _controller.GetPopularActorsInMovie(movieId);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var json = JsonConvert.SerializeObject(okResult.Value);
+        var data = JsonConvert.DeserializeObject<PopularMoviesResult>(json);
+        Assert.Equal(expectedActors, data.Actors);
+    }
+
+    [Fact]
+    public async Task GetPopularActorsInMovie_ReturnsBadRequestOnError()
+    {
+        // Arrange
+        var movieId = "123";
+        _service.GetPopularActorsInMovie(movieId).Throws(new Exception("Test exception"));
+
+        // Act
+        var result = await _controller.GetPopularActorsInMovie(movieId);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
+    }
+}
+
+public class AlterMovieWithUri
+{
+    public AlterResponseMovieDTO Movie { get; set; }
+    public string Uri { get; set; }
+}
+public class MovieWithUri
+{
+    public GetAllMovieDTO Movie { get; set; }
+    public string Uri { get; set; }
+}
+public class GetOneMovieWithUri
+{
+    public GetOneMovieDTO Movie { get; set; }
+    public string Uri { get; set; }
+}
+
+
+public class MoviesResult
+{
+    public IEnumerable<MovieWithUri> Movies { get; set; }
+    public string Uri { get; set; }
+}
+
+public class SimilarMovieResult
+{
+    public IEnumerable<SimilarMovie> SimilarMovies { get; set; }
+    public string Uri { get; set; }
+}
+
+public class PopularMoviesResult
+{
+    public IEnumerable<PopularActor> Actors { get; set; }
+    public string Uri { get; set; }
+}
+
+public class MovieBooleanResult
+{
+    public bool Result { get; set; }
+    public string Uri { get; set; }
 }

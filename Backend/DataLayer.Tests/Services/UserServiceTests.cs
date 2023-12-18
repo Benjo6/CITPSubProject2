@@ -2,6 +2,7 @@ using Common;
 using Common.DataTransferObjects;
 using Common.Domain;
 using DataLayer.Generics;
+using DataLayer.Repositories.Contracts;
 using DataLayer.Services;
 using NSubstitute;
 
@@ -10,13 +11,16 @@ namespace DataLayer.Tests.Services;
 public class UserServiceTests
 {
     private readonly IGenericRepository<User> _repository;
+    private readonly IAuthenticationRepository _authenticationRepository;
+
     private readonly UserService _service;
     private Filter _filter;
 
     public UserServiceTests()
     {
         _repository = Substitute.For<IGenericRepository<User>>();
-        _service = new UserService(_repository);
+        _authenticationRepository = Substitute.For<IAuthenticationRepository>();
+        _service = new UserService(_repository, _authenticationRepository);
         _filter = new Filter();
     }
 
@@ -65,7 +69,7 @@ public class UserServiceTests
         // Assert
         Assert.True(result);
     }
-    
+
     [Fact]
     public async Task DeleteUser_ReturnsTrueOnDeleteSuccess()
     {

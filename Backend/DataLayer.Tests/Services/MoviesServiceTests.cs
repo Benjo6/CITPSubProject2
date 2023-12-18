@@ -114,33 +114,18 @@ public class MoviesServiceTests
     }
 
     [Fact]
-    public async Task BestMatchQuery_ReturnsBestMatchResults()
+    public async Task GetPopularActorsInMovie_ReturnsPopularActorsInMovie()
     {
         // Arrange
-        var keywords = new string[] { "keyword1", "keyword2" };
-        var bestMatches = new List<BestMatch> { new(), new() };
-        _repository.BestMatchQuery(keywords).Returns(bestMatches);
+        var movieId = "MovieId";
+        var actors = new List<PopularActor> { new(), new() };
+        _repository.GetPopularActorsInMovie(movieId).Returns(actors);
 
         // Act
-        var result = await _service.BestMatchQuery(keywords);
+        var result = await _service.GetPopularActorsInMovie(movieId);
 
         // Assert
-        Assert.Equal(bestMatches.Count, result.Count);
-    }
-
-    [Fact]
-    public async Task ExactMatchQuery_ReturnsExactMatchResults()
-    {
-        // Arrange
-        var keywords = new string[] { "keyword1", "keyword2" };
-        var exactMatches = new List<string> { "result1", "result2" };
-        _repository.ExactMatchQuery(keywords).Returns(exactMatches);
-
-        // Act
-        var result = await _service.ExactMatchQuery(keywords);
-
-        // Assert
-        Assert.Equal(exactMatches.Count, result.Count);
+        Assert.Equal(actors.Count, result.Count);
     }
 
     [Fact]
@@ -156,20 +141,5 @@ public class MoviesServiceTests
 
         // Assert
         Assert.Equal(similarMovies.Count, result.Count);
-    }
-
-    [Fact]
-    public async Task WordToWordsQuery_ReturnsWordToWordsResults()
-    {
-        // Arrange
-        var keywords = new string[] { "keyword1", "keyword2" };
-        var wordToWords = new List<WordFrequency> { new(), new() };
-        _repository.WordToWordsQuery(keywords).Returns(wordToWords);
-
-        // Act
-        var result = await _service.WordToWordsQuery(keywords);
-
-        // Assert
-        Assert.Equal(wordToWords.Count, result.Count);
     }
 }

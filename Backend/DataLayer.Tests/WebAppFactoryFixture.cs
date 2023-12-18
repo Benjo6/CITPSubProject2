@@ -59,9 +59,9 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
         var context = Scope.ServiceProvider.GetRequiredService<AppDbContext>(); // Getting an AppDbContext instance from the service provider of the service scope
 
         await context.Database.EnsureCreatedAsync(); // Ensuring that the database for this context is created
-        
+
         AddDummyData(context);
-        
+
         await context.SaveChangesAsync(); // Saving all changes made in this context to the database.
     }
 
@@ -70,7 +70,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
         await _dbContainer.StopAsync(); // Stopping the PostgreSQL container instance.
         Scope.Dispose(); // Disposing of the service scope.
     }
-    
+
     private static void AddDummyData(AppDbContext context)
     {
         var movies = new List<Movie>
@@ -115,7 +115,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Votes = 2400000
             }
         };
-        
+
         var aliases = new List<Alias>
         {
             new()
@@ -155,32 +155,32 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 IsOriginal = true
             }
         };
-        
+
         var bookmarkMovies = new List<BookmarkMovie>
         {
             new()
             {
                 UserId = "User1",
-                AliasId = "1",
+                MovieId = "1",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now),
                 Note = "Bookmark Note 1"
             },
             new()
             {
                 UserId = "User2",
-                AliasId = "2",
+                MovieId = "2",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now),
                 Note = "Bookmark Note 2"
             },
             new()
             {
                 UserId = "User3",
-                AliasId = "3",
+                MovieId = "3",
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now),
                 Note = "Bookmark Note 3"
             }
         };
-        
+
         var bookmarkPersonalities = new List<BookmarkPersonality>
         {
             new()
@@ -202,7 +202,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 BookmarkDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        
+
         var episodes = new List<Episode>
         {
             new()
@@ -227,7 +227,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Episode1 = 1
             }
         };
-        
+
         var persons = new List<Person>
         {
             new()
@@ -258,7 +258,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 KnownFor = "Inception"
             }
         };
-        
+
         var ratingHistories = new List<RatingHistory>
         {
             new()
@@ -283,7 +283,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 RatingDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        
+
         var roles = new List<Role>
         {
             new()
@@ -314,7 +314,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 Characters = null
             }
         };
-        
+
         var searchHistories = new List<SearchHistory>
         {
             new()
@@ -339,7 +339,7 @@ public class WebAppFactoryFixture : WebApplicationFactory<Program>, IAsyncLifeti
                 SearchDate = DateOnly.FromDateTime(DateTime.Now)
             }
         };
-        
+
         var users = new List<User>
         {
             new()

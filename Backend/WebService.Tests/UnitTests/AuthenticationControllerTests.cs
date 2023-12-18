@@ -17,12 +17,12 @@ public class AuthenticationControllerTests
         _authenticationService = Substitute.For<IAuthenticationService>();
         _controller = new AuthenticationController(_authenticationService);
     }
-    
+
     [Fact]
     public async Task Register_ReturnsOkResult()
     {
         // Arrange
-        var registerModel = new RegisterModel("User","User@user.com","User1234");
+        var registerModel = new RegisterModel("User", "User@user.com", "User1234");
         _authenticationService.Register(registerModel).Returns(Task.CompletedTask);
 
         // Act
@@ -50,7 +50,7 @@ public class AuthenticationControllerTests
     public async Task Login_ReturnsUnauthorizedOnError()
     {
         // Arrange
-        var loginModel = new LoginModel("user","doncic");
+        var loginModel = new LoginModel("user", "doncic");
         _authenticationService.Login(loginModel).Throws(new Exception("Test exception"));
 
         // Act
@@ -58,14 +58,14 @@ public class AuthenticationControllerTests
 
         // Assert
         var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-        Assert.Equal("Test exception", unauthorizedResult.Value);
+        Assert.Contains("Test exception", unauthorizedResult.Value.ToString());
     }
 
     [Fact]
     public async Task Register_ReturnsBadRequestOnError()
     {
         // Arrange
-        var registerModel = new RegisterModel("Doncic77","doncic@to.com","user1234");
+        var registerModel = new RegisterModel("Doncic77", "doncic@to.com", "user1234");
         _authenticationService.Register(registerModel).Throws(new Exception("Test exception"));
 
         // Act
@@ -73,7 +73,7 @@ public class AuthenticationControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 
     [Fact]
@@ -88,6 +88,6 @@ public class AuthenticationControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Test exception", badRequestResult.Value);
+        Assert.Contains("Test exception", badRequestResult.Value.ToString());
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
 
+
 [Route("[controller]")]
 [ApiController]
 public class MoviesController : ControllerBase
@@ -43,6 +44,7 @@ public class MoviesController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
 
     // GET: Movies/5
     [HttpGet("{id}")]
