@@ -1,0 +1,27 @@
+.text{
+font-size: 20px;
+  text-align: center;
+}
+
+.flexa{
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;  
+}
+
+.star{
+    margin-left: 10px;
+  border: none;
+  background: none;
+ cursor: pointer;
+}
+  
+
+.star:hover {
+    color: yellow;
+  }
+
+.icon{
+    font-size: 60px;
+}
+

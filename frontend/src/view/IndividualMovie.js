@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Col, Container, Row } from "react-bootstrap";
 import styles from "./viewCss/individualMovie.module.css";
-import SessionManager from "../components/Auth/SessionManager";
 import { useParams } from 'react-router-dom';
 import MoviesDataService from '../dataservices/MoviesDataService';
+import Rating from '../components/rating/rating';
+import { Button } from 'react-bootstrap';
+import SessionManager from '../components/Auth/SessionManager';
 
 export default function IndividualMovie(){
+  const [rating, setRating] = useState([]);
+  const username = SessionManager.getUserName();
+  const [loggedIn, setLoggedIn] = useState();
+
+    
   const placeholderImage = 'https://via.placeholder.com/400';
   const fetchPosterAndPlot = async (title) => {
     const response = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(title)}`);
@@ -15,20 +22,11 @@ export default function IndividualMovie(){
 
   const { id } = useParams();
   const [movie, setMovie] = useState([]);
+  const useridd="7e5b9b8e-f35c-4801-951a-7c0951965e6f";
   
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        let token = SessionManager.getToken();
-        let payload = {
-          method: 'GET',
-          headers: {   
-            "access-control-allow-origin" : "*", 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          }
-        }
         const movie = await MoviesDataService.getMovie(id);
         console.log(movie.uri);
         const moviesData = movie.movie;
@@ -38,10 +36,16 @@ export default function IndividualMovie(){
         console.error('Error fetching data:', error);
       }
     };
-
+    setLoggedIn(SessionManager.getToken());
     fetchMovie();
   }, [id]); // Adding id as a dependency
 
+  const Rate = () => {
+    MoviesDataService.rate(useridd, movie.id, rating)
+  }
+  console.log(useridd);
+  console.log(movie.id);
+  console.log(rating)
   return(
     <> 
       <Container >
@@ -77,6 +81,15 @@ export default function IndividualMovie(){
             <div className={styles.grad}>
               <h5>Grading system</h5>
               <p>Rating: {movie.rating ? movie.rating : 'N/A'}</p>
+              {loggedIn ? <>
+              <Rating setVote={setRating}/>
+              <Button variant='dark' className='btnhover mt-3'
+              onClick={Rate}
+          >
+            Vote
+          </Button> 
+              </>: " "}
+              
             </div>
           </Col>
         </Row>

@@ -114,7 +114,6 @@ public class MoviesController : ControllerBase
 
     // Rate
     [HttpPut("Rate")]
-    [Authorize]
     public async Task<IActionResult> Rate(string userId, string movieId, decimal rating)
     {
         try

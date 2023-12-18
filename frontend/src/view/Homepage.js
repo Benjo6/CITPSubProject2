@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import ControlledCarousel from '../components/carousel/carousel';
-import SessionManager from "../components/Auth/SessionManager";
 import BasicExample from '../components/Picture/card';
 import MoviesDataService from '../dataservices/MoviesDataService';
 
@@ -11,17 +10,7 @@ export default function HomePage() {
     useEffect(() => {
       const fetchMovies = async () => {
         try {
-          let token=SessionManager.getToken();
-    let payload = {
-      method: 'GET',
-      headers: {   
-          "access-control-allow-origin" : "*", 
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-      }
-  }
-  const movies = await MoviesDataService.getMovies(1,4, null,"Id",false);
+          const movies = await MoviesDataService.getMovies(1,4, null,"Id",false);
   setMovies(movies);
 } catch (error) {
   console.error('Error fetching data:', error);
