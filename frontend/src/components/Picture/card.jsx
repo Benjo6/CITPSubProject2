@@ -16,8 +16,9 @@ function BasicExample(props) {
   
   useEffect(() => {
     if(username){
-      const response = UsersDataService.getUserByUsername(username)
-      setUser(response.user)
+        UsersDataService.getUserByUsername(username)
+            .then(response => setUser(response.user))
+            .catch(error => console.error(error));
     }
   }, [username])
   
