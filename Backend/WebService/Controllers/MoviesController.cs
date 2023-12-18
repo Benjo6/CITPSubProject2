@@ -1,6 +1,8 @@
 ﻿using Common;
 using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -28,7 +30,13 @@ public class MoviesController : ControllerBase
         {
             var movies = await _service.GetAllMovies(new Filter(page, pageSize, sortBy, asc, filterCriteria));
             var listUri = Url.Action("GetMovies", new { page = page, pageSize = pageSize, filterCriteria = filterCriteria, sortBy = sortBy, asc = asc });
-            return Ok(new { movies = movies, listUri = listUri });
+            var moviesWithUris = movies.Select(m => new
+            {
+                movie = m,
+                uri = Url.Action("GetMovie", new { id = m.Id })
+            });
+
+            return Ok(new { movies = moviesWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -87,6 +95,7 @@ public class MoviesController : ControllerBase
     // PUT: api/Movies/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PutMovie(string id, AlterMovieDTO movie)
     {
         try
@@ -103,6 +112,7 @@ public class MoviesController : ControllerBase
 
     // Rate
     [HttpPut("Rate")]
+    [Authorize]
     public async Task<IActionResult> Rate(string userId, string movieId, decimal rating)
     {
         try
@@ -120,6 +130,7 @@ public class MoviesController : ControllerBase
     // POST: api/Movies
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PostMovie([FromBody] AlterMovieDTO movie)
     {
         try
@@ -136,6 +147,7 @@ public class MoviesController : ControllerBase
 
     // DELETE: api/Movies/5
     [HttpDelete("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeleteMovie(string id)
     {
         try

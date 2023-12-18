@@ -8,7 +8,14 @@ const MoviesDataService = {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
-        return await response.json();
+        const moviesData = await response.json();
+        const fetchPosterPromises = moviesData.movies.map(async (movie) => {
+            const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.movie.title)}`);
+            const posterData = await posterResponse.json();
+            return { ...movie.movie, Poster: posterData.Poster };
+        });
+        const moviesWithPosters = await Promise.all(fetchPosterPromises);
+        return moviesWithPosters;
     },
 
     getMovie: async (id) => {

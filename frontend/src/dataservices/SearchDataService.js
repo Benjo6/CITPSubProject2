@@ -4,15 +4,25 @@ const SearchDataService = {
     baseUrl: 'https://localhost:7098/Search',
 
     getSearchHistories: async (page = 1, pageSize = 10, conditions = null, sortBy = 'Id', asc = true) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/History?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`);
+        const token = SessionManager.getToken();
+        const response = await fetch(`${SearchDataService.baseUrl}/History?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
         return await response.json();
     },
-
+    
     getOneSearchHistory: async (id) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/History/${id}`);
+        const token = SessionManager.getToken();
+        const response = await fetch(`${SearchDataService.baseUrl}/History/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -83,6 +93,18 @@ const SearchDataService = {
     loggedInPersonSearch: async (userId, searchString, resultCount = 10) => {
         const token = SessionManager.getToken();
         const response = await fetch(`${SearchDataService.baseUrl}/Person/LoggedIn?userId=${userId}&searchString=${searchString}&resultCount=${resultCount}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
+        }
+        return await response.json();
+    },
+    structuredSearch: async (userId, title, personName, resultCount = 10) => {
+        const token = SessionManager.getToken();
+        const response = await fetch(`${SearchDataService.baseUrl}/Structured?userId=${userId}&title=${title}&personName=${personName}&resultCount=${resultCount}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

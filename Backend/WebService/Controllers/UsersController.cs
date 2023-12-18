@@ -19,6 +19,7 @@ public class UsersController : ControllerBase
 
     // GET: Users
     [HttpGet]
+    //[Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetUsers(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -30,7 +31,13 @@ public class UsersController : ControllerBase
         {
             var users = await _service.GetAllUser(new Filter(page, pageSize, sortBy, asc, conditions));
             var listUri = Url.Action("GetUsers", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
-            return Ok(new { users = users, listUri = listUri });
+            var usersWithUris = users.Select(u => new
+            {
+                user = u,
+                uri = Url.Action("GetUser", new { id = u.Id })
+            });
+
+            return Ok(new { users = usersWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -40,6 +47,7 @@ public class UsersController : ControllerBase
 
     // GET: Users/5
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetUser(string id)
     {
         try
@@ -56,6 +64,7 @@ public class UsersController : ControllerBase
 
     // GET: Users/5
     [HttpGet("ByUsername/{username}")]
+    [Authorize]
     public async Task<IActionResult> GetUserByUsername(string username)
     {
         try

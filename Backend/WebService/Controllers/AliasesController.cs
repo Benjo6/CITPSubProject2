@@ -1,6 +1,8 @@
 ﻿using Common;
 using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace WebService.Controllers;
 
@@ -27,8 +29,14 @@ public class AliasesController : ControllerBase
         try
         {
             var aliases = await _service.GetAllAliases(new Filter(page, pageSize, sortBy, asc, conditions));
-            var uri = Url.Action("GetAliases", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
-            return Ok(new { aliases = aliases, uri = uri });
+            var listUri = Url.Action("GetAliases", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
+            var aliasesWithUris = aliases.Select(a => new
+            {
+                alias = a,
+                uri = Url.Action("GetAlias", new { id = a.Id })
+            });
+
+            return Ok(new { aliases = aliasesWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -56,6 +64,7 @@ public class AliasesController : ControllerBase
     // PUT: api/Aliases/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PutAlias(string id, AlterAliasDTO alias)
     {
         try
@@ -73,6 +82,7 @@ public class AliasesController : ControllerBase
     // POST: api/Aliases
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PostAlias(AlterAliasDTO alias)
     {
         try
@@ -89,6 +99,7 @@ public class AliasesController : ControllerBase
 
     // DELETE: Aliases/5
     [HttpDelete("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeleteAlias(string id)
     {
         try
