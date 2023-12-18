@@ -36,10 +36,12 @@ const UsersDataService = {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.ok) {
+        const res = response.json();
+        
+        if (!res.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
-        return await response.json();
+        return await res;
     },
 
     putUser: async (id, user) => {

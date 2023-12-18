@@ -2,33 +2,25 @@ import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import "../SearchBar/SearchBar.css";
 
-export const SearchBar = ({ setResults }) => {
+export const SearchBar = ({ setResults, setPerson }) => {
   const [input, setInput] = useState("");
 
   const fetchData = async (value) => {
     const response = await fetch(`https://localhost:7098/Search/Movie?searchString=${value}&resultCount=5`);
-    const movieSearch = await response.json();
-    const fetchPosterPromises = movieSearch.map(async (movie) => {
-      const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.title)}`);
-      const posterData = await posterResponse.json();
-      return { ...movie, Poster: posterData.Poster };
-    });
-    const moviesWithPosters =  Promise.all(fetchPosterPromises);
-    setResults(moviesWithPosters);
+    const movieSearch = await response.json(); 
+    setResults(movieSearch.result);
   }
   const fetchPerson = (person) => {
     fetch(`https://localhost:7098/Search/Person?searchString=${person}&resultCount=5`)
       .then((response) => response.json())
       .then((json) => {
         const res = json;
-        setResults(res);
+        setPerson(res.result);
       });
   };
 
   const handleChange = (value) => {
     setInput(value);
-    fetchData(value);
-    fetchPerson(value);
   };
 
   const handleKeyPress = (e) => {
