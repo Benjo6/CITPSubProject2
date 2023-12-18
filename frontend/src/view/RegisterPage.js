@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthenticationDataService from "../dataservices/AuthenticationDataService";
+import { Link } from 'react-router-dom';
 
 
 const Register = () => {
@@ -69,6 +70,7 @@ const Register = () => {
                 <button type="submit" className="btn btn-primary">Register</button>
                 {error && <div className="alert alert-danger mt-2">{error}</div>}
               </form>
+              <h5>You have an account, already??<Link to={'/login'}>Login HERE!</Link></h5>
             </div>
           </div>
         </div>

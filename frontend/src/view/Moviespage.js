@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import BasicExample from '../components/Picture/card';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Row, Col } from 'react-bootstrap';
 import MoviesDataService from '../dataservices/MoviesDataService';
 
 function MoviesPage() {
@@ -36,22 +36,30 @@ function MoviesPage() {
     <>
       <Container className='m-auto'>
         <Form>
-          <Form.Group controlId="sortBy">
-            <Form.Label>Sort By</Form.Label>
+          <Row>
+            <Col>
+            <Form.Group controlId="sortBy">
+            <Form.Label><span>Sort By</span></Form.Label>
             <Form.Control as="select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="Id">Id</option>
               <option value="Title">Title</option>
             </Form.Control>
           </Form.Group>
           <Form.Group controlId="asc">
-            <Form.Check type="checkbox" label="Ascending" checked={asc} onChange={(e) => setAsc(e.target.checked)} />
+            <span><Form.Check type="checkbox" label="Ascending" checked={asc} onChange={(e) => setAsc(e.target.checked)} /></span>
           </Form.Group>
-          <Form.Group controlId="filterCriteria">
-            <Form.Label>Filter Criteria</Form.Label>
+            </Col>
+            <Col>
+            <Form.Group controlId="filterCriteria">
+            <Form.Label><span>Filter Criteria</span></Form.Label>
             <Form.Control type="text" placeholder="Enter filter criteria" onChange={(e) => handleFilterChange(sortBy, e.target.value)} />
           </Form.Group>
+            </Col>
+          
+          </Row>
+          
         </Form>
-        <div className='d-flex'>
+        <div className='d-flex mt-5'>
           <Button variant='dark' className='btnhover'
             onClick={() => setPage(page - 1)}
             disabled={isLoading || page === 0}

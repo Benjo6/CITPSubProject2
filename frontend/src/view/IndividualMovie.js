@@ -6,6 +6,9 @@ import MoviesDataService from '../dataservices/MoviesDataService';
 import Rating from '../components/rating/rating';
 import { Button } from 'react-bootstrap';
 import SessionManager from '../components/Auth/SessionManager';
+import SearchCard from '../components/Picture/searchCard';
+import PeopleDataService from '../dataservices/PeopleDataService';
+import IndCard from '../components/Picture/indivCard';
 
 export default function IndividualMovie(){
   const [rating, setRating] = useState([]);
@@ -22,6 +25,8 @@ export default function IndividualMovie(){
   const { id } = useParams();
   const [movie, setMovie] = useState([]);
   const useridd="7e5b9b8e-f35c-4801-951a-7c0951965e6f";
+  const [similar, setSimilar] = useState([]);
+  const [person, setPerson] = useState([]);
   
   useEffect(() => {
     const fetchMovie = async () => {
@@ -30,7 +35,13 @@ export default function IndividualMovie(){
         console.log(movie.uri);
         const moviesData = movie.movie;
         const posterAndPlot = await fetchPosterAndPlot(moviesData.originalTitle);
+        const findSimilar = await MoviesDataService.findSimilarMovies(id);
+        const similarMovies = findSimilar.similarMovies;
+        const person = await PeopleDataService.findActorsByMovie(id);
+        const actors = person.actors;
         setMovie({ ...moviesData, ...posterAndPlot });
+        setSimilar(similarMovies);
+        setPerson(actors);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -40,12 +51,9 @@ export default function IndividualMovie(){
   }, [id]); // Adding id as a dependency
 
   const Rate = () => {
-   MoviesDataService.rate(useridd, movie.id, 8.6);
+   MoviesDataService.rate(useridd, movie.id, rating);
 
   }
-  console.log(useridd);
-  console.log(movie.id);
-  console.log(rating)
   return(
     <> 
       <Container >
@@ -92,6 +100,22 @@ export default function IndividualMovie(){
               
             </div>
           </Col>
+        </Row>
+        <Row>
+          <h3><span>Cast</span></h3>
+          <div className='d-flex flex-wrap'>
+            {person.map((person) => {
+                return <IndCard {...person}/>;
+            })}
+          </div>
+        </Row>
+        <Row>
+          <h3><span>Similar Movies</span></h3>
+          <div className='d-flex flex-wrap'>
+            {similar.map((movie) => {
+                return <SearchCard {...movie}/>;
+            })}
+          </div>
         </Row>
       </Container>
     </>

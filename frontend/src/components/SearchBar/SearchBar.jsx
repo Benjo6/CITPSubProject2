@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import "../SearchBar/SearchBar.css";
+import SearchDataService from "../../dataservices/SearchDataService";
 
 export const SearchBar = ({ setResults, setPerson }) => {
   const [input, setInput] = useState("");
 
   const fetchData = async (value) => {
-    const response = await fetch(`https://localhost:7098/Search/Movie?searchString=${value}&resultCount=5`);
-    const movieSearch = await response.json(); 
-    setResults(movieSearch.result);
+    const response = await SearchDataService.movieSearch(value, 5)
+    setResults(response.result);
   }
-  const fetchPerson = (person) => {
-    fetch(`https://localhost:7098/Search/Person?searchString=${person}&resultCount=5`)
-      .then((response) => response.json())
-      .then((json) => {
-        const res = json;
-        setPerson(res.result);
-      });
+  const fetchPerson = async (person) => {
+    const response = await SearchDataService.personSearch(person, 5)
+    setPerson(response.result);
   };
 
   const handleChange = (value) => {
