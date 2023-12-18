@@ -1,6 +1,8 @@
 ﻿using Common;
 using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -28,7 +30,13 @@ public class PeopleController : ControllerBase
         {
             var people = await _service.GetAllPerson(new Filter(page, pageSize, sortBy, asc, conditions));
             var listUri = Url.Action("GetPeople", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
-            return Ok(new { people = people, listUri = listUri });
+            var peopleWithUris = people.Select(p => new
+            {
+                person = p,
+                uri = Url.Action("GetPerson", new { id = p.Id })
+            });
+
+            return Ok(new { people = peopleWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -102,6 +110,7 @@ public class PeopleController : ControllerBase
     // PUT: People/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PutPerson(string id, AlterPersonDTO person)
     {
         try
@@ -119,6 +128,7 @@ public class PeopleController : ControllerBase
     // POST: People
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PostPerson([FromBody] AlterPersonDTO person)
     {
         try
@@ -135,6 +145,7 @@ public class PeopleController : ControllerBase
 
     // DELETE: People/5
     [HttpDelete("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeletePerson(string id)
     {
         try

@@ -21,17 +21,8 @@ export default function HomePage() {
           'Authorization': 'Bearer ' + token
       }
   }
-  let conditions = { "Votes": ">1000" };
-  const movie = await MoviesDataService.getMovies(1,4, conditions,"Id",false);
-  console.log(movie.listUri);
-  const moviesData = movie.movies;
-  const fetchPosterPromises = moviesData.map(async (movie) => {
-    const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(movie.title)}`);
-    const posterData = await posterResponse.json();
-    return { ...movie, Poster: posterData.Poster };
-  });
-  const moviesWithPosters = await Promise.all(fetchPosterPromises);
-  setMovies(moviesWithPosters);
+  const movies = await MoviesDataService.getMovies(1,4, null,"Id",false);
+  setMovies(movies);
 } catch (error) {
   console.error('Error fetching data:', error);
 }

@@ -1,5 +1,6 @@
 ﻿using Common;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -16,6 +17,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History
     [HttpGet("History")]
+    //[Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetSearchHistories(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -25,9 +27,15 @@ public class SearchController : ControllerBase
     {
         try
         {
-            var searchHistories = await _service.GetAllSearchHistory(new Filter(page, pageSize, sortBy, asc, conditions));
+            var histories = await _service.GetAllSearchHistory(new Filter(page, pageSize, sortBy, asc, conditions));
             var listUri = Url.Action("GetSearchHistories", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
-            return Ok(new { searchHistories = searchHistories, listUri = listUri });
+            var historiesWithUris = histories.Select(sh => new
+            {
+                searchHistory = sh,
+                uri = Url.Action("GetSearchHistory", new { id = sh.Id })
+            });
+
+            return Ok(new { histories = historiesWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -37,6 +45,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History/5
     [HttpGet("History/{id}")]
+    // [Authorize]
     public async Task<IActionResult> GetOneSearchHistory(string id)
     {
         try
@@ -130,6 +139,7 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet("Movie/LoggedIn")]
+    [Authorize]
     public async Task<IActionResult> LoggedInMovieSearch(string userId, string searchString, int? resultCount = 10)
     {
         try
@@ -160,6 +170,7 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet("Person/LoggedIn")]
+    [Authorize]
     public async Task<IActionResult> LoggedInPersonSearch(string userId, string searchString, int? resultCount = 10)
     {
         try
@@ -175,6 +186,7 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet("Structured")]
+    [Authorize]
     public async Task<IActionResult> StructuredSearch(string userId, string title, string personName, int? resultCount = 10)
     {
         try

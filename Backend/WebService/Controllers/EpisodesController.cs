@@ -1,6 +1,8 @@
 ﻿using Common;
 using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -27,8 +29,14 @@ public class EpisodesController : ControllerBase
         try
         {
             var episodes = await _service.GetAllEpisodes(new Filter(page, pageSize, sortBy, asc, conditions));
-            var uri = Url.Action("GetEpisodes", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
-            return Ok(new { episodes = episodes, uri = uri });
+            var listUri = Url.Action("GetEpisodes", new { page = page, pageSize = pageSize, conditions = conditions, sortBy = sortBy, asc = asc });
+            var episodesWithUris = episodes.Select(e => new
+            {
+                episode = e,
+                uri = Url.Action("GetEpisode", new { id = e.Id })
+            });
+
+            return Ok(new { episodes = episodesWithUris, uri = listUri });
         }
         catch (Exception ex)
         {
@@ -53,7 +61,8 @@ public class EpisodesController : ControllerBase
     }
 
     // PUT: api/Episodes/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754¨
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutEpisode(string id, AlterEpisodeDTO episode)
     {
@@ -72,6 +81,7 @@ public class EpisodesController : ControllerBase
     // POST: api/Episodes
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> PostEpisode([FromBody] AlterEpisodeDTO episode)
     {
         try
@@ -88,6 +98,7 @@ public class EpisodesController : ControllerBase
 
     // DELETE: api/Episodes/5
     [HttpDelete("{id}")]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeleteEpisode(string id)
     {
         try
