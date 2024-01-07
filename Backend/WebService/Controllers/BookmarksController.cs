@@ -1,4 +1,6 @@
-﻿using DataLayer.Services.Contracts;
+﻿using Common.Identity;
+using DataLayer.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Exception = System.Exception;
 
@@ -16,8 +18,8 @@ public class BookmarksController : ControllerBase
     }
 
     // GET: Bookmarks/Movie/
+    [Authorize]
     [HttpGet("Movie")]
-    //[Authorize]
     public async Task<IActionResult> GetMovies(
         string userId,
         [FromQuery] int page = 1,
@@ -37,7 +39,7 @@ public class BookmarksController : ControllerBase
 
     // GET: Bookmarks/Personality/
     [HttpGet("Personality")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> GetPerson(
         string userId,
         [FromQuery] int page = 1,
@@ -57,7 +59,7 @@ public class BookmarksController : ControllerBase
 
     // POST: Bookmarks/Movie
     [HttpPost("Movie")]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult> CreateBMMovie(string userId, string movieId)
     {
         try
@@ -74,7 +76,7 @@ public class BookmarksController : ControllerBase
 
     // POST: Bookmarks/Personality
     [HttpPost("Personality")]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult> CreateBMPerson(string userId, string personId)
     {
         try
@@ -90,7 +92,7 @@ public class BookmarksController : ControllerBase
     }
 
     [HttpPut("Movie")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> AddNote([FromQuery] string userId, [FromQuery] string movieId, [FromQuery] string note)
     {
         try
@@ -107,7 +109,7 @@ public class BookmarksController : ControllerBase
 
 
     [HttpDelete("Personality")]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
     {
         try
@@ -122,7 +124,7 @@ public class BookmarksController : ControllerBase
         }
     }
     [HttpDelete("Movie")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string movieId)
     {
         try

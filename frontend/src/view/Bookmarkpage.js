@@ -8,24 +8,25 @@ function Bookmarkpage(){
   const [bookmark, setbookmark] = useState([]);
   const usn = SessionManager.getUserName();
 
-  UsersDataService.getUserByUsername(usn)
-      .then(response => {
-          const userID = response.user.id;
-          fetchBookmarks(userID);
-      })
-      .catch(error => console.error(error));
-
   const fetchBookmarks = async (userID) => {
+      console.log(userID);
       const bookmarkedMovies = await BookmarksDataService.getMovies(userID, 1, 12)
       const bookies = bookmarkedMovies.result;
       setbookmark(bookies);
   }
 
   useEffect(()=>{
-      if(usn){
-          fetchBookmarks();
-      }
-  }, [usn])
+    if(usn){
+        UsersDataService.getUserByUsername(usn)
+            .then(response => {
+                const userID = response.user.id;
+                console.log(userID);
+                fetchBookmarks(userID);
+            })
+            .catch(error => console.error(error));
+    }
+}, [usn])
+
 
 
     return(

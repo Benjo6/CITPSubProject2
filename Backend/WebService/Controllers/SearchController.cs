@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History
     [HttpGet("History")]
-    //[Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetSearchHistories(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -45,7 +46,7 @@ public class SearchController : ControllerBase
 
     // GET: Search/History/5
     [HttpGet("History/{id}")]
-    // [Authorize]
+    [Authorize]
     public async Task<IActionResult> GetOneSearchHistory(string id)
     {
         try

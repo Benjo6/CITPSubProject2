@@ -5,6 +5,7 @@ const BookmarksDataService = {
 
     getMovies: async (userId, page = 1, pageSize = 10) => {
         const token = SessionManager.getToken();
+        console.log(token);
         const response = await fetch(`${BookmarksDataService.baseUrl}/Movie?userId=${userId}&page=${page}&pageSize=${pageSize}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
