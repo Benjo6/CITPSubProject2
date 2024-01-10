@@ -62,6 +62,36 @@ const BookmarksDataService = {
         return await response.json();
     },
 
+    isPersonBookmarked: async (userId, personId) => {
+        const token = SessionManager.getToken();
+        const response = await fetch(`${BookmarksDataService.baseUrl}/IsPersonalityBookmarked`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ userId, personId })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
+        }
+        return await response.json();
+    },
+
+    isMovieBookmarked: async (userId, movieId) => {
+        const token = SessionManager.getToken();
+        const response = await fetch(`${BookmarksDataService.baseUrl}/IsMovieBookmarked`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ userId, movieId })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
+        }
+        return await response.json();
+    },
+
     addNote: async (userId, movieId, note) => {
         const token = SessionManager.getToken();
         const response = await fetch(`${BookmarksDataService.baseUrl}/Movie?userId=${userId}&movieId=${movieId}&note=${note}`, {
@@ -78,11 +108,12 @@ const BookmarksDataService = {
 
     deleteBookmarkPersonality: async (userId, personId) => {
         const token = SessionManager.getToken();
-        const response = await fetch(`${BookmarksDataService.baseUrl}/Personality?userId=${userId}&personId=${personId}`, {
+        const response = await fetch(`${BookmarksDataService.baseUrl}/Personality`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({ userId, personId })
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
@@ -92,11 +123,13 @@ const BookmarksDataService = {
 
     deleteBookmarkMovie: async (userId, movieId) => {
         const token = SessionManager.getToken();
-        const response = await fetch(`${BookmarksDataService.baseUrl}/Movie?userId=${userId}&movieId=${movieId}`, {
+        const response = await fetch(`${BookmarksDataService.baseUrl}/Movie`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({ userId, movieId })
+
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
