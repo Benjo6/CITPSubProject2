@@ -15,5 +15,7 @@ namespace DataLayer.Services.Contracts
         public Task<bool> AddBookmarkPersonality(string userId, string personId);
         public Task<bool> RemoveBookmarkPersonality(string userId, string personId);
         public Task<bool> RemoveBookmarkMovies(string userId, string aliasId);
+        public Task<bool> IsMovieBookmarked(string userId, string movieId);
+        public Task<bool> IsPersonalityBookmarked(string userId, string movieId);
     }
 }

@@ -80,6 +80,16 @@ public class BookmarkMoviesRepository : IBookmarkMoviesRepository
         _context.BookmarkMovies.Remove(bookmarkToRemove);
         await _context.SaveChangesAsync();
         return true;
-
     }
+
+    public async Task<bool> IsMovieBookmarked(string userId, string movieId)
+    {
+        // Check if the bookmark exists in the database
+        var bookmark = await _context.BookmarkMovies
+            .FirstOrDefaultAsync(x => x.MovieId == movieId && x.UserId == userId);
+
+        // If the bookmark exists, return true, else return false
+        return bookmark != null;
+    }
+
 }

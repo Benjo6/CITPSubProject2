@@ -72,17 +72,27 @@ namespace DataLayer.Services
                 return false;
             }
         }
-        public async Task<bool> RemoveBookmarkPersonality(string userId, string movieId)
+        public async Task<bool> RemoveBookmarkPersonality(string userId, string personId)
         {
             try
             {
-                await _personalityRepository.DeleteBookmarkPersonality(userId, movieId);
+                await _personalityRepository.DeleteBookmarkPersonality(userId, personId);
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        public async Task<bool> IsMovieBookmarked(string userId, string movieId)
+        {
+            return await _moviesRepository.IsMovieBookmarked(userId, movieId);
+        }
+        
+        public async Task<bool> IsPersonalityBookmarked(string userId, string personId)
+        {
+            return await _personalityRepository.IsPersonalityBookmarked(userId, personId);
         }
 
         public async Task<List<string>> GetBookmarkPersons(string userId, int? page = 1, int? perPage = 10)

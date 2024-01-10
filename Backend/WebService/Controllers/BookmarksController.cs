@@ -61,7 +61,7 @@ public class BookmarksController : ControllerBase
     // POST: Bookmarks/Movie
     [HttpPost("Movie")]
     [Authorize]
-    public async Task<ActionResult> CreateBMMovie([FromBody]CreateBookmarkMovieDTO data)
+    public async Task<ActionResult> CreateBMMovie([FromBody]AlterBookmarkMovieDTO data)
     {
         try
         {
@@ -111,12 +111,12 @@ public class BookmarksController : ControllerBase
 
     [HttpDelete("Personality")]
     [Authorize]
-    public async Task<ActionResult> DeleteBookmarkPersonality([FromQuery] string userId, [FromQuery] string personId)
+    public async Task<ActionResult> DeleteBookmarkPersonality([FromBody] AlterBookmarkPersonalityDTO data)
     {
         try
         {
-            var result = await _bookmarkService.RemoveBookmarkPersonality(userId, personId);
-            var uri = Url.Action("DeleteBookmarkPersonality", new { userId = userId, personId = personId });
+            var result = await _bookmarkService.RemoveBookmarkPersonality(data.UserId, data.PersonId);
+            var uri = Url.Action("DeleteBookmarkPersonality", new { userId = data.UserId, personId = data.PersonId });
             return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)
@@ -126,12 +126,44 @@ public class BookmarksController : ControllerBase
     }
     [HttpDelete("Movie")]
     [Authorize]
-    public async Task<IActionResult> DeleteBookmarkMovie([FromQuery] string userId, [FromQuery] string movieId)
+    public async Task<IActionResult> DeleteBookmarkMovie([FromBody] AlterBookmarkMovieDTO data)
     {
         try
         {
-            var result = await _bookmarkService.RemoveBookmarkMovies(userId, movieId);
-            var uri = Url.Action("DeleteBookmarkMovie", new { userId = userId, movieId = movieId });
+            var result = await _bookmarkService.RemoveBookmarkMovies(data.UserId, data.MovieId);
+            var uri = Url.Action("DeleteBookmarkMovie", new { userId = data.UserId, movieId = data.MovieId });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+    
+    [HttpGet("IsMovieBookmarked")]
+    [Authorize]
+    public async Task<IActionResult> IsMovieBookmarked([FromBody] AlterBookmarkMovieDTO data)
+    {
+        try
+        {
+            var result = await _bookmarkService.IsMovieBookmarked(data.UserId, data.MovieId);
+            var uri = Url.Action("IsMovieBookmarked", new { userId = data.UserId, movieId = data.MovieId });
+            return Ok(new { result = result, uri = uri });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+    
+    [HttpGet("IsPersonalityBookmarked")]
+    [Authorize]
+    public async Task<ActionResult> IsPersonalityBookmarked([FromBody] AlterBookmarkPersonalityDTO data)
+    {
+        try
+        {
+            var result = await _bookmarkService.IsPersonalityBookmarked(data.UserId, data.PersonId);
+            var uri = Url.Action("IsPersonalityBookmarked", new { userId = data.UserId, personId = data.PersonId });
             return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)

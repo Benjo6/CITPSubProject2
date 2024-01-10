@@ -9,16 +9,9 @@ public class BookmarkMovieDTO
 
 }
 
-public class CreateBookmarkMovieDTO
+public class AlterBookmarkMovieDTO
 {  
     public string UserId { get; set; }
     public string MovieId { get; set; }
-}
-
-public class AlterBookmarkMovieDTO
-{
-    public string UserId { get; set; }
-    public string MovieId { get; set; }
-    public string? Note { get; set; }
 }
 
