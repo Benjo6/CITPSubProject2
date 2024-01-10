@@ -5,7 +5,6 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Xml.Linq;
 
 namespace DataLayer.Repositories;
 

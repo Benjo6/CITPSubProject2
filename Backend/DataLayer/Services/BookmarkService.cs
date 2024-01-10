@@ -1,4 +1,5 @@
-﻿using Common.Mapper;
+﻿using Common.DataTransferObjects;
+using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;
 
@@ -8,9 +9,11 @@ namespace DataLayer.Services
     {
         private readonly IBookmarkPersonalitiesRepository _personalityRepository;
         private readonly IBookmarkMoviesRepository _moviesRepository;
+        private readonly ObjectMapper _mapper;
 
         public BookmarkService(IBookmarkPersonalitiesRepository repositoryP , IBookmarkMoviesRepository repositoryM)
         {
+            _mapper = new ObjectMapper();
             _personalityRepository = repositoryP;
             _moviesRepository = repositoryM;
         }
@@ -54,12 +57,12 @@ namespace DataLayer.Services
                 return false;
             }
         }
-
-
-        public async Task<List<string>> GetBookmarkMovies(string userId, int? page = 1, int? perPage = 10)
+        public async Task<List<BookmarkMovieDTO>> GetBookmarkMovies(string userId, int? page = 1, int? perPage = 10)
         {
-            return await _moviesRepository.GetBookmarksMovies(userId, page, perPage);
+            var movies = await _moviesRepository.GetBookmarksMovies(userId, page, perPage);
+            return _mapper.ListBookmarkMovieToListBookmarkMovieDTO(movies);
         }
+        
         public async Task<bool> RemoveBookmarkMovies(string userId, string movieId)
         {
             try
@@ -95,9 +98,10 @@ namespace DataLayer.Services
             return await _personalityRepository.IsPersonalityBookmarked(userId, personId);
         }
 
-        public async Task<List<string>> GetBookmarkPersons(string userId, int? page = 1, int? perPage = 10)
+        public async Task<List<BookmarkPersonalityDTO>> GetBookmarkPersons(string userId, int? page = 1, int? perPage = 10)
         {
-            return await _personalityRepository.GetBookmarksPersonality(userId, page, perPage);
+            var persons = await _personalityRepository.GetBookmarksPersonality(userId, page, perPage);
+            return _mapper.ListBookmarkPersonalityToListBookmarkPersonalityDTO(persons);
         }
     }
 }

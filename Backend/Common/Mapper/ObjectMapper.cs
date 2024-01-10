@@ -18,6 +18,8 @@ public partial class ObjectMapper
      * BookmarkMovie
      */
     public partial BookmarkMovieDTO BookmarkMovieToBookmarkMovieDTO(BookmarkMovie bookmarkMovie);
+    public partial List<BookmarkMovieDTO> ListBookmarkMovieToListBookmarkMovieDTO(List<BookmarkMovie> bookmarkMovie);
+
     public partial BookmarkMovie BookmarkMovieDTOToBookmarkMovie(BookmarkMovieDTO bookmarkMovie);
     public partial BookmarkMovie AlterBookmarkMovieDTOToBookmarkMovie (AlterBookmarkMovieDTO bookmarkMovie);
     /*
@@ -28,6 +30,9 @@ public partial class ObjectMapper
     public partial BookmarkPersonality BookmarkPersonalityDTOToBookmarkPersonality(
         BookmarkPersonalityDTO bookmarkPersonality);
     public partial BookmarkPersonality AlterBookmarkPersonalityDTOToBookmarkPersonality(AlterBookmarkPersonalityDTO bookmarkPersonality);
+
+    public partial List<BookmarkPersonalityDTO> ListBookmarkPersonalityToListBookmarkPersonalityDTO(
+     List<BookmarkPersonality> bookmarkPersonalities);
     /*
      * Episode
      */

@@ -1,6 +1,5 @@
 using Common;
 using Common.DataTransferObjects;
-using Common.Domain;
 using Common.Mapper;
 using DataLayer.Repositories.Contracts;
 using DataLayer.Services.Contracts;

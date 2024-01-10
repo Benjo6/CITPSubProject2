@@ -2,7 +2,7 @@ using DataLayer.Infrastructure;
 using DataLayer.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Data;
+using Common.Domain;
 
 namespace DataLayer.Repositories;
 
@@ -24,39 +24,15 @@ public class BookmarkMoviesRepository : IBookmarkMoviesRepository
         await _context.Database.ExecuteSqlRawAsync(commandText, userIdParam, movieIdParam);
     }
 
-    public async Task<List<string>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
+    public async Task<List<BookmarkMovie>> GetBookmarksMovies(string userId, int? page = 1, int? perPage = 10)
     {
-        var bookmarkedMovies = new List<string>();
-        const string commandText = "SELECT * FROM get_bookmarks_movie(@userId);";
-        var userIdParam = new NpgsqlParameter("@userId", userId);
+        var skip = (page - 1) * perPage.Value ?? 1;
 
-        await using (var connection = _context.Database.GetDbConnection())
-        {
-            await connection.OpenAsync(); // Ensure the connection is open
-            await using (var command = connection.CreateCommand())
-            {
-                command.CommandType = CommandType.Text; // Use CommandType.Text for functions
-                command.CommandText = commandText;
-                command.Parameters.Add(userIdParam);
-
-                await using (var reader = await command.ExecuteReaderAsync())
-                {
-                    var count = 0;
-                    var skip = (page - 1) * perPage.Value; // Calculate the number of records to skip
-                    var take = page * perPage.Value; // Calculate the maximum number of records to take
-
-                    while (await reader.ReadAsync())
-                    {
-                        if (count >= skip && count < take)
-                        {
-                            bookmarkedMovies.Add(reader.GetString(0));
-                        }
-
-                        count++;
-                    }
-                }
-            }
-        }
+        var bookmarkedMovies = await _context.BookmarkMovies
+            .Where(b => b.UserId == userId)
+            .Skip(skip)
+            .Take(perPage.Value)
+            .ToListAsync();
 
         return bookmarkedMovies;
     }
