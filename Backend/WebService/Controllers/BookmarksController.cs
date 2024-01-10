@@ -1,4 +1,5 @@
-﻿using Common.Identity;
+﻿using Common.DataTransferObjects;
+using Common.Identity;
 using DataLayer.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,12 +61,12 @@ public class BookmarksController : ControllerBase
     // POST: Bookmarks/Movie
     [HttpPost("Movie")]
     [Authorize]
-    public async Task<ActionResult> CreateBMMovie(string userId, string movieId)
+    public async Task<ActionResult> CreateBMMovie([FromBody]CreateBookmarkMovieDTO data)
     {
         try
         {
-            var result = await _bookmarkService.AddBookmarkMovies(userId, movieId);
-            var uri = Url.Action("CreateBMMovie", new { userId = userId, movieId = movieId });
+            var result = await _bookmarkService.AddBookmarkMovies(data.UserId, data.MovieId);
+            var uri = Url.Action("CreateBMMovie", new { userId = data.UserId, movieId = data.MovieId });
             return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)
@@ -77,12 +78,12 @@ public class BookmarksController : ControllerBase
     // POST: Bookmarks/Personality
     [HttpPost("Personality")]
     [Authorize]
-    public async Task<ActionResult> CreateBMPerson(string userId, string personId)
+    public async Task<ActionResult> CreateBMPerson([FromBody] AlterBookmarkPersonalityDTO data)
     {
         try
         {
-            var result = await _bookmarkService.AddBookmarkPersonality(userId, personId);
-            var uri = Url.Action("CreateBMPerson", new { userId = userId, personId = personId });
+            var result = await _bookmarkService.AddBookmarkPersonality(data.UserId, data.PersonId);
+            var uri = Url.Action("CreateBMPerson", new { userId = data.UserId, personId = data.PersonId });
             return Ok(new { result = result, uri = uri });
         }
         catch (Exception ex)
