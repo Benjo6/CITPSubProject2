@@ -9,8 +9,8 @@ function MoviesPage() {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [sortBy, setSortBy] = useState('Id');
-  const [asc, setAsc] = useState(true);
+  const [sortBy, setSortBy] = useState('Votes'); // Default sort by 'Votes'
+  const [asc, setAsc] = useState(false); // Default ascending to false
   const [filterCriteria, setFilterCriteria] = useState({});
 
   const fetchMovies = React.useCallback(async () => {
@@ -43,6 +43,11 @@ function MoviesPage() {
             <Form.Control as="select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="Id">Id</option>
               <option value="Title">Title</option>
+              <option value="StartYear">Start Year</option>
+              <option value="Runtime">Runtime</option>
+              <option value="Genres">Genres</option>
+              <option value="Rating">Rating</option>
+              <option value="Votes">Votes</option>
             </Form.Control>
           </Form.Group>
           <Form.Group controlId="asc">
