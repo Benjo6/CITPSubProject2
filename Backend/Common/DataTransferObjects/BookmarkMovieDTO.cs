@@ -6,6 +6,8 @@ public class BookmarkMovieDTO
     public string MovieId { get; set; }
     public string? Note { get; set; }
     public DateOnly BookmarkDate { get; set; }
+    public string MovieTitle { get; set; }
+    public string MovieRating { get; set;}
 
 }
 

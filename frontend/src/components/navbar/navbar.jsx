@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './NavBar.module.css';
 import SessionManager from '../Auth/SessionManager';
 
 const NavBar = () => {
-  const [loggedIn, setLoggedIn] = useState(SessionManager.getToken());
+  const userToken = SessionManager.getToken();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoggedIn(SessionManager.getToken());
-  }, [SessionManager.getToken()]);
+  const logout = () => {
+    SessionManager.removeUserSession();
+    navigate('/');
+  }
 
   return (
     <Navbar bg="black" expand="lg" className={styles.navbar} sticky='top'>
       <Container className={styles.navbarContainer}>
-        <Navbar.Brand as={NavLink} to="/" style={{color: '#fff'}}>YourBrand</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/" style={{color: '#fff'}}>RMDb</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -33,8 +36,8 @@ const NavBar = () => {
               Search
               </span>
             </Nav.Link>
-            {loggedIn ?
-            <Nav.Link as={NavLink} to="/" className={styles.navLink} onClick={() => SessionManager.removeUserSession()}>
+            {userToken ?
+            <Nav.Link as={NavLink} className={styles.navLink} onClick={logout}>
             <span >
               Logout
               </span>

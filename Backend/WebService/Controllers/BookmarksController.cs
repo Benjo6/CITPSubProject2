@@ -19,7 +19,7 @@ public class BookmarksController : ControllerBase
     }
 
     // GET: Bookmarks/Movie/
-    [Authorize]
+    //[Authorize]
     [HttpGet("Movie")]
     public async Task<IActionResult> GetMovies(
         string userId,

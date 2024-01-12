@@ -26,6 +26,9 @@ function BasicExample(props) {
       if (isBookmarked === false){
         const response = await BookmarksDataService.createBMMovie(user.id, props.id);
         if (response.ok){setIsBookmarked(true)}
+      }else{
+        const response = await BookmarksDataService.deleteBookmarkMovie(user.id, props.id);
+        if (response.ok){setIsBookmarked(false)}
       }
   }
   
