@@ -5,8 +5,10 @@ const UsersDataService = {
 
     getUsers: async (page = 1, pageSize = 10, conditions = null, sortBy = 'Id', asc = true) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${UsersDataService.baseUrl}?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -18,8 +20,10 @@ const UsersDataService = {
 
     getUser: async (id) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${UsersDataService.baseUrl}/${id}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -31,8 +35,10 @@ const UsersDataService = {
 
     getUserByUsername: async (username) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${UsersDataService.baseUrl}/ByUsername/${username}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -46,9 +52,11 @@ const UsersDataService = {
     
     putUser: async (id, user) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${UsersDataService.baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -62,9 +70,11 @@ const UsersDataService = {
 
     deleteUser: async (id) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${UsersDataService.baseUrl}/${id}`, {
             method: 'DELETE',
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });

@@ -4,7 +4,12 @@ const PeopleDataService = {
     baseUrl: 'https://localhost:7098/People',
 
     getPeople: async (page = 1, pageSize = 10, conditions = null, sortBy = 'Id', asc = true) => {
-        const response = await fetch(`${PeopleDataService.baseUrl}?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${PeopleDataService.baseUrl}?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -12,7 +17,12 @@ const PeopleDataService = {
     },
 
     getPerson: async (id) => {
-        const response = await fetch(`${PeopleDataService.baseUrl}/${id}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${PeopleDataService.baseUrl}/${id}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -20,7 +30,12 @@ const PeopleDataService = {
     },
 
     findActorsByName: async (name) => {
-        const response = await fetch(`${PeopleDataService.baseUrl}/ActorsByName?name=${name}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${PeopleDataService.baseUrl}/ActorsByName?name=${name}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -28,7 +43,12 @@ const PeopleDataService = {
     },
 
     findActorsByMovie: async (movieId) => {
-        const response = await fetch(`${PeopleDataService.baseUrl}/ActorsByMovie?movieId=${movieId}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${PeopleDataService.baseUrl}/ActorsByMovie?movieId=${movieId}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -36,7 +56,12 @@ const PeopleDataService = {
     },
 
     getPopularCoPlayers: async (actorName) => {
-        const response = await fetch(`${PeopleDataService.baseUrl}/CoPopularActor?actorName=${actorName}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${PeopleDataService.baseUrl}/CoPopularActor?actorName=${actorName}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -45,9 +70,11 @@ const PeopleDataService = {
 
     putPerson: async (id, person) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${PeopleDataService.baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -61,9 +88,11 @@ const PeopleDataService = {
     
     postPerson: async (person) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${PeopleDataService.baseUrl}`, {
             method: 'POST',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -77,9 +106,11 @@ const PeopleDataService = {
     
     deletePerson: async (id) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${PeopleDataService.baseUrl}/${id}`, {
             method: 'DELETE',
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });

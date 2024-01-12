@@ -1,14 +1,10 @@
-using System;
 using System.Text;
 using Common.Identity;
 using DataLayer.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using WebService.Authentication;
 
 namespace WebService;
 
@@ -57,7 +53,7 @@ public class Program
 
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(x=> x.Filters.Add<ApiKeyAuthFilter>());
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
