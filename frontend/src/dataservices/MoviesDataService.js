@@ -4,7 +4,12 @@ const MoviesDataService = {
     baseUrl: 'https://localhost:7098/Movies',
 
     getMovies: async (page = 1, pageSize = 10, filterCriteria = null, sortBy = 'Id', asc = true) => {
-        const response = await fetch(`${MoviesDataService.baseUrl}?page=${page}&pageSize=${pageSize}&filterCriteria=${filterCriteria}&sortBy=${sortBy}&asc=${asc}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${MoviesDataService.baseUrl}?page=${page}&pageSize=${pageSize}&filterCriteria=${filterCriteria}&sortBy=${sortBy}&asc=${asc}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -19,7 +24,12 @@ const MoviesDataService = {
     },
 
     getMovie: async (id) => {
-        const response = await fetch(`${MoviesDataService.baseUrl}/${id}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${MoviesDataService.baseUrl}/${id}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -27,7 +37,12 @@ const MoviesDataService = {
     },
 
     getPopularActorsInMovie: async (movieId) => {
-        const response = await fetch(`${MoviesDataService.baseUrl}/PopularActor?movieId=${movieId}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${MoviesDataService.baseUrl}/PopularActor?movieId=${movieId}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -35,7 +50,12 @@ const MoviesDataService = {
     },
 
     findSimilarMovies: async (movieId) => {
-        const response = await fetch(`${MoviesDataService.baseUrl}/FindSimilarMovies?movieId=${movieId}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${MoviesDataService.baseUrl}/FindSimilarMovies?movieId=${movieId}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -44,9 +64,11 @@ const MoviesDataService = {
 
     putMovie: async (id, movie) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${MoviesDataService.baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -60,9 +82,11 @@ const MoviesDataService = {
     
     rate: async (userId, movieId, rating) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${MoviesDataService.baseUrl}/Rate?userId=${userId}&movieId=${movieId}&rating=${rating}`, {
             method: 'PUT',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
@@ -71,7 +95,7 @@ const MoviesDataService = {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
         return await response.json();
-    }    
+    }
 };
 
 export default MoviesDataService;

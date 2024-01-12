@@ -5,8 +5,10 @@ const SearchDataService = {
 
     getSearchHistories: async (page = 1, pageSize = 10, conditions = null, sortBy = 'Id', asc = true) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${SearchDataService.baseUrl}/History?page=${page}&pageSize=${pageSize}&conditions=${conditions}&sortBy=${sortBy}&asc=${asc}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -15,11 +17,13 @@ const SearchDataService = {
         }
         return await response.json();
     },
-    
+
     getOneSearchHistory: async (id) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${SearchDataService.baseUrl}/History/${id}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -30,7 +34,12 @@ const SearchDataService = {
     },
 
     wordToWordsQuery: async (keywords) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/WordToWords?keywords=${keywords.join('&keywords=')}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/WordToWords?keywords=${keywords.join('&keywords=')}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -38,7 +47,12 @@ const SearchDataService = {
     },
 
     bestMatchQuery: async (keywords) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/BestMatchQuery?keywords=${keywords.join('&keywords=')}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/BestMatchQuery?keywords=${keywords.join('&keywords=')}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -46,7 +60,12 @@ const SearchDataService = {
     },
 
     exactMatchQuery: async (keywords) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/ExactMatch?keywords=${keywords.join('&keywords=')}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/ExactMatch?keywords=${keywords.join('&keywords=')}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -54,7 +73,12 @@ const SearchDataService = {
     },
 
     personWords: async (word, frequency) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/ActorWords?word=${word}&frequency=${frequency}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/ActorWords?word=${word}&frequency=${frequency}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -62,7 +86,12 @@ const SearchDataService = {
     },
 
     movieSearch: async (searchString, resultCount = 10) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/Movie?searchString=${searchString}&resultCount=${resultCount}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/Movie?searchString=${searchString}&resultCount=${resultCount}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -71,8 +100,10 @@ const SearchDataService = {
 
     loggedInMovieSearch: async (userId, searchString, resultCount = 10) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${SearchDataService.baseUrl}/Movie/LoggedIn?userId=${userId}&searchString=${searchString}&resultCount=${resultCount}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -83,7 +114,12 @@ const SearchDataService = {
     },
 
     personSearch: async (searchString, resultCount = 10) => {
-        const response = await fetch(`${SearchDataService.baseUrl}/Person?searchString=${searchString}&resultCount=${resultCount}`);
+        const apiKey = SessionManager.getApiKey();
+        const response = await fetch(`${SearchDataService.baseUrl}/Person?searchString=${searchString}&resultCount=${resultCount}`, {
+            headers: {
+                'X-Api-Key': apiKey
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
@@ -92,8 +128,10 @@ const SearchDataService = {
 
     loggedInPersonSearch: async (userId, searchString, resultCount = 10) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${SearchDataService.baseUrl}/Person/LoggedIn?userId=${userId}&searchString=${searchString}&resultCount=${resultCount}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -102,10 +140,13 @@ const SearchDataService = {
         }
         return await response.json();
     },
+
     structuredSearch: async (userId, title, personName, resultCount = 10) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${SearchDataService.baseUrl}/Structured?userId=${userId}&title=${title}&personName=${personName}&resultCount=${resultCount}`, {
             headers: {
+                'X-Api-Key': apiKey,
                 'Authorization': `Bearer ${token}`
             }
         });

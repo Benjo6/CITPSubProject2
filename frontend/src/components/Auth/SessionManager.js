@@ -1,5 +1,9 @@
 const SessionManager = {
 
+    getApiKey() {
+        return 'ForTheLoveOfGodSaveKeySecurely';
+    },
+
     getToken() {
         const token = sessionStorage.getItem('token');
         

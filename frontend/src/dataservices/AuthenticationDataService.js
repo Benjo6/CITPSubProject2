@@ -4,9 +4,11 @@ const AuthenticationDataService = {
     baseUrl: 'https://localhost:7098/Authentication',
 
     login: async (model) => {
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${AuthenticationDataService.baseUrl}/login`, {
             method: 'POST',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(model)
@@ -18,9 +20,11 @@ const AuthenticationDataService = {
     },
 
     register: async (model) => {
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${AuthenticationDataService.baseUrl}/register`, {
             method: 'POST',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(model)
@@ -33,9 +37,11 @@ const AuthenticationDataService = {
 
     makeAdmin: async (username) => {
         const token = SessionManager.getToken();
+        const apiKey = SessionManager.getApiKey();
         const response = await fetch(`${AuthenticationDataService.baseUrl}/makeAdmin`, {
             method: 'PUT',
             headers: {
+                'X-Api-Key': apiKey,
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
