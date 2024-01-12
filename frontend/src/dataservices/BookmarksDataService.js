@@ -16,7 +16,15 @@ const BookmarksDataService = {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} message: ${response.message}`);
         }
-        return await response.json();
+        const bookmarksData= await response.json();
+        const fetchPosterPromises = bookmarksData.result.map(async (res)  => {
+            const posterResponse = await fetch(`http://www.omdbapi.com/?apikey=b6003d8a&t=${encodeURIComponent(res.movieTitle)}`);
+            const posterData = await posterResponse.json();
+            return { ...res, Poster: posterData.Poster };
+        });
+        const bookmarksWithPosters = await Promise.all(fetchPosterPromises);
+        return bookmarksWithPosters;
+        
     },
 
     getPerson: async (userId, page = 1, pageSize = 10) => {

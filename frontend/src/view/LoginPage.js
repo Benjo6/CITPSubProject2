@@ -54,7 +54,7 @@ const Login = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="btn btn-success">Login</button>
                 {error && <div className="alert alert-danger mt-2">{error}</div>}
               </form>
               <h5>You do not have an account, yet?<Link to={'/register'}>Register HERE!</Link></h5>

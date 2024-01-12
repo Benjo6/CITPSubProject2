@@ -36,12 +36,19 @@ const NavBar = () => {
               Search
               </span>
             </Nav.Link>
-            {userToken ?
-            <Nav.Link as={NavLink} className={styles.navLink} onClick={logout}>
+            {userToken ?<>
+           
+            <Nav.Link as={NavLink} to="/bookmarks" className={styles.navLink}>
+            <span >
+              Bookmarks
+              </span>
+            </Nav.Link>
+          
+            <Nav.Link as={NavLink} to="/" className={styles.navLink} onClick={logout}>
             <span >
               Logout
               </span>
-            </Nav.Link> : <Nav.Link as={NavLink} to="/login" className={styles.navLink} >
+            </Nav.Link>  </>: <Nav.Link as={NavLink} to="/login" className={styles.navLink} >
             <span >
               Login
               </span>

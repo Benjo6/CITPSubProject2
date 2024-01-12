@@ -19,7 +19,7 @@ public class BookmarksController : ControllerBase
     }
 
     // GET: Bookmarks/Movie/
-    //[Authorize]
+    [Authorize]
     [HttpGet("Movie")]
     public async Task<IActionResult> GetMovies(
         string userId,
@@ -110,7 +110,7 @@ public class BookmarksController : ControllerBase
 
 
     [HttpDelete("Personality")]
-    [Authorize]
+    //[Authorize]
     public async Task<ActionResult> DeleteBookmarkPersonality([FromBody] AlterBookmarkPersonalityDTO data)
     {
         try

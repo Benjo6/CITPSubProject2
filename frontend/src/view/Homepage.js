@@ -5,6 +5,7 @@ import MoviesDataService from '../dataservices/MoviesDataService';
 import { SearchBar } from "../components/SearchBar/SearchBar"; 
 
 
+
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
   const [results, setResults] = useState([]); // Add state for search results
@@ -15,6 +16,7 @@ export default function HomePage() {
       try {
         const movies = await MoviesDataService.getMovies(1,4, null,"Id",false);
         setMovies(movies);
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -25,19 +27,8 @@ export default function HomePage() {
 
 return (
 <>
-    <Container>
-      <SearchBar setResults={setResults} setPerson={setPerson} results={results} person={person}/>
-    </Container>
     <Container className='my-auto pt-5'>
         <h3><span>Top Picks </span></h3>
-        <div className='d-flex flex-wrap'>
-        {movies.map((movie) => {
-                return <BasicExample {...movie} />;
-            })}
-        </div>
-    </Container>
-    <Container className='my-auto pt-5'>
-        <h3><span>Wishlist</span></h3>
         <div className='d-flex flex-wrap'>
         {movies.map((movie) => {
                 return <BasicExample {...movie} />;
